@@ -41,7 +41,7 @@ import retrofit2.Response;
 import java.net.URI;
 
 public class FireBase {
-    Uri filepath;//테스트2
+    Uri filepath;//테스트
    public void  UploadFile(Uri filepath){
        filepath=this.filepath;
        FirebaseStorage storage=FirebaseStorage.getInstance();
