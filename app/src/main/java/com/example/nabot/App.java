@@ -7,7 +7,7 @@ import android.support.v4.content.ContextCompat;
 
 public class App extends Application
 {
-    // instance variables
+    // 기능완성
     private static Context context;
 
     //******************************************************************************
