@@ -38,7 +38,7 @@ public class BoardInsertActivity extends AppCompatActivity {
     Uri filePath;
     Button button_img;
     ImageView img;
-    FireBase fireBase;
+    FireBase fireBase=new FireBase();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +68,10 @@ public class BoardInsertActivity extends AppCompatActivity {
         board_insert_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Log.e("filepath", String.valueOf(filePath));
+                if(filePath!=null){
+                fireBase.UploadFile(filePath);
+                }
                 RetrofitRequest retrofitRequest = RetrofitRequest.retrofit.create(RetrofitRequest.class);
                 WritingDTO writingDTO = new WritingDTO(board_insert_title.getText().toString(), clientDTO.getId(), board_insert_content.getText().toString(), boardDTO.getId());
                 Call<Void> call = retrofitRequest.postWriting(writingDTO);
@@ -93,13 +96,11 @@ public class BoardInsertActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 0 && resultCode == RESULT_OK) {
             filePath = data.getData();
-
             Log.d(TAG, "uri:" + String.valueOf(filePath));
             try {
                 //Uri 파일을 Bitmap으로 만들어서 ImageView에 집어 넣는다.
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
                 img.setImageBitmap(bitmap);
-                fireBase.UploadFile(filePath);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException e) {

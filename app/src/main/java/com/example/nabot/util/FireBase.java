@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -42,33 +43,36 @@ import java.net.URI;
 
 public class FireBase {
     Uri filepath;//처음 단계에서 진행
-   public void  UploadFile(Uri filepath){
-       filepath=this.filepath;
-       FirebaseStorage storage=FirebaseStorage.getInstance();
-       SimpleDateFormat format=new SimpleDateFormat("yyyymmhh_mmss");
-       Date now= new Date();
-       String filename=format.format(now);
-       StorageReference storageReference=storage.getReferenceFromUrl("gs://nabot-application.appspot.com"
-       ).child("board/"+filename);
+   public void  UploadFile(Uri uri){
+       this.filepath=uri;
+       if(filepath != null) {
+           Log.e("eee","aaaaaaaaaa");
+           FirebaseStorage storage = FirebaseStorage.getInstance();
+           SimpleDateFormat format = new SimpleDateFormat("yyyymmhh_mmss");
+           Date now = new Date();
+           String filename = format.format(now);
+           StorageReference storageReference = storage.getReferenceFromUrl("gs://nabot-application.appspot.com"
+           ).child("board/" + filename);
 
-       storageReference.putFile(filepath)
-               .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                   @Override
-                   public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                   }
-               })
-               .addOnFailureListener(new OnFailureListener() {
-                   @Override
-                   public void onFailure(@NonNull Exception e) {
-                   }
-               })
-               .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                   @Override
-                   public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                       double progress=(100*taskSnapshot.getBytesTransferred())/taskSnapshot.getTotalByteCount();
-                   }
-               });
+           storageReference.putFile(filepath)
+                   .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                       @Override
+                       public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
+                       }
+                   })
+                   .addOnFailureListener(new OnFailureListener() {
+                       @Override
+                       public void onFailure(@NonNull Exception e) {
+                       }
+                   })
+                   .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                       @Override
+                       public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                           double progress = (100 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                       }
+                   });
+       }
    }
 
 }
