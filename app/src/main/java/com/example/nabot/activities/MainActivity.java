@@ -41,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
         Button speakerButton = (Button) findViewById(R.id.speakerButton);
         Button doorlockButton = (Button) findViewById(R.id.doorlockButton);
         Button boardButton = (Button) findViewById(R.id.boardButton);
+        Button windowButton = (Button) findViewById(R.id.windowButton);
+        Button curtainButton = (Button) findViewById(R.id.curtainButton);
         boardButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -69,6 +71,19 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
+        windowButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), WindowActivity.class);
+                startActivity(intent);
+            }
+        });
+        curtainButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), CurtainActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 }

@@ -41,6 +41,8 @@
         <activity android:name=".activities.BoardInsertActivity"> </activity>
         <activity android:name=".activities.BoardViewActivity"> </activity>
         <activity android:name=".activities.BoardActivity"> </activity>
+        <activity android:name=".activities.WindowActivity"> </activity>
+        <activity android:name=".activities.CurtainActivity"> </activity>
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="@string/file_provider"
