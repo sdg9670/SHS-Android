@@ -4,6 +4,9 @@ package com.example.nabot.util;
 import com.example.nabot.domain.BoardDTO;
 import com.example.nabot.domain.ClientDTO;
 import com.example.nabot.domain.CommentDTO;
+import com.example.nabot.domain.CurtainDTO;
+import com.example.nabot.domain.SensorDTO;
+import com.example.nabot.domain.WindowDTO;
 import com.example.nabot.domain.WritingDTO;
 import java.util.List;
 import retrofit2.Call;
@@ -25,6 +28,15 @@ public interface RetrofitRequest {
 
     @GET("writing")
     Call<List<WritingDTO>> getWriting(@Query("board_id") int boardid);
+
+    @GET("window")
+    Call<List<WindowDTO>> getWindow();
+
+    @GET("sensor")
+    Call<List<SensorDTO>> getSensor();
+
+    @GET("curtain")
+    Call<List<CurtainDTO>> getCurtain();
 
     @POST("writing")
     Call<Void> postWriting(@Body WritingDTO writing);

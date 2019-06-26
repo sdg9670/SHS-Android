@@ -22,9 +22,6 @@ public class WindowSpinnerAdapter extends BaseAdapter implements SpinnerAdapter 
         items.add(data);
     }
 
-
-
-
     @Override
     public int getCount() {
         return items.size();

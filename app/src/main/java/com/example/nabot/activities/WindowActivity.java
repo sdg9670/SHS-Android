@@ -17,19 +17,26 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.nabot.R;
+import com.example.nabot.adapter.BoardSpinnerAdapter;
 import com.example.nabot.adapter.SensorSpinnerAdapter;
 import com.example.nabot.adapter.WindowSpinnerAdapter;
+import com.example.nabot.domain.BoardDTO;
+import com.example.nabot.domain.CurtainDTO;
 import com.example.nabot.domain.SensorDTO;
 import com.example.nabot.domain.WindowDTO;
+import com.example.nabot.util.RetrofitRequest;
+import com.example.nabot.util.RetrofitRetry;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Response;
 
 public class WindowActivity extends AppCompatActivity {
 
     TextView windowStatusText;
     EditText openEdit1, openEdit2, closeEdit1, closeEdit2;
-    ArrayList<WindowDTO> dataDTOArrayList;
-    ArrayList<SensorDTO> sensorDTOArrayList;
     Spinner windowSpinner, windowSelectSpinner, openValueSpinner1, openValueSpinner2, openValueSpinner3, closeValueSpinner1, closeValueSpinner2, closeValueSpinner3;
 
     Button windowButton, windowStatusButton, sendButton;
@@ -40,8 +47,13 @@ public class WindowActivity extends AppCompatActivity {
 
     String[] select = {"온도", "습도", "강수량", "미세먼지 수치", "내부 가스량"};
     String[] value = {"이상", "미만"};
-    String windowStatus, temp="", humi="", dust="", rain="", gas="";
+    String windowStatus;
     int selectPosition;
+    List<WindowDTO> windowArray;
+    List<SensorDTO> sensorArray;
+
+    WindowSpinnerAdapter windowAdapter;
+    SensorSpinnerAdapter sensorAdapter;
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
@@ -89,11 +101,6 @@ public class WindowActivity extends AppCompatActivity {
         closeCheck2 = (CheckBox) findViewById(R.id.closeCheck2);
         closeCheck3 = (CheckBox) findViewById(R.id.closeCheck3);
 
-        final WindowSpinnerAdapter windowAdapter = new WindowSpinnerAdapter(this);
-        final SensorSpinnerAdapter sensorAdapter = new SensorSpinnerAdapter(this);
-
-        windowSpinner.setAdapter(windowAdapter);
-
         ArrayAdapter<String> outtterAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, select);
         windowSelectSpinner.setAdapter(outtterAdapter);
 
@@ -105,29 +112,59 @@ public class WindowActivity extends AppCompatActivity {
         closeValueSpinner2.setAdapter(ValueAdapter);
         closeValueSpinner3.setAdapter(ValueAdapter);
 
-
-        windowSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        RetrofitRequest retrofitRequest = RetrofitRequest.retrofit.create(RetrofitRequest.class);
+        Call<List<WindowDTO>> call = retrofitRequest.getWindow();
+        call.enqueue(new RetrofitRetry<List<WindowDTO>>(call) {
             @Override
-            public void onItemSelected(final AdapterView<?> parent, View view, final int position, long id) {
-                // Toast.makeText(WindowActivity.this, spinnerAdapter.getItem(position).getId(), Toast.LENGTH_SHORT).show();
-                windowButton.setOnClickListener(new View.OnClickListener() {
+            public void onResponse(Call<List<WindowDTO>> call, Response<List<WindowDTO>> response) {
+                windowArray = response.body();
+                windowAdapter = new WindowSpinnerAdapter(WindowActivity.this);
+                for (int i = 0; i < windowArray.size(); i++) {
+                    windowAdapter.addItem(windowArray.get(i));
+                };
+                windowSpinner.setAdapter(windowAdapter);
+                windowSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
-                    public void onClick(View v) {
-                        selectPosition = position;
-                        windowSelectLayout.setVisibility(View.VISIBLE);
+                    public void onItemSelected(AdapterView<?> parent, View view, final int position, long id) {
+                        windowButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                selectPosition = position;
+                                windowSelectLayout.setVisibility(View.VISIBLE);
+                                if(windowAdapter.getItem(position).getStatus()==1)
+                                    windowStatus = "열려있음";
+                                else
+                                    windowStatus = "닫혀있음";
+                                windowStatusText.setText("창문 " + Integer.toString(windowAdapter.getItem(position).getId()) + "의 현재상태 : " + windowStatus);
 
-                        windowOnOffLayout.setVisibility(View.INVISIBLE);
-                        openLayout.setVisibility(View.INVISIBLE);
-                        closeLayout.setVisibility(View.INVISIBLE);
+                                windowOnOffLayout.setVisibility(View.INVISIBLE);
+                                openLayout.setVisibility(View.INVISIBLE);
+                                closeLayout.setVisibility(View.INVISIBLE);
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+
                     }
                 });
             }
+        });
 
+        RetrofitRequest retrofitRequest2 = RetrofitRequest.retrofit.create(RetrofitRequest.class);
+        Call<List<SensorDTO>> call2 = retrofitRequest2.getSensor();
+        call2.enqueue(new RetrofitRetry<List<SensorDTO>>(call2) {
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
+            public void onResponse(Call<List<SensorDTO>> call2, Response<List<SensorDTO>> response) {
+                sensorArray = response.body();
+                sensorAdapter = new SensorSpinnerAdapter(WindowActivity.this);
+                for (int i = 0; i < sensorArray.size(); i++) {
+                    sensorAdapter.addItem(sensorArray.get(i));
+                }
             }
         });
+
         windowSelectSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, final int position, long id) {
@@ -144,14 +181,14 @@ public class WindowActivity extends AppCompatActivity {
                             closeCheckLayout3.setVisibility(View.VISIBLE);
 
                             openCheck1.setText("내부온도");
-
+                            openEdit1.setText(Double.toString(sensorAdapter.getItem(selectPosition).getTemp()));
                             openCheck2.setText("외부온도");
-
+                            openEdit2.setText(Double.toString(windowAdapter.getItem(selectPosition).getTemp()));
                             openCheck3.setText("내부온도가 외부온도보다");
                             closeCheck1.setText("내부온도");
-
+                            closeEdit1.setText(Double.toString(sensorAdapter.getItem(selectPosition).getTemp()));
                             closeCheck2.setText("외부온도");
-
+                            closeEdit2.setText(Double.toString(windowAdapter.getItem(selectPosition).getTemp()));
                             closeCheck3.setText("내부온도가 외부온도보다");
 
                         } else if (position == 1) {
@@ -164,24 +201,25 @@ public class WindowActivity extends AppCompatActivity {
                             closeCheckLayout3.setVisibility(View.VISIBLE);
 
                             openCheck1.setText("내부습도");
-
+                            openEdit1.setText(Double.toString(sensorAdapter.getItem(selectPosition).getHumi()));
                             openCheck2.setText("외부습도");
-
+                            openEdit2.setText(Double.toString(windowAdapter.getItem(selectPosition).getHumi()));
                             openCheck3.setText("내부습도가 외부습도보다");
                             closeCheck1.setText("내부습도");
-
+                            closeEdit1.setText(Double.toString(sensorAdapter.getItem(selectPosition).getHumi()));
                             closeCheck2.setText("외부습도");
-
+                            closeEdit2.setText(Double.toString(windowAdapter.getItem(selectPosition).getHumi()));
                             closeCheck3.setText("내부습도가 외부습도보다");
                         } else if (position == 2) {
                             windowOnOffLayout.setVisibility(View.VISIBLE);
                             openLayout.setVisibility(View.VISIBLE);
                             closeLayout.setVisibility(View.VISIBLE);
                             openCheck1.setText("외부 강수량");
-
+                            openEdit1.setText(Double.toString(windowAdapter.getItem(selectPosition).getRain()));
                             openCheckLayout2.setVisibility(View.INVISIBLE);
                             openCheckLayout3.setVisibility(View.INVISIBLE);
                             closeCheck1.setText("외부 강수량");
+                            closeEdit1.setText(Double.toString(windowAdapter.getItem(selectPosition).getRain()));
                             closeCheckLayout2.setVisibility(View.INVISIBLE);
                             closeCheckLayout3.setVisibility(View.INVISIBLE);
                         } else if (position == 3) {
@@ -189,9 +227,11 @@ public class WindowActivity extends AppCompatActivity {
                             openLayout.setVisibility(View.VISIBLE);
                             closeLayout.setVisibility(View.VISIBLE);
                             openCheck1.setText("외부 미세먼지");
+                            openEdit1.setText(Double.toString(windowAdapter.getItem(selectPosition).getDust()));
                             openCheckLayout2.setVisibility(View.INVISIBLE);
                             openCheckLayout3.setVisibility(View.INVISIBLE);
                             closeCheck1.setText("외부 미세먼지");
+                            closeEdit1.setText(Double.toString(windowAdapter.getItem(selectPosition).getDust()));
                             closeCheckLayout2.setVisibility(View.INVISIBLE);
                             closeCheckLayout3.setVisibility(View.INVISIBLE);
                         } else {
@@ -199,9 +239,11 @@ public class WindowActivity extends AppCompatActivity {
                             openLayout.setVisibility(View.VISIBLE);
                             closeLayout.setVisibility(View.VISIBLE);
                             openCheck1.setText("내부 가스량");
+                            openEdit1.setText(Double.toString(sensorAdapter.getItem(selectPosition).getGas()));
                             openCheckLayout2.setVisibility(View.INVISIBLE);
                             openCheckLayout3.setVisibility(View.INVISIBLE);
                             closeCheck1.setText("내부 가스량");
+                            closeEdit1.setText(Double.toString(sensorAdapter.getItem(selectPosition).getGas()));
                             closeCheckLayout2.setVisibility(View.INVISIBLE);
                             closeCheckLayout3.setVisibility(View.INVISIBLE);
                         }
