@@ -51,6 +51,6 @@ public class SpeakerListAdapter extends BaseAdapter {
         String item = items.get(position);
         TextView nameText = (TextView) view.findViewById(R.id.speakername);
         nameText.setText(item);
-        return null;
+        return view;
     }
 }
