@@ -5,17 +5,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-
 import com.example.nabot.R;
-
 import java.util.ArrayList;
 
 public class SpeakerListAdapter extends BaseAdapter {
-
     ArrayList<String> items = new ArrayList<String>();
     public SpeakerListAdapter() {
 
-        items.add("배현지스피커, on");
+        items.add("배현지스피커");
         items.add("최우석스피커");
         items.add("유명선스피커");
         items.add("ㅂㅈ");
@@ -36,12 +33,12 @@ public class SpeakerListAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        return null;
+        return items.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        return 0;
+        return position;
     }
 
     @Override
