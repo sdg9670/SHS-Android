@@ -60,7 +60,8 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra(VideoActivity.CAMERA, camera);
                 startActivity(intent);
                 */
-                Intent intent = new Intent(getApplicationContext(), VideoActivity.class);
+                Intent intent = new Intent(getApplicationContext(), SpeakerListActivity.class);
+                startActivity(intent);
             }
         });
         doorlockButton.setOnClickListener(new View.OnClickListener() {
