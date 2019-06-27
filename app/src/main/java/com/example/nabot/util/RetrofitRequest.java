@@ -27,7 +27,7 @@ public interface RetrofitRequest {
     Call<List<WritingDTO>> getWriting(@Query("board_id") int boardid);
 
     @POST("writing")
-    Call<Void> postWriting(@Body WritingDTO writing);
+    Call<List<WritingDTO>> postWriting(@Body WritingDTO writing);
 
     @PUT("writing")
     Call<Void> putWriting(@Body WritingDTO writing);
@@ -48,7 +48,7 @@ public interface RetrofitRequest {
     Call<Void> putComment(@Body CommentDTO comment);
 
     public static final Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl("http://simddong.ga:5000/")
+            .baseUrl("http://simddong.ga:5001/")
             .addConverterFactory(GsonConverterFactory.create())
             .build();
 }
