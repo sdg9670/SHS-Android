@@ -33,6 +33,7 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.ExecutionException;
 
 import retrofit2.Call;
@@ -41,16 +42,20 @@ import retrofit2.Response;
 
 import java.net.URI;
 
-public class FireBase {
+public class FireBaseStorage {
     Uri filepath;//처음 단계에서 진행
-   public void  UploadFile(Uri uri){
-       this.filepath=uri;
+    Uri multifilepath[];
+    int writingid;
+    int imgcount;
+   public void  SingleUploadFile(Uri filepath ,int writingid){
+       this.filepath=filepath;
+       this.writingid=writingid;
        if(filepath != null) {
            Log.e("eee","aaaaaaaaaa");
+           double d_randomValue=Math.random();
+           int  randomValue=(int)(d_randomValue*10000000)+1;
            FirebaseStorage storage = FirebaseStorage.getInstance();
-           SimpleDateFormat format = new SimpleDateFormat("yyyymmhh_mmss");
-           Date now = new Date();
-           String filename = format.format(now);
+           String filename = Integer.toString(writingid)+"_"+Integer.toString(randomValue);
            StorageReference storageReference = storage.getReferenceFromUrl("gs://nabot-application.appspot.com"
            ).child("board/" + filename);
 
@@ -74,5 +79,44 @@ public class FireBase {
                    });
        }
    }
+   public  void MultiUploadFile(Uri multifilepath[], int writingid , int imgcount){
+    this.writingid=writingid;
+    this.imgcount=imgcount;
+    this.multifilepath=new Uri[imgcount];
+    for(int i=0; i<imgcount; i++){
+        this.multifilepath[i]=multifilepath[i];
+        if(multifilepath[i] != null) {
+            Log.e("eee","aaaaaaaaaa");
+            double d_randomValue=Math.random();
+            int  randomValue=(int)(d_randomValue*10000000)+1;
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+            String filename = Integer.toString(writingid)+"_"+Integer.toString(randomValue);
+            StorageReference storageReference = storage.getReferenceFromUrl("gs://nabot-application.appspot.com"
+            ).child("board/" + filename);
 
-}
+            storageReference.putFile(multifilepath[i])
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                        }
+                    })
+                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                            double progress = (100 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                        }
+                    });
+        }
+    }
+
+
+    }
+
+
+   }

@@ -43,12 +43,6 @@
         android:hint="제목"
         android:text="" />
 
-    <ImageView
-        android:id="@+id/img"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-         />
-
     <EditText
         android:id="@+id/board_insert_content"
         android:layout_width="match_parent"
@@ -58,6 +52,12 @@
         android:gravity="start|top"
         android:hint="내용"
         android:inputType="textMultiLine" />
+
+    <include
+        android:id="@+id/imgViewPager"
+        layout="=@layout/activity_imgview"
+        android:layout_width="40dp"
+        android:layout_height="40dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
