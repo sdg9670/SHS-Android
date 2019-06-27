@@ -48,7 +48,7 @@ public interface RetrofitRequest {
     Call<Void> putComment(@Body CommentDTO comment);
 
     public static final Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl("http://simddong.ga:5001/")
+            .baseUrl("http://simddong.ga:5000/")
             .addConverterFactory(GsonConverterFactory.create())
             .build();
 }
