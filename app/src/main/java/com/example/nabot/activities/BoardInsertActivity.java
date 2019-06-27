@@ -38,7 +38,7 @@ public class BoardInsertActivity extends AppCompatActivity {
     TextView board_insert_boardname, board_insert_content;
     Button board_insert_btn;
     EditText board_insert_title;
-    Uri multiuri[]=null;
+    List<Uri> multiUri=null;
     Uri singleuri=null;
     WritingDTO writingDTO;
     Button button_img;
@@ -78,7 +78,11 @@ public class BoardInsertActivity extends AppCompatActivity {
         board_insert_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                if(imgcount>0){
+                    fireBaseStorage.MultiUploadFile(multiUri,writingDTO.getId());
+                }
+                else
+                    fireBaseStorage.SingleUploadFile(singleuri,writingDTO.getId());
                 RetrofitRequest retrofitRequest = RetrofitRequest.retrofit.create(RetrofitRequest.class);
                  writingDTO = new WritingDTO(board_insert_title.getText().toString(), clientDTO.getId(), board_insert_content.getText().toString(), boardDTO.getId());
                 Call<List<WritingDTO>> call = retrofitRequest.postWriting(writingDTO);
@@ -86,6 +90,7 @@ public class BoardInsertActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<List<WritingDTO>> call, Response<List<WritingDTO>> response) {
                         writingDTO=response.body().get(0);
+                        Log.e("writindid", String.valueOf(writingDTO.getId()));
                         Intent intent2 = new Intent();
                         BoardInsertActivity.this.setResult(RESULT_OK, intent2);
                         BoardInsertActivity.this.finish();
@@ -103,16 +108,17 @@ public class BoardInsertActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 0 && resultCode == RESULT_OK) {
-            imgcount=data.getClipData().getItemCount();
-            multiuri=new Uri[imgcount];
-            for(int i=0; i<imgcount; i++){
-                multiuri[i]=data.getClipData().getItemAt(i).getUri();
-                Log.e("multiuri", String.valueOf(multiuri[i]));
-                Log.e("imgcount", String.valueOf(imgcount));
+            //단일이미지
+            singleuri=data.getData();
+            //꾹누르기해서 다중선택할때
+            if(data.getClipData()!=null) {
+                imgcount = data.getClipData().getItemCount();
+                for (int i = 0; i < imgcount; i++) {
+                    multiUri.add(data.getClipData().getItemAt(i).getUri());
+                }
+                imageViewAdapter.getUri(multiUri);
+                viewPager.setAdapter(imageViewAdapter);
             }
-            imageViewAdapter.getUri(multiuri,imgcount);
-            viewPager.setAdapter(imageViewAdapter);
-
             }
         }
     }

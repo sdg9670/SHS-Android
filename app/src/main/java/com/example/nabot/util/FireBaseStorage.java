@@ -43,10 +43,10 @@ import retrofit2.Response;
 import java.net.URI;
 
 public class FireBaseStorage {
-    Uri filepath;//처음 단계에서 진행
-    Uri multifilepath[];
-    int writingid;
-    int imgcount;
+    Uri filepath=null;//처음 단계에서 진행
+    List<Uri> multifilepath=null;
+    int writingid=0;
+    int imgcount=0;
    public void  SingleUploadFile(Uri filepath ,int writingid){
        this.filepath=filepath;
        this.writingid=writingid;
@@ -79,13 +79,11 @@ public class FireBaseStorage {
                    });
        }
    }
-   public  void MultiUploadFile(Uri multifilepath[], int writingid , int imgcount){
+   public  void MultiUploadFile(List<Uri>multifilepath, int writingid ){
     this.writingid=writingid;
-    this.imgcount=imgcount;
-    this.multifilepath=new Uri[imgcount];
-    for(int i=0; i<imgcount; i++){
-        this.multifilepath[i]=multifilepath[i];
-        if(multifilepath[i] != null) {
+    this.multifilepath=multifilepath;
+    for(int i=0; i<multifilepath.size(); i++){;
+        if(multifilepath != null) {
             Log.e("eee","aaaaaaaaaa");
             double d_randomValue=Math.random();
             int  randomValue=(int)(d_randomValue*10000000)+1;
@@ -93,8 +91,7 @@ public class FireBaseStorage {
             String filename = Integer.toString(writingid)+"_"+Integer.toString(randomValue);
             StorageReference storageReference = storage.getReferenceFromUrl("gs://nabot-application.appspot.com"
             ).child("board/" + filename);
-
-            storageReference.putFile(multifilepath[i])
+            storageReference.putFile(multifilepath.get(i))
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {

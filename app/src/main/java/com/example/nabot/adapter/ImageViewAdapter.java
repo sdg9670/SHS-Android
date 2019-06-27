@@ -5,6 +5,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -30,14 +32,9 @@ import retrofit2.Response;
 
 public class ImageViewAdapter extends PagerAdapter {
     private Context mContext = null;
-    Uri filepath[]=null;
-    int imagecount=0;
-    public void getUri(Uri filepath[] , int imagecount){
-        this.imagecount=imagecount;
-        filepath=new Uri[imagecount];
-        for(int i=0; i<imagecount; i++){
-            this.filepath[i]=filepath[i];
-        }
+    List<Uri> filepath =null;
+    public void getUri(List<Uri> filepath){
+        this.filepath=filepath;
     }
 
     public ImageViewAdapter(Context context) {
@@ -55,9 +52,9 @@ public class ImageViewAdapter extends PagerAdapter {
 
         ImageView imageView=(ImageView)view.findViewById(R.id.imgs);
         imageView.setImageResource(R.drawable.logo2);
-        if(filepath!=null && imagecount!=0){
-            for(int i=0;i<imagecount;i++){
-                imageView.setImageURI(filepath[i]);
+        if(filepath!=null){
+            for(int i=0;i<filepath.size();i++){
+                imageView.setImageURI(filepath.get(i));
             }
         }
 
