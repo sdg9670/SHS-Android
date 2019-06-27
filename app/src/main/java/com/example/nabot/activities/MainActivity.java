@@ -21,7 +21,7 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-    ClientDTO client;//기능1
+    ClientDTO client;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,7 +58,8 @@ public class MainActivity extends AppCompatActivity {
                 Camera camera = new Camera("Speaker", "192.168.1.100", 6000);
                 Intent intent = new Intent(getApplicationContext(), VideoActivity.class);
                 intent.putExtra(VideoActivity.CAMERA, camera);
-                startActivity(intent);*/
+                startActivity(intent);
+                */
             }
         });
         doorlockButton.setOnClickListener(new View.OnClickListener() {
