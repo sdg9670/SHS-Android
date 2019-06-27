@@ -128,6 +128,9 @@
             android:textColor="#ffffff"
             android:text="등록" />
 
+
+
+
     </LinearLayout>
 
 </LinearLayout>

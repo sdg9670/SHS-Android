@@ -42,7 +42,7 @@ public class BoardInsertActivity extends AppCompatActivity {
     Uri singleuri=null;
     WritingDTO writingDTO;
     Button button_img;
-    Bitmap bitmap[];
+    ImageView singleimg;
     int imgcount=0;
     FireBaseStorage fireBaseStorage =new FireBaseStorage();
     ViewPager viewPager;
@@ -59,6 +59,7 @@ public class BoardInsertActivity extends AppCompatActivity {
         board_insert_content = findViewById(R.id.board_insert_content);
         board_insert_btn = findViewById(R.id.board_insert_btn);
         board_insert_title = findViewById(R.id.board_insert_title);
+        singleimg=findViewById(R.id.singleimg);
         Intent in = getIntent();
         final ClientDTO clientDTO = (ClientDTO) in.getSerializableExtra("client");
         final BoardDTO boardDTO = (BoardDTO) in.getSerializableExtra("board");
@@ -109,8 +110,6 @@ public class BoardInsertActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 0 && resultCode == RESULT_OK) {
             //단일이미지
-            singleuri=data.getData();
-            //꾹누르기해서 다중선택할때
             if(data.getClipData()!=null) {
                 imgcount = data.getClipData().getItemCount();
                 for (int i = 0; i < imgcount; i++) {
@@ -120,9 +119,13 @@ public class BoardInsertActivity extends AppCompatActivity {
                 viewPager.setAdapter(imageViewAdapter);
             }
             }
+        else {
+            singleuri = data.getData();
+            singleimg.setImageURI(singleuri);
+
         }
+    }
     }
 
 
 
-///file path = uri 역할

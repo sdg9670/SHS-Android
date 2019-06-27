@@ -24,6 +24,7 @@ import com.example.nabot.util.RetrofitRequest;
 import com.example.nabot.util.RetrofitRetry;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -46,7 +47,6 @@ public class FireBaseStorage {
     Uri filepath=null;//처음 단계에서 진행
     List<Uri> multifilepath=null;
     int writingid=0;
-    int imgcount=0;
    public void  SingleUploadFile(Uri filepath ,int writingid){
        this.filepath=filepath;
        this.writingid=writingid;
@@ -114,6 +114,5 @@ public class FireBaseStorage {
 
 
     }
-
 
    }
