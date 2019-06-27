@@ -12,6 +12,9 @@ public class SpeakerListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_speakerlist);
 
+        final SpeakerListAdapter ladpater = new SpeakerListAdapter();
+        speakerList = (ListView) findViewById(R.id.speakerlistview);
+        speakerList.setAdapter(ladpater);
     }
 }
 
