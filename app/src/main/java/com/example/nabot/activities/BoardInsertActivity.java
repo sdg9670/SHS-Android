@@ -25,6 +25,8 @@ import com.example.nabot.domain.WritingDTO;
 import com.example.nabot.util.FireBaseStorage;
 import com.example.nabot.util.RetrofitRequest;
 import com.example.nabot.util.RetrofitRetry;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -46,6 +48,8 @@ public class BoardInsertActivity extends AppCompatActivity {
     ImageView singleimg;
     int imgcount = 0;
     FireBaseStorage fireBaseStorage = new FireBaseStorage();
+    FirebaseAuth mAuth;
+    FirebaseUser user;
     ViewPager viewPager;
     ImageViewAdapter imageViewAdapter;
 
@@ -84,19 +88,36 @@ public class BoardInsertActivity extends AppCompatActivity {
                 RetrofitRequest retrofitRequest = RetrofitRequest.retrofit.create(RetrofitRequest.class);
                 writingDTO = new WritingDTO(board_insert_title.getText().toString(), clientDTO.getId(), board_insert_content.getText().toString(), boardDTO.getId());
                 Call<Void> call = retrofitRequest.postWriting(writingDTO);
-
                 call.enqueue(new Callback<Void>() {
                     @Override
                     public void onResponse(Call<Void> call, Response<Void> response) {
-                        if (imgcount > 0) {
-                            fireBaseStorage.MultiUploadFile(multiUri);
-                        } else {
-                            fireBaseStorage.SingleUploadFile(singleuri);
-                        }
-                        Intent intent2 = new Intent();
-                        BoardInsertActivity.this.setResult(RESULT_OK, intent2);
-                        BoardInsertActivity.this.finish();
+                        RetrofitRequest retrofitRequest1 = RetrofitRequest.retrofit.create(RetrofitRequest.class);
+                        Call<List<WritingDTO>> call1 = retrofitRequest1.getlasat_writing();
+                        call1.enqueue(new Callback<List<WritingDTO>>() {
+                            @Override
+                            public void onResponse(Call<List<WritingDTO>> call, Response<List<WritingDTO>> response) {
+                                writingDTO = response.body().get(0);
+                                Log.e("testtest", String.valueOf(writingDTO.getId()));
 
+                                if (multiUri != null) {
+                                    Log.e("asd", String.valueOf(multiUri));
+                                    Log.e("ttt", String.valueOf(writingDTO.getId()));
+                                    fireBaseStorage.MultiUploadFile(multiUri, writingDTO.getId());
+                                } else if (singleuri != null) {
+                                    Log.e("asd", String.valueOf(singleuri));
+                                    Log.e("ttt", String.valueOf(writingDTO.getId()));
+                                    fireBaseStorage.SingleUploadFile(singleuri, writingDTO.getId());
+                                }
+                                Intent intent2 = new Intent();
+                                BoardInsertActivity.this.setResult(RESULT_OK, intent2);
+                                BoardInsertActivity.this.finish();
+                            }
+
+                            @Override
+                            public void onFailure(Call<List<WritingDTO>> call, Throwable t) {
+
+                            }
+                        });
                     }
 
                     @Override
@@ -119,12 +140,13 @@ public class BoardInsertActivity extends AppCompatActivity {
                 for (int i = 0; i < imgcount; i++) {
                     multiUri.add((Uri) data.getClipData().getItemAt(i).getUri());
                     imageViewAdapter.getUri(multiUri);
-                    viewPager.setAdapter(imageViewAdapter);
                 }
+                viewPager.setAdapter(imageViewAdapter);
+                singleuri=null;
             } else {
                 singleuri = data.getData();
                 singleimg.setImageURI(singleuri);
-
+                multiUri=null;
             }
         }
     }
