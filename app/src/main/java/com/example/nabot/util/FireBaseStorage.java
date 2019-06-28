@@ -1,47 +1,17 @@
 package com.example.nabot.util;
-
-import android.app.Activity;
-import android.content.Intent;
 import android.net.Uri;
-import android.provider.MediaStore;
-import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.example.nabot.R;
-import com.example.nabot.activities.BoardActivity;
-import com.example.nabot.domain.BoardDTO;
-import com.example.nabot.domain.ClientDTO;
 import com.example.nabot.domain.WritingDTO;
-import com.example.nabot.util.RetrofitRequest;
-import com.example.nabot.util.RetrofitRetry;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
-import java.util.Random;
-import java.util.concurrent.ExecutionException;
-
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
-
-import java.net.URI;
 
 public class FireBaseStorage {
     Uri filepath=null;//처음 단계에서 진행

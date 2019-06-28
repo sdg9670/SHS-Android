@@ -45,7 +45,6 @@ public class BoardInsertActivity extends AppCompatActivity {
     Button button_img;
     ImageView singleimg;
     int imgcount = 0;
-    int writing_id;
     FireBaseStorage fireBaseStorage = new FireBaseStorage();
     ViewPager viewPager;
     ImageViewAdapter imageViewAdapter;
