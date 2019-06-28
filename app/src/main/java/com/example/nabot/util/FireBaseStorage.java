@@ -45,17 +45,29 @@ import java.net.URI;
 
 public class FireBaseStorage {
     Uri filepath=null;//처음 단계에서 진행
+    WritingDTO writingDTO=new WritingDTO();
     List<Uri> multifilepath=null;
-    int writingid=0;
-   public void  SingleUploadFile(Uri filepath ,int writingid){
+
+    public  FireBaseStorage(){
+        RetrofitRequest retrofitRequest = RetrofitRequest.retrofit.create(RetrofitRequest.class);
+        Call<List<WritingDTO>> call=retrofitRequest.getlasat_writing();
+        call.enqueue(new RetrofitRetry<List<WritingDTO>>(call) {
+            @Override
+            public void onResponse(Call<List<WritingDTO>> call, Response<List<WritingDTO>> response) {
+                writingDTO=response.body().get(0);
+            }
+        });
+    }
+
+    public void  SingleUploadFile(Uri filepath){
        this.filepath=filepath;
-       this.writingid=writingid;
+        Log.e("asd", String.valueOf(writingDTO.getId()));
        if(filepath != null) {
            Log.e("eee","aaaaaaaaaa");
            double d_randomValue=Math.random();
            int  randomValue=(int)(d_randomValue*10000000)+1;
            FirebaseStorage storage = FirebaseStorage.getInstance();
-           String filename = Integer.toString(writingid)+"_"+Integer.toString(randomValue);
+           String filename = Integer.toString(writingDTO.getId())+"_"+Integer.toString(randomValue);
            StorageReference storageReference = storage.getReferenceFromUrl("gs://nabot-application.appspot.com"
            ).child("board/" + filename);
 
@@ -79,16 +91,19 @@ public class FireBaseStorage {
                    });
        }
    }
-   public  void MultiUploadFile(List<Uri>multifilepath, int writingid ){
-    this.writingid=writingid;
+   public  void MultiUploadFile(List<Uri>multifilepath){
     this.multifilepath=multifilepath;
-    for(int i=0; i<multifilepath.size(); i++){;
+       Log.e("asd", String.valueOf(writingDTO.getId()));
+
+
+       for(int i=0; i<multifilepath.size(); i++){;
         if(multifilepath != null) {
+
             Log.e("eee","aaaaaaaaaa");
             double d_randomValue=Math.random();
             int  randomValue=(int)(d_randomValue*10000000)+1;
             FirebaseStorage storage = FirebaseStorage.getInstance();
-            String filename = Integer.toString(writingid)+"_"+Integer.toString(randomValue);
+            String filename = Integer.toString(writingDTO.getId())+"_"+Integer.toString(randomValue);
             StorageReference storageReference = storage.getReferenceFromUrl("gs://nabot-application.appspot.com"
             ).child("board/" + filename);
             storageReference.putFile(multifilepath.get(i))

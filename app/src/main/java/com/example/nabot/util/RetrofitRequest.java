@@ -27,7 +27,10 @@ public interface RetrofitRequest {
     Call<List<WritingDTO>> getWriting(@Query("board_id") int boardid);
 
     @POST("writing")
-    Call<List<WritingDTO>> postWriting(@Body WritingDTO writing);
+    Call<Void> postWriting(@Body WritingDTO writing);
+
+    @GET("last_writing")
+    Call<List<WritingDTO>> getlasat_writing();
 
     @PUT("writing")
     Call<Void> putWriting(@Body WritingDTO writing);

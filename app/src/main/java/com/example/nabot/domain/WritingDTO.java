@@ -16,6 +16,10 @@ public class WritingDTO implements Serializable {
     private int comment_count;
     private String writer_name;
 
+    public  WritingDTO(){
+
+    }
+
     public WritingDTO(int id, String title, int writer, String content, String update_time, String write_time, int view, int show, int board_id, int comment_count, String writer_name) {
         this.id = id;
         this.title = title;
