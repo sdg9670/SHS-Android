@@ -7,27 +7,38 @@ public class WindowDTO {
     private double humi;
     private double rain;
     private double dust;
-    private int onoff;
-    private int over;
+    private double temp_set;
+    private int temp_over;
+    private double humi_set;
+    private int humi_over;
+    private double rain_set;
+    private int rain_over;
+    private double dust_set;
+    private int dust_over;
 
-    public WindowDTO(int id, int status, double temp, double humi, double rain, double dust, int onoff, int over) {
+    public WindowDTO(int id, double temp_set, int temp_over, double humi_set, int humi_over, double rain_set, int rain_over, double dust_set, int dust_over) {
         this.id = id;
         this.status = status;
         this.temp = temp;
         this.humi = humi;
         this.rain = rain;
         this.dust = dust;
-        this.onoff = onoff;
-        this.over = over;
+        this.temp_set = temp_set;
+        this.temp_over = temp_over;
+        this.humi_set = humi_set;
+        this.humi_over = humi_over;
+        this.rain_set = rain_set;
+        this.rain_over = rain_over;
+        this.dust_set = dust_set;
+        this.dust_over = dust_over;
+
     }
-    public WindowDTO(int status, double temp, double humi, double rain, double dust, int onoff, int over) {
+    public WindowDTO(int status, double temp, double humi, double rain, double dust) {
         this.status = status;
         this.temp = temp;
         this.humi = humi;
         this.rain = rain;
         this.dust = dust;
-        this.onoff = onoff;
-        this.over = over;
     }
 
     public int getId() {
@@ -78,19 +89,5 @@ public class WindowDTO {
         this.dust = dust;
     }
 
-    public int getOnoff() {
-        return onoff;
-    }
 
-    public void setOnoff(int onoff) {
-        this.onoff = onoff;
-    }
-
-    public int getOver() {
-        return over;
-    }
-
-    public void setOver(int over) {
-        this.over = over;
-    }
 }

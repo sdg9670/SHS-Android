@@ -1,5 +1,6 @@
 package com.example.nabot.activities;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,6 +14,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -31,29 +33,33 @@ import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
+import retrofit2.Callback;
 import retrofit2.Response;
 
 public class WindowActivity extends AppCompatActivity {
 
     TextView windowStatusText;
-    EditText openEdit1, openEdit2, closeEdit1, closeEdit2;
-    Spinner windowSpinner, windowSelectSpinner, openValueSpinner1, openValueSpinner2, openValueSpinner3, closeValueSpinner1, closeValueSpinner2, closeValueSpinner3;
+    EditText editText;
+    Spinner windowSpinner, windowSelectSpinner, openValueSpinner1, openValueSpinner2;
 
-    Button windowButton, windowStatusButton, sendButton;
-    LinearLayout windowSelectLayout, windowOnOffLayout, openLayout, closeLayout, openCheckLayout1, openCheckLayout2, openCheckLayout3, closeCheckLayout1, closeCheckLayout2, closeCheckLayout3;
+    LinearLayout windowSelectLayout, openLayout, setting1, setting2;
 
-    RadioButton rdOn, rdOff;
-    CheckBox openCheck1, openCheck2, openCheck3, closeCheck1, closeCheck2, closeCheck3;
+    RadioButton rdButton1, rdButton2;
+    RadioGroup rdGroup;
+    Button button;
 
-    String[] select = {"온도", "습도", "강수량", "미세먼지 수치", "내부 가스량"};
+    String[] select = {"온도", "습도", "강수량", "미세먼지 수치"};
     String[] value = {"이상", "미만"};
-    String windowStatus;
-    int selectPosition;
+    String windowStatus, temp_set="0.0", humi_set="0.0", rain_set="0.0", dust_set="0.0";
+    int selectPosition, selectPosition2, tempOver=0, humiOver=0, rainOver=0, dustOver=0;
+
     List<WindowDTO> windowArray;
     List<SensorDTO> sensorArray;
 
     WindowSpinnerAdapter windowAdapter;
     SensorSpinnerAdapter sensorAdapter;
+
+    WindowDTO windowDTO;
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
@@ -61,56 +67,35 @@ public class WindowActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_window);
         windowSelectLayout = (LinearLayout) findViewById(R.id.windowSelectLayout);
-        windowOnOffLayout = (LinearLayout) findViewById(R.id.windowOnOffLayout);
         openLayout = (LinearLayout) findViewById(R.id.openLayout);
-        closeLayout = (LinearLayout) findViewById(R.id.closeLayout);
-        openCheckLayout1 = (LinearLayout) findViewById(R.id.openCheckLayout1);
-        openCheckLayout2 = (LinearLayout) findViewById(R.id.openCheckLayout2);
-        openCheckLayout3 = (LinearLayout) findViewById(R.id.openCheckLayout3);
-        closeCheckLayout1 = (LinearLayout) findViewById(R.id.closeCheckLayout1);
-        closeCheckLayout2 = (LinearLayout) findViewById(R.id.closeCheckLayout2);
-        closeCheckLayout3 = (LinearLayout) findViewById(R.id.closeCheckLayout3);
+        setting1 = (LinearLayout) findViewById(R.id.setting1);
+        setting2 = (LinearLayout) findViewById(R.id.setting2);
 
         windowStatusText = (TextView) findViewById(R.id.windowStatusText);
 
-        openEdit1 = (EditText) findViewById(R.id.openEdit1);
-        openEdit2 = (EditText) findViewById(R.id.openEdit2);
-        closeEdit1 = (EditText) findViewById(R.id.closeEdit1);
-        closeEdit2 = (EditText) findViewById(R.id.closeEdit2);
+        editText = (EditText) findViewById(R.id.editText);
 
         windowSpinner = (Spinner) findViewById(R.id.windowSpinner);
         windowSelectSpinner = (Spinner) findViewById(R.id.windowSelectSpinner);
         openValueSpinner1 = (Spinner) findViewById(R.id.openValueSpinner1);
         openValueSpinner2 = (Spinner) findViewById(R.id.openValueSpinner2);
-        openValueSpinner3 = (Spinner) findViewById(R.id.openValueSpinner3);
-        closeValueSpinner1 = (Spinner) findViewById(R.id.closeValueSpinner1);
-        closeValueSpinner2 = (Spinner) findViewById(R.id.closeValueSpinner2);
-        closeValueSpinner3 = (Spinner) findViewById(R.id.closeValueSpinner3);
 
-        windowButton = (Button) findViewById(R.id.windowButton);
-        windowStatusButton = (Button) findViewById(R.id.windowStatusButton);
-        sendButton = (Button) findViewById(R.id.sendButton);
+        rdGroup = (RadioGroup) findViewById(R.id.rdGroup);
+        rdButton1 = (RadioButton) findViewById(R.id.rdButton1);
+        rdButton2 = (RadioButton) findViewById(R.id.rdButton2);
 
-        rdOn = (RadioButton) findViewById(R.id.rdOn);
-        rdOff = (RadioButton) findViewById(R.id.rdOff);
+        button = (Button) findViewById(R.id.button1);
 
-        openCheck1 = (CheckBox) findViewById(R.id.openCheck1);
-        openCheck2 = (CheckBox) findViewById(R.id.openCheck2);
-        openCheck3 = (CheckBox) findViewById(R.id.openCheck3);
-        closeCheck1 = (CheckBox) findViewById(R.id.closeCheck1);
-        closeCheck2 = (CheckBox) findViewById(R.id.closeCheck2);
-        closeCheck3 = (CheckBox) findViewById(R.id.closeCheck3);
+        final ArrayAdapter<String> outterAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, select);;
 
-        ArrayAdapter<String> outtterAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, select);
-        windowSelectSpinner.setAdapter(outtterAdapter);
-
-        ArrayAdapter<String> ValueAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, value);
+        final ArrayAdapter<String> ValueAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, value);
         openValueSpinner1.setAdapter(ValueAdapter);
         openValueSpinner2.setAdapter(ValueAdapter);
-        openValueSpinner3.setAdapter(ValueAdapter);
-        closeValueSpinner1.setAdapter(ValueAdapter);
-        closeValueSpinner2.setAdapter(ValueAdapter);
-        closeValueSpinner3.setAdapter(ValueAdapter);
+
+        final Intent intent = getIntent();
+        windowDTO = (WindowDTO) intent.getSerializableExtra("window");
+
+
 
         RetrofitRequest retrofitRequest = RetrofitRequest.retrofit.create(RetrofitRequest.class);
         Call<List<WindowDTO>> call = retrofitRequest.getWindow();
@@ -126,26 +111,20 @@ public class WindowActivity extends AppCompatActivity {
                 windowSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, final int position, long id) {
-                        windowButton.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                selectPosition = position;
-                                windowSelectLayout.setVisibility(View.VISIBLE);
-                                if(windowAdapter.getItem(position).getStatus()==1)
-                                    windowStatus = "열려있음";
-                                else
-                                    windowStatus = "닫혀있음";
-                                windowStatusText.setText("창문 " + Integer.toString(windowAdapter.getItem(position).getId()) + "의 현재상태 : " + windowStatus);
 
-                                windowOnOffLayout.setVisibility(View.INVISIBLE);
-                                openLayout.setVisibility(View.INVISIBLE);
-                                closeLayout.setVisibility(View.INVISIBLE);
-                            }
-                        });
+                        selectPosition = position;
+                        windowSelectLayout.setVisibility(View.VISIBLE);
+                        if(windowAdapter.getItem(position).getStatus()==1)
+                            windowStatus = "열려있음";
+                        else
+                            windowStatus = "닫혀있음";
+                        windowStatusText.setText("창문 " + Integer.toString(windowAdapter.getItem(position).getId()) + "의 현재상태 : " + windowStatus);
+                        openLayout.setVisibility(View.VISIBLE);
                     }
-
                     @Override
                     public void onNothingSelected(AdapterView<?> parent) {
+                        windowSelectLayout.setVisibility(View.INVISIBLE);
+                        openLayout.setVisibility(View.INVISIBLE);
 
                     }
                 });
@@ -162,107 +141,141 @@ public class WindowActivity extends AppCompatActivity {
                 for (int i = 0; i < sensorArray.size(); i++) {
                     sensorAdapter.addItem(sensorArray.get(i));
                 }
+                windowSelectSpinner.setAdapter(outterAdapter);
             }
         });
 
         windowSelectSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, final int position, long id) {
-                windowStatusButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (position == 0) {
-                            windowOnOffLayout.setVisibility(View.VISIBLE);
-                            openLayout.setVisibility(View.VISIBLE);
-                            closeLayout.setVisibility(View.VISIBLE);
-                            openCheckLayout2.setVisibility(View.VISIBLE);
-                            openCheckLayout3.setVisibility(View.VISIBLE);
-                            closeCheckLayout2.setVisibility(View.VISIBLE);
-                            closeCheckLayout3.setVisibility(View.VISIBLE);
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                selectPosition2=position;
+                if (position == 0) {
+                    openLayout.setVisibility(View.VISIBLE);
 
-                            openCheck1.setText("내부온도");
-                            openEdit1.setText(Double.toString(sensorAdapter.getItem(selectPosition).getTemp()));
-                            openCheck2.setText("외부온도");
-                            openEdit2.setText(Double.toString(windowAdapter.getItem(selectPosition).getTemp()));
-                            openCheck3.setText("내부온도가 외부온도보다");
-                            closeCheck1.setText("내부온도");
-                            closeEdit1.setText(Double.toString(sensorAdapter.getItem(selectPosition).getTemp()));
-                            closeCheck2.setText("외부온도");
-                            closeEdit2.setText(Double.toString(windowAdapter.getItem(selectPosition).getTemp()));
-                            closeCheck3.setText("내부온도가 외부온도보다");
+                    rdButton1.setText("내부온도");
+                    editText.setText(Double.toString(sensorAdapter.getItem(selectPosition).getTemp()));
+                    rdButton2.setText("내부온도가 외부온도보다");
 
-                        } else if (position == 1) {
-                            windowOnOffLayout.setVisibility(View.VISIBLE);
-                            openLayout.setVisibility(View.VISIBLE);
-                            closeLayout.setVisibility(View.VISIBLE);
-                            openCheckLayout2.setVisibility(View.VISIBLE);
-                            openCheckLayout3.setVisibility(View.VISIBLE);
-                            closeCheckLayout2.setVisibility(View.VISIBLE);
-                            closeCheckLayout3.setVisibility(View.VISIBLE);
+                } else if (position == 1) {
+                    openLayout.setVisibility(View.VISIBLE);
 
-                            openCheck1.setText("내부습도");
-                            openEdit1.setText(Double.toString(sensorAdapter.getItem(selectPosition).getHumi()));
-                            openCheck2.setText("외부습도");
-                            openEdit2.setText(Double.toString(windowAdapter.getItem(selectPosition).getHumi()));
-                            openCheck3.setText("내부습도가 외부습도보다");
-                            closeCheck1.setText("내부습도");
-                            closeEdit1.setText(Double.toString(sensorAdapter.getItem(selectPosition).getHumi()));
-                            closeCheck2.setText("외부습도");
-                            closeEdit2.setText(Double.toString(windowAdapter.getItem(selectPosition).getHumi()));
-                            closeCheck3.setText("내부습도가 외부습도보다");
-                        } else if (position == 2) {
-                            windowOnOffLayout.setVisibility(View.VISIBLE);
-                            openLayout.setVisibility(View.VISIBLE);
-                            closeLayout.setVisibility(View.VISIBLE);
-                            openCheck1.setText("외부 강수량");
-                            openEdit1.setText(Double.toString(windowAdapter.getItem(selectPosition).getRain()));
-                            openCheckLayout2.setVisibility(View.INVISIBLE);
-                            openCheckLayout3.setVisibility(View.INVISIBLE);
-                            closeCheck1.setText("외부 강수량");
-                            closeEdit1.setText(Double.toString(windowAdapter.getItem(selectPosition).getRain()));
-                            closeCheckLayout2.setVisibility(View.INVISIBLE);
-                            closeCheckLayout3.setVisibility(View.INVISIBLE);
-                        } else if (position == 3) {
-                            windowOnOffLayout.setVisibility(View.VISIBLE);
-                            openLayout.setVisibility(View.VISIBLE);
-                            closeLayout.setVisibility(View.VISIBLE);
-                            openCheck1.setText("외부 미세먼지");
-                            openEdit1.setText(Double.toString(windowAdapter.getItem(selectPosition).getDust()));
-                            openCheckLayout2.setVisibility(View.INVISIBLE);
-                            openCheckLayout3.setVisibility(View.INVISIBLE);
-                            closeCheck1.setText("외부 미세먼지");
-                            closeEdit1.setText(Double.toString(windowAdapter.getItem(selectPosition).getDust()));
-                            closeCheckLayout2.setVisibility(View.INVISIBLE);
-                            closeCheckLayout3.setVisibility(View.INVISIBLE);
-                        } else {
-                            windowOnOffLayout.setVisibility(View.VISIBLE);
-                            openLayout.setVisibility(View.VISIBLE);
-                            closeLayout.setVisibility(View.VISIBLE);
-                            openCheck1.setText("내부 가스량");
-                            openEdit1.setText(Double.toString(sensorAdapter.getItem(selectPosition).getGas()));
-                            openCheckLayout2.setVisibility(View.INVISIBLE);
-                            openCheckLayout3.setVisibility(View.INVISIBLE);
-                            closeCheck1.setText("내부 가스량");
-                            closeEdit1.setText(Double.toString(sensorAdapter.getItem(selectPosition).getGas()));
-                            closeCheckLayout2.setVisibility(View.INVISIBLE);
-                            closeCheckLayout3.setVisibility(View.INVISIBLE);
-                        }
-                    }
-                });
+                    rdButton1.setText("내부습도");
+                    editText.setText(Double.toString(sensorAdapter.getItem(selectPosition).getHumi()));
+                    rdButton2.setText("내부습도가 외부습도보다");
 
+                } else if (position == 2) {
+                    openLayout.setVisibility(View.VISIBLE);
+
+                    rdButton1.setText("강수량 ");
+                    editText.setText(Double.toString(windowAdapter.getItem(selectPosition).getRain()));
+                    rdButton2.setVisibility(View.INVISIBLE);
+
+                } else if (position == 3) {
+                    openLayout.setVisibility(View.VISIBLE);
+
+                    rdButton1.setText("미세먼지 ");
+                    editText.setText(Double.toString(windowAdapter.getItem(selectPosition).getDust()));
+                    rdButton2.setVisibility(View.INVISIBLE);
+                }
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                windowOnOffLayout.setVisibility(View.INVISIBLE);
                 openLayout.setVisibility(View.INVISIBLE);
-                closeLayout.setVisibility(View.INVISIBLE);
             }
         });
-        sendButton.setOnClickListener(new View.OnClickListener() {
+        rdGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch(checkedId){
+                    case R.id.rdButton1:
+                        setting1.setVisibility(View.VISIBLE);
+                        setting2.setVisibility(View.INVISIBLE);
+                        break;
+                    case R.id.rdButton2:
+                        setting1.setVisibility(View.INVISIBLE);
+                        setting2.setVisibility(View.VISIBLE);
+                        break;
+                }
+            }
+        });
+        button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (selectPosition2 == 0) {
+                    if(rdButton1.isChecked()){
+                        temp_set = editText.getText().toString();
+                        if(openValueSpinner1.getSelectedItem().equals("이상")){
+                            tempOver=1;
+                        }
+                        else if(openValueSpinner1.getSelectedItem().equals("미만")){
+                            tempOver=2;
+                        }
+                    }
+                    else if(rdButton2.isChecked()){
+                        if(openValueSpinner1.getSelectedItem().equals("이상")){
+                            tempOver=3;
+                        }
+                        else if(openValueSpinner1.getSelectedItem().equals("미만")){
+                            tempOver=4;
+                        }
+                    }
+                } else if (selectPosition2 == 1) {
+                    if(rdButton1.isChecked()){
+                        humi_set = editText.getText().toString();
+                        if(openValueSpinner1.getSelectedItem().equals("이상")){
+                            humiOver=1;
+                        }
+                        else if(openValueSpinner1.getSelectedItem().equals("미만")){
+                            humiOver=2;
+                        }
+                    }
+                    else if(rdButton2.isChecked()){
+                        if(openValueSpinner1.getSelectedItem().equals("이상")){
+                            humiOver=3;
+                        }
+                        else if(openValueSpinner1.getSelectedItem().equals("미만")){
+                            humiOver=4;
+                        }
+                    }
+                } else if (selectPosition2 == 2) {if(rdButton1.isChecked()){
+                        rain_set = editText.getText().toString();
+                        if(openValueSpinner1.getSelectedItem().equals("이상")){
+                            rainOver=1;
+                        }
+                        else if(openValueSpinner1.getSelectedItem().equals("미만")){
+                            rainOver=2;
+                        }
+                    }
 
+                } else if (selectPosition2 == 3) {if(rdButton1.isChecked()){
+                        dust_set = editText.getText().toString();
+                        if(openValueSpinner1.getSelectedItem().equals("이상")){
+                            dustOver=1;
+                        }
+                        else if(openValueSpinner1.getSelectedItem().equals("미만")){
+                            dustOver=2;
+                        }
+                    }
+                }
+
+                RetrofitRequest retrofitRequest = RetrofitRequest.retrofit.create(RetrofitRequest.class);
+                windowDTO = new WindowDTO(
+                        windowAdapter.getItem(selectPosition).getId(),
+                        Double.parseDouble(temp_set),tempOver,
+                        Double.parseDouble(humi_set),humiOver,
+                        Double.parseDouble(rain_set),rainOver,
+                        Double.parseDouble(dust_set),dustOver
+                );
+                Call<Void> call = retrofitRequest.putWindow(windowDTO);
+                call.enqueue(new Callback<Void>() {
+                    @Override
+                    public void onResponse(Call<Void> call, Response<Void> response) {
+                    }
+                    @Override
+                    public void onFailure(Call<Void> call, Throwable t) {
+                    }
+                });
             }
         });
     }

@@ -4,6 +4,14 @@ public class CurtainDTO {
     private int id;
     private int status;
     private int lux;
+    private double lux_set;
+    private int lux_over;
+
+    public CurtainDTO(int id, double lux_set, int lux_over) {
+        this.id = id;
+        this.lux_set = lux_set;
+        this.lux_over = lux_over;
+    }
 
     public CurtainDTO(int id, int status, int lux) {
         this.id = id;

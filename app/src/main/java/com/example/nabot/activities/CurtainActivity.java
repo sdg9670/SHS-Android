@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -13,6 +14,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -28,26 +30,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
+import retrofit2.Callback;
 import retrofit2.Response;
 
 public class CurtainActivity extends AppCompatActivity {
+
     TextView curtainStatusText;
-    EditText openEdit1,closeEdit1;
-    Spinner curtainSpinner,curtainSelectSpinner,openValueSpinner1,closeValueSpinner1;
+    EditText editText;
+    Spinner curtainSpinner, curtainSelectSpinner, openValueSpinner1, openValueSpinner2;
 
-    Button curtainButton,curtainStatusButton;
-    LinearLayout curtainSelectLayout,curtainOnOffLayout,openLayout,closeLayout,openCheckLayout1,closeCheckLayout1;
+    LinearLayout curtainSelectLayout, openLayout, setting1;
 
-    RadioButton rdOn,rdOff;
-    CheckBox openCheck1,closeCheck1;
+    RadioButton rdButton1;
+    RadioGroup rdGroup;
+    Button button;
 
     String[] select = {"조도량"};
-    String[] value = {"이상","미만"};
-    String curtainStatus;
-    int selectPosition;
+    String[] value = {"이상", "미만"};
+    String curtainStatus, lux_set = "0.0";
+    int selectPosition, selectPosition2, luxOver = 0;
 
     List<CurtainDTO> curtainArray;
     CurtainSpinnerAdapter curtainAdapter;
+
+    CurtainDTO curtainDTO;
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
@@ -56,38 +62,28 @@ public class CurtainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_curtain);
 
         curtainSelectLayout = (LinearLayout) findViewById(R.id.curtainSelectLayout);
-        curtainOnOffLayout = (LinearLayout) findViewById(R.id.curtainOnOffLayout);
         openLayout = (LinearLayout) findViewById(R.id.openLayout);
-        closeLayout = (LinearLayout) findViewById(R.id.closeLayout);
-        openCheckLayout1 = (LinearLayout) findViewById(R.id.openCheckLayout1);
-        closeCheckLayout1 = (LinearLayout) findViewById(R.id.closeCheckLayout1);
+        setting1 = (LinearLayout) findViewById(R.id.setting1);
 
         curtainStatusText = (TextView) findViewById(R.id.curtainStatusText);
 
-        openEdit1 = (EditText) findViewById(R.id.openEdit1);
-        closeEdit1 = (EditText) findViewById(R.id.closeEdit1);
+        editText = (EditText) findViewById(R.id.editText);
 
         curtainSpinner = (Spinner) findViewById(R.id.curtainSpinner);
         curtainSelectSpinner = (Spinner) findViewById(R.id.curtainSelectSpinner);
         openValueSpinner1 = (Spinner) findViewById(R.id.openValueSpinner1);
-        closeValueSpinner1 = (Spinner) findViewById(R.id.closeValueSpinner1);
+        openValueSpinner2 = (Spinner) findViewById(R.id.openValueSpinner2);
 
-        curtainButton = (Button) findViewById(R.id.curtainButton);
-        curtainStatusButton = (Button) findViewById(R.id.curtainStatusButton);
+        rdGroup = (RadioGroup) findViewById(R.id.rdGroup);
+        rdButton1 = (RadioButton) findViewById(R.id.rdButton1);
 
-        rdOn = (RadioButton) findViewById(R.id.rdOn);
-        rdOff = (RadioButton) findViewById(R.id.rdOff);
+        button = (Button) findViewById(R.id.button1);
 
-        openCheck1 = (CheckBox) findViewById(R.id.openCheck1);
-        closeCheck1 = (CheckBox) findViewById(R.id.closeCheck1);
+        final ArrayAdapter<String> outterAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, select);
 
 
-        ArrayAdapter<String> outtterAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,select);
-        curtainSelectSpinner.setAdapter(outtterAdapter);
-
-        ArrayAdapter<String> ValueAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,value);
+        final ArrayAdapter<String> ValueAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,value);
         openValueSpinner1.setAdapter(ValueAdapter);
-        closeValueSpinner1.setAdapter(ValueAdapter);
 
         RetrofitRequest retrofitRequest = RetrofitRequest.retrofit.create(RetrofitRequest.class);
         Call<List<CurtainDTO>> call = retrofitRequest.getCurtain();
@@ -103,22 +99,15 @@ public class CurtainActivity extends AppCompatActivity {
                 curtainSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, final int position, long id) {
-                        curtainButton.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                selectPosition = position;
-                                curtainSelectLayout.setVisibility(View.VISIBLE);
-                                if(curtainAdapter.getItem(position).getStatus()==1)
-                                    curtainStatus = "열려있음";
-                                else
-                                    curtainStatus = "닫혀있음";
-                                curtainStatusText.setText("창문 " + Integer.toString(curtainAdapter.getItem(position).getId()) + "의 현재상태 : " + curtainStatus);
 
-                                curtainOnOffLayout.setVisibility(View.INVISIBLE);
-                                openLayout.setVisibility(View.INVISIBLE);
-                                closeLayout.setVisibility(View.INVISIBLE);
-                            }
-                        });
+                        selectPosition = position;
+                        curtainSelectLayout.setVisibility(View.VISIBLE);
+                        if(curtainAdapter.getItem(position).getStatus()==1)
+                            curtainStatus = "열려있음";
+                        else
+                            curtainStatus = "닫혀있음";
+                        curtainStatusText.setText("커튼 " + Integer.toString(curtainAdapter.getItem(position).getId()) + "의 현재상태 : " + curtainStatus);
+                        openLayout.setVisibility(View.INVISIBLE);
                     }
 
                     @Override
@@ -126,61 +115,70 @@ public class CurtainActivity extends AppCompatActivity {
 
                     }
                 });
-            }
-        });
-
-
-        curtainSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(final AdapterView<?> parent, View view, final int position, long id) {
-                // Toast.makeText(WindowActivity.this, spinnerAdapter.getItem(position).getId(), Toast.LENGTH_SHORT).show();
-                curtainButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        curtainSelectLayout.setVisibility(View.VISIBLE);
-
-                        curtainOnOffLayout.setVisibility(View.INVISIBLE);
-                        openLayout.setVisibility(View.INVISIBLE);
-                        closeLayout.setVisibility(View.INVISIBLE);
-                     }
-                });
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
+                curtainSelectSpinner.setAdapter(outterAdapter);
             }
         });
         curtainSelectSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, final int position, long id) {
-                curtainStatusButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if(position==0){
-                            curtainOnOffLayout.setVisibility(View.VISIBLE);
-                            openLayout.setVisibility(View.VISIBLE);
-                            closeLayout.setVisibility(View.VISIBLE);
+                selectPosition2=position;
 
-                            openCheck1.setText("햇빛량");
-                            openCheck1.setText("햇빛량"); openEdit1.setText(Integer.toString(curtainAdapter.getItem(position).getLux()));
-                            closeCheck1.setText("햇빛량");
-                            closeCheck1.setText("햇빛량"); closeEdit1.setText(Integer.toString(curtainAdapter.getItem(position).getLux()));
+                if(position==0){
+                    openLayout.setVisibility(View.VISIBLE);
 
-                        }
-                    }
-                });
-
+                    rdButton1.setText("햇빛량");
+                    editText.setText(Double.toString(curtainAdapter.getItem(selectPosition).getLux()));
+                }
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                curtainOnOffLayout.setVisibility(View.INVISIBLE);
                 openLayout.setVisibility(View.INVISIBLE);
-                closeLayout.setVisibility(View.INVISIBLE);
             }
         });
+        rdGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch(checkedId){
+                    case R.id.rdButton1:
+                        setting1.setVisibility(View.VISIBLE);
+                        break;
+                    case R.id.rdButton2:
+                        setting1.setVisibility(View.INVISIBLE);
+                        break;
+                }
+            }
+        });
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (selectPosition2 == 0) {
+                    if(rdButton1.isChecked()){
+                        lux_set = editText.getText().toString();
+                        if(openValueSpinner1.getSelectedItem().equals("이상")){
+                            luxOver=1;
+                        }
+                        else if(openValueSpinner1.getSelectedItem().equals("미만")){
+                            luxOver=2;
+                        }
+                    }
+                }
 
+                RetrofitRequest retrofitRequest = RetrofitRequest.retrofit.create(RetrofitRequest.class);
+                curtainDTO = new CurtainDTO(
+                        curtainAdapter.getItem(selectPosition).getId(),
+                        Double.parseDouble(lux_set),luxOver
+                );
+                Call<Void> call = retrofitRequest.putCurtain(curtainDTO);
+                call.enqueue(new Callback<Void>() {
+                    @Override
+                    public void onResponse(Call<Void> call, Response<Void> response) {
+                    }
+                    @Override
+                    public void onFailure(Call<Void> call, Throwable t) {
+                    }
+                });
+            }
+        });
     }
-
 }
+

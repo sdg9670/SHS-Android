@@ -32,6 +32,12 @@ public interface RetrofitRequest {
     @GET("window")
     Call<List<WindowDTO>> getWindow();
 
+    @PUT("window")
+    Call<Void> putWindow(@Body WindowDTO window);
+
+    @PUT("curtain")
+    Call<Void> putCurtain(@Body CurtainDTO curtain);
+
     @GET("sensor")
     Call<List<SensorDTO>> getSensor();
 
