@@ -1,42 +1,26 @@
 package com.example.nabot.adapter;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.example.nabot.R;
-import com.example.nabot.domain.ClientDTO;
-import com.example.nabot.domain.CommentDTO;
-import com.example.nabot.util.RetrofitRequest;
 
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-public class ImageViewAdapter extends PagerAdapter {
+public class ImageViewAdapterDown extends PagerAdapter {
     private Context mContext = null;
     List<Uri> filepath=new ArrayList<Uri>();
     public void setUri(List<Uri> filepath){
         this.filepath=filepath;
     }
-    public ImageViewAdapter(Context context) {
+    public ImageViewAdapterDown(Context context) {
         mContext = context;
     }
 

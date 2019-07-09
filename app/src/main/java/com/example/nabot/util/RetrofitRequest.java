@@ -1,10 +1,14 @@
 package com.example.nabot.util;
 
 
+import android.support.design.widget.BaseTransientBottomBar;
+
 import com.example.nabot.domain.BoardDTO;
 import com.example.nabot.domain.ClientDTO;
 import com.example.nabot.domain.CommentDTO;
 import com.example.nabot.domain.WritingDTO;
+import com.example.nabot.domain.WritingImageDTO;
+
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.Retrofit;
@@ -49,6 +53,13 @@ public interface RetrofitRequest {
 
     @PUT("comment")
     Call<Void> putComment(@Body CommentDTO comment);
+
+    @POST("writing_image")
+    Call<Void>postWriting_Image(@Body WritingImageDTO writingImageDTO);
+
+    @GET("writing_image")
+    Call<List<WritingImageDTO>> getWriting_Image(@Query("writing_id") int writing_id);
+
 
     public static final Retrofit retrofit = new Retrofit.Builder()
             .baseUrl("http://simddong.ga:5001/")

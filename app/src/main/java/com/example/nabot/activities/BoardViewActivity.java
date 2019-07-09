@@ -1,7 +1,9 @@
 package com.example.nabot.activities;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -13,14 +15,20 @@ import android.widget.TextView;
 
 import com.example.nabot.R;
 import com.example.nabot.adapter.CommentListAdapter;
+import com.example.nabot.adapter.ImageViewAdapter;
 import com.example.nabot.domain.BoardDTO;
 import com.example.nabot.domain.ClientDTO;
 import com.example.nabot.domain.CommentDTO;
 import com.example.nabot.domain.WritingDTO;
+import com.example.nabot.domain.WritingImageDTO;
 import com.example.nabot.util.RetrofitRequest;
 import com.example.nabot.util.RetrofitRetry;
+import com.google.android.gms.common.data.DataBufferRef;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -35,20 +43,19 @@ public class BoardViewActivity extends AppCompatActivity {
     Button board_view_modify_btn, board_view_delete_btn, commentinsert;
     WritingDTO writingDTO;
     ClientDTO clientDTO;
+    List<WritingImageDTO> writingImgArray = null;
 
     CommentDTO commentDTO;
     static final int BoardModifyActivitycode = 3;
     CommentListAdapter commentListAdapter;
+    ViewPager viewPager;
+    ImageViewAdapter imageViewAdapter;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == BoardModifyActivitycode) {
             if (resultCode == RESULT_OK) {
-                WritingDTO writingDTO2 = (WritingDTO) data.getSerializableExtra("writing");
-                writingDTO.setTitle(writingDTO2.getTitle());
-                writingDTO.setContent(writingDTO2.getContent());
-                board_view_text.setText(writingDTO.getContent());
-                board_view_title.setText(writingDTO.getTitle());
+                writingDTO = (WritingDTO) data.getSerializableExtra("writing");
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
                 board_writedate.setText(sdf.format(new Date()));
             } else {
@@ -62,9 +69,10 @@ public class BoardViewActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_boardview);
-
+        viewPager=findViewById(R.id.viewPager);
         board_view_title = findViewById(R.id.board_view_title);
         textView = findViewById(R.id.textView);
+        imageViewAdapter=new ImageViewAdapter(this);
         board_view_user = findViewById(R.id.board_view_writer);
         board_view_text = findViewById(R.id.board_view_text);
         board_writedate = findViewById(R.id.board_writedate);
@@ -88,7 +96,8 @@ public class BoardViewActivity extends AppCompatActivity {
         board_writedate.setText(writingDTO.getUpdate_time());
         board_view_user.setText(writingDTO.getWriter_name());
 
-        RetrofitRequest retrofitRequest = RetrofitRequest.retrofit.create(RetrofitRequest.class);
+
+        final RetrofitRequest retrofitRequest = RetrofitRequest.retrofit.create(RetrofitRequest.class);
         Call<List<CommentDTO>> call = retrofitRequest.getComment(writingDTO.getId());
         call.enqueue(new RetrofitRetry<List<CommentDTO>>(call) {
             @Override
@@ -99,6 +108,29 @@ public class BoardViewActivity extends AppCompatActivity {
                     commentListAdapter.addItem(i);
                 }
                 board_commentlist.setAdapter(commentListAdapter);
+                Call<List<WritingImageDTO>> call1 =retrofitRequest.getWriting_Image(writingDTO.getId());
+                call1.enqueue(new Callback<List<WritingImageDTO>>() {
+                    @Override
+                    public void onResponse(Call<List<WritingImageDTO>> call, Response<List<WritingImageDTO>> response) {
+                        writingImgArray=response.body();
+                        Log.e("asd", String.valueOf(writingImgArray));
+                        Log.e("asd",String.valueOf(writingImgArray.size()));
+                        List <Uri> filepath = new ArrayList<Uri>();
+                        if(writingImgArray != null){
+                            for(int i=0; i<writingImgArray.size() ; i++){
+                                filepath.add(Uri.parse(writingImgArray.get(i).getPath()));
+                                Log.e("filepath", String.valueOf(filepath.get(i)));
+                            }
+                            imageViewAdapter.setUri(filepath);
+                            viewPager.setAdapter(imageViewAdapter);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<WritingImageDTO>> call, Throwable t) {
+
+                    }
+                });
             }
         });
 

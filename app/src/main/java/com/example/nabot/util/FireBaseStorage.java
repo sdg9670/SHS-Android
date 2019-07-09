@@ -1,59 +1,30 @@
 package com.example.nabot.util;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.net.Uri;
-import android.provider.MediaStore;
-import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.nabot.R;
-import com.example.nabot.activities.BoardActivity;
-import com.example.nabot.domain.BoardDTO;
-import com.example.nabot.domain.ClientDTO;
-import com.example.nabot.domain.WritingDTO;
-import com.example.nabot.util.RetrofitRequest;
-import com.example.nabot.util.RetrofitRetry;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.storage.FileDownloadTask;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
-import java.util.concurrent.ExecutionException;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-import java.net.URI;
 
 public class FireBaseStorage {
     Uri filepath=null;//처음 단계에서 진행
     List<Uri> multifilepath=null;
+    String fulluri_single= null;
+    List<String> fulluri_multi=new ArrayList<String>();
     int writingid=0;
-    FirebaseAuth mAuth=FirebaseAuth.getInstance();
-    FirebaseUser mUser= mAuth.getCurrentUser();
 
-    public void  SingleUploadFile(Uri filepath , int writingid){
-
+    public Uri  SingleUploadFile(Uri filepath , int writingid){
        this.filepath=filepath;
        this.writingid=writingid;
        if(filepath != null) {
@@ -61,14 +32,14 @@ public class FireBaseStorage {
            int  randomValue=(int)(d_randomValue*10000000)+1;
            FirebaseStorage storage = FirebaseStorage.getInstance();
            String filename = Integer.toString(writingid)+"_"+Integer.toString(randomValue);
-           StorageReference storageReference = storage.getReferenceFromUrl("gs://nabot-application.appspot.com"
+           final StorageReference storageReference = storage.getReferenceFromUrl("gs://nabot-application.appspot.com"
            ).child("board/" + filename);
-
+            Log.e("fulluri",fulluri_single);
            storageReference.putFile(filepath)
                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                        @Override
                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
+                        fulluri_single=String.valueOf(storageReference.getDownloadUrl());
                        }
                    })
                    .addOnFailureListener(new OnFailureListener() {
@@ -82,41 +53,53 @@ public class FireBaseStorage {
                            double progress = (100 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
                        }
                    });
+           storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+               @Override
+               public void onSuccess(Uri uri) {
+               }
+           });
        }
+       return filepath;
    }
    public  void MultiUploadFile(List<Uri>multifilepath ,int writingid){
     this.multifilepath=multifilepath;
     this.writingid=writingid;
        Log.e("asd", String.valueOf(writingid));
-       for(int i=0; i<multifilepath.size(); i++){;
+       for(int i=0; i<multifilepath.size(); i++){
         if(multifilepath != null) {
-            Log.e("eee","aaaaaaaaaa");
             double d_randomValue=Math.random();
             int  randomValue=(int)(d_randomValue*10000000)+1;
-            FirebaseStorage storage = FirebaseStorage.getInstance();
+            final FirebaseStorage storage = FirebaseStorage.getInstance();
             String filename = Integer.toString(writingid)+"_"+Integer.toString(randomValue);
-            StorageReference storageReference = storage.getReferenceFromUrl("gs://nabot-application.appspot.com"
+             final StorageReference storageReference = storage.getReferenceFromUrl("gs://nabot-application.appspot.com"
             ).child("board/" + filename);
-            storageReference.putFile(multifilepath.get(i))
-                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                        }
-                    })
-                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                            double progress = (100 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-                        }
-                    });
+             UploadTask uploadTask=storageReference.putFile(multifilepath.get(i));
+             Task<Uri> uriTask= uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                 @Override
+                 public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                     if(!task.isSuccessful()){
+                         throw task.getException();
+                     }
+                     return storageReference.getDownloadUrl();
+                 }
+             }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                 @Override
+                 public void onComplete(@NonNull Task<Uri> task) {
+                     if(task.isSuccessful()){
+                         fulluri_multi.add(String.valueOf(task.getResult()));
+                         Log.e("fufff", String.valueOf(fulluri_multi));
+                     }
+                 }
+             });
         }
     }
+    }
+
+    public String Firebase_SingleUri(){
+        return  fulluri_single;
+    }
+    public List<String> Firebase_MultiUri(){
+        return fulluri_multi;
     }
 
    }
