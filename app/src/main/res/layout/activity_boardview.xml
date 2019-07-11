@@ -95,8 +95,8 @@
         android:padding="5dp"
         android:text="글내용 입니다" />
     <include
-        android:id="@+id/imgViewPager"
-        layout="=@layout/activity_imgview"
+        android:id="@+id/imgViewPager2"
+        layout="@layout/activity_imgview_view"
         android:layout_width="100dp"
         android:layout_height="100dp" />
     <ListView

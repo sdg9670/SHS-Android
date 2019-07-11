@@ -150,7 +150,6 @@ public class BoardInsertActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 0 && resultCode == RESULT_OK) {
-            //사진 여러장 클릭 시
             if (data.getClipData() != null) {
                 singleimg.setImageURI(null);
 

@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.example.nabot.R;
 import com.example.nabot.adapter.CommentListAdapter;
 import com.example.nabot.adapter.ImageViewAdapter;
+import com.example.nabot.adapter.ImageViewAdapterDown;
 import com.example.nabot.domain.BoardDTO;
 import com.example.nabot.domain.ClientDTO;
 import com.example.nabot.domain.CommentDTO;
@@ -49,8 +50,7 @@ public class BoardViewActivity extends AppCompatActivity {
     static final int BoardModifyActivitycode = 3;
     CommentListAdapter commentListAdapter;
     ViewPager viewPager;
-    ImageViewAdapter imageViewAdapter;
-
+    ImageViewAdapterDown imageViewAdapterDown;
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == BoardModifyActivitycode) {
@@ -69,10 +69,10 @@ public class BoardViewActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_boardview);
-        viewPager=findViewById(R.id.viewPager);
+        viewPager=findViewById(R.id.viewPager2);
         board_view_title = findViewById(R.id.board_view_title);
         textView = findViewById(R.id.textView);
-        imageViewAdapter=new ImageViewAdapter(this);
+        imageViewAdapterDown=new ImageViewAdapterDown(this);
         board_view_user = findViewById(R.id.board_view_writer);
         board_view_text = findViewById(R.id.board_view_text);
         board_writedate = findViewById(R.id.board_writedate);
@@ -113,16 +113,17 @@ public class BoardViewActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<List<WritingImageDTO>> call, Response<List<WritingImageDTO>> response) {
                         writingImgArray=response.body();
-                        Log.e("asd", String.valueOf(writingImgArray));
-                        Log.e("asd",String.valueOf(writingImgArray.size()));
-                        List <Uri> filepath = new ArrayList<Uri>();
+                        List <String> filepath = new ArrayList<String>();
                         if(writingImgArray != null){
                             for(int i=0; i<writingImgArray.size() ; i++){
-                                filepath.add(Uri.parse(writingImgArray.get(i).getPath()));
+                                filepath.add(writingImgArray.get(i).getPath());
                                 Log.e("filepath", String.valueOf(filepath.get(i)));
                             }
-                            imageViewAdapter.setUri(filepath);
-                            viewPager.setAdapter(imageViewAdapter);
+
+                            imageViewAdapterDown.imageViewAdapterDown(filepath,writingDTO.getId());
+                            Log.e("image", String.valueOf(imageViewAdapterDown.getCount()));
+                            viewPager.setAdapter(imageViewAdapterDown);
+                            viewPager.notify();
                         }
                     }
 

@@ -34,7 +34,7 @@ public class FireBaseStorage {
            String filename = Integer.toString(writingid)+"_"+Integer.toString(randomValue);
            final StorageReference storageReference = storage.getReferenceFromUrl("gs://nabot-application.appspot.com"
            ).child("board/" + filename);
-           fulluri_single=String.valueOf(storageReference);
+           fulluri_single="board/" + filename;
            storageReference.putFile(filepath)
                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                        @Override
@@ -66,7 +66,7 @@ public class FireBaseStorage {
             String filename = Integer.toString(writingid)+"_"+Integer.toString(randomValue);
              final StorageReference storageReference = storage.getReferenceFromUrl("gs://nabot-application.appspot.com"
             ).child("board/" + filename);
-            fulluri_multi.add(String.valueOf(storageReference));
+            fulluri_multi.add("board/" + filename);
             storageReference.putFile(multifilepath.get(i)).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {

@@ -4,13 +4,22 @@ import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.annotation.GlideModule;
 import com.example.nabot.R;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,17 +27,17 @@ import retrofit2.http.Url;
 
 public class ImageViewAdapterDown extends PagerAdapter {
     private Context mContext = null;
+    ImageView imageView;
     int writing_id=0;
-    List<Uri>  filepath=new ArrayList<Uri>();
+    List<String>  filepath=new ArrayList<String>();
     public ImageViewAdapterDown(Context context) {
         mContext = context;
     }
 
     public void imageViewAdapterDown(List<String> filepath , int writing_id){
         this.writing_id=writing_id;
-        for(int i=0; i<filepath.size();i++){
-            this.filepath.add(Uri.parse(filepath.get(i)));
-        }
+        this.filepath=filepath;
+
     }
 
     @Override
@@ -39,8 +48,28 @@ public class ImageViewAdapterDown extends PagerAdapter {
                 LayoutInflater inflater=(LayoutInflater)mContext
                         .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 view=inflater.inflate(R.layout.page,container,false);
-                ImageView imageView=(ImageView)view.findViewById(R.id.imgs);
-               imageView.setImageURI(filepath.get(position));
+                imageView=(ImageView)view.findViewById(R.id.imgs);
+            FirebaseStorage fs=FirebaseStorage.getInstance();
+            StorageReference ref=fs.getReference().child(filepath.get(position));
+            Log.e("asdasdasdasd", String.valueOf(filepath.get(position)));
+            ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    String imgUrl=uri.toString();
+                    Log.e("imgUrl",imgUrl);
+                    Glide.with(mContext)
+                            .load(imgUrl)
+                            .into(imageView)
+                    ;
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+
+                }
+            });
+
+
         }
     }
         container.addView(view);
@@ -61,5 +90,6 @@ public class ImageViewAdapterDown extends PagerAdapter {
     public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
         return (view == (View)object);
     }
+
 
 }
