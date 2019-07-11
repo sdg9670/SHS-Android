@@ -42,16 +42,16 @@ public class ImageViewAdapter extends PagerAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup container ,int position) {
-    View view = null;
-    if(mContext !=null){
-        if(filepath!=null){
+        View view = null;
+        if(mContext !=null){
+            if(filepath!=null){
                 LayoutInflater inflater=(LayoutInflater)mContext
                         .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 view=inflater.inflate(R.layout.page,container,false);
                 ImageView imageView=(ImageView)view.findViewById(R.id.imgs);
-               imageView.setImageURI(filepath.get(position));
+                imageView.setImageURI(filepath.get(position));
+            }
         }
-    }
         container.addView(view);
         return  view;
     }
