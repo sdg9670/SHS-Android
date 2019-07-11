@@ -20,6 +20,7 @@ import com.example.nabot.domain.WritingDTO;
 import com.example.nabot.domain.WritingImageDTO;
 import com.example.nabot.util.FireBaseStorage;
 import com.example.nabot.util.RetrofitRequest;
+import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,41 +89,52 @@ public class BoardInsertActivity extends AppCompatActivity {
                             @Override
                             public void onResponse(Call<List<WritingDTO>> call, Response<List<WritingDTO>> response) {
                                 writingDTO = response.body().get(0);
-                                RetrofitRequest retrofitRequest2 = RetrofitRequest.retrofit.create(RetrofitRequest.class);
                                 if (multiUri != null) {
-                                    fireBaseStorage.MultiUploadFile(multiUri, writingDTO.getId());
-                                    for(int i=0; i<multiUri.size();i++){
-                                        writingImageDTO=new WritingImageDTO(String.valueOf(fireBaseStorage.Firebase_MultiUri().get(i)),writingDTO.getId());
-                                        Call<Void>call4=retrofitRequest2.postWriting_Image(writingImageDTO);
-                                        call4.enqueue(new Callback<Void>() {
-                                            @Override
-                                            public void onResponse(Call<Void> call, Response<Void> response) {
-                                            }
-                                            @Override
-                                            public void onFailure(Call<Void> call, Throwable t) {
-                                            }
-                                        });
+                                    List<String>downloadUri=fireBaseStorage.MultiUploadFile(multiUri, writingDTO.getId());
+                                    List<WritingImageDTO> writingImages = new ArrayList<WritingImageDTO>();
+                                    for(int i=0; i<downloadUri.size();i++) {
+                                        Log.e("eff", downloadUri.get(i));
+                                        writingImages.add(new WritingImageDTO(String.valueOf(downloadUri.get(i)), writingDTO.getId()));
                                     }
+                                    Call<Void>call2=retrofitRequest.postWriting_Image_Multi(writingImages);
+                                    call2.enqueue(new Callback<Void>() {
+                                        @Override
+                                        public void onResponse(Call<Void> call, Response<Void> response) {
+                                            Intent intent2 = new Intent();
+                                            BoardInsertActivity.this.setResult(RESULT_OK, intent2);
+                                            BoardInsertActivity.this.finish();
+                                        }
+                                        @Override
+                                        public void onFailure(Call<Void> call, Throwable t) {
+                                            Intent intent2 = new Intent();
+                                            BoardInsertActivity.this.setResult(RESULT_OK, intent2);
+                                            BoardInsertActivity.this.finish();
+                                        }
+                                    });
                                 }
                                 if (singleuri != null) {
-                                    fireBaseStorage.SingleUploadFile(singleuri, writingDTO.getId());
-                                    writingImageDTO=new WritingImageDTO(fireBaseStorage.Firebase_SingleUri(),writingDTO.getId());
+                                     String downloadUri= fireBaseStorage.SingleUploadFile(singleuri, writingDTO.getId());
+                                    writingImageDTO=new WritingImageDTO(downloadUri,writingDTO.getId());
+                                    Log.e("ddd",downloadUri);
+                                    Log.e("aaa", String.valueOf(writingDTO.getId()));
+                                    Log.e("야야야", String.valueOf(writingImageDTO.getPath()));
                                     Call<Void>call3=retrofitRequest.postWriting_Image(writingImageDTO);
                                     call3.enqueue(new Callback<Void>() {
                                         @Override
                                         public void onResponse(Call<Void> call, Response<Void> response) {
-
+                                            Intent intent2 = new Intent();
+                                            BoardInsertActivity.this.setResult(RESULT_OK, intent2);
+                                            BoardInsertActivity.this.finish();
                                         }
 
                                         @Override
                                         public void onFailure(Call<Void> call, Throwable t) {
-
+                                            Intent intent2 = new Intent();
+                                            BoardInsertActivity.this.setResult(RESULT_OK, intent2);
+                                            BoardInsertActivity.this.finish();
                                         }
                                     });
                                 }
-                                Intent intent2 = new Intent();
-                                BoardInsertActivity.this.setResult(RESULT_OK, intent2);
-                                BoardInsertActivity.this.finish();
                             }
 
                             @Override
