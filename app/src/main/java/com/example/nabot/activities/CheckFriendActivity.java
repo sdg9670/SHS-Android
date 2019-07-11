@@ -26,8 +26,8 @@ import retrofit2.Response;
 
 public class CheckFriendActivity extends Activity {
     ClientDTO client;
+    ContactDTO contact;
     ContactDTO contactDTO;
-    Serializable contact;
 
     ListView checklist;
     Button agree, disagree;
@@ -42,21 +42,19 @@ public class CheckFriendActivity extends Activity {
 
         Intent intent = getIntent();
         client= (ClientDTO)intent.getSerializableExtra("client");
-        contact = intent.getSerializableExtra("contact");
+        contact = (ContactDTO) intent.getSerializableExtra("contact");
 
         RetrofitRequest retrofitRequest = RetrofitRequest.retrofit.create(RetrofitRequest.class);
-        Call<List<ContactDTO>> call = retrofitRequest.getFriendCheckList();
+        Call<List<ContactDTO>> call = retrofitRequest.getFriendCheckList(contact.getSomeid());
         call.enqueue(new RetrofitRetry<List<ContactDTO>>(call) {
             @Override
             public void onResponse(Call<List<ContactDTO>> call, Response<List<ContactDTO>> response) {
                 contactArray = response.body();
-                try {
+                if (contactArray != null) {
                     for (int i = 0; i < contactArray.size(); i++) {
                         checkadapter.addItem(contactArray.get(i));
                     }
                     checkadapter.notifyDataSetChanged();
-                }catch (NullPointerException e){
-                    e.printStackTrace();
                 }
             }
         });

@@ -55,7 +55,7 @@ public interface RetrofitRequest {
     Call<List<ClientDTO>> getFriendList();
 
     @GET("friendCheck")
-    Call<List<ContactDTO>> getFriendCheckList();
+    Call<List<ContactDTO>> getFriendCheckList(@Query("id") int id);
 
     @GET("friend")
     Call<List<ContactDTO>> getFriend();

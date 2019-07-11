@@ -43,9 +43,10 @@ public class FriendListAdapter extends BaseAdapter {
 
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.layout_friend_list, parent, false);
+        String item = view.toString();
         TextView nameText = (TextView) view.findViewById(R.id.nameText);
         ImageView profileImage = (ImageView) view.findViewById(R.id.profileimage);
-        nameText.setText(items.get(position).getSomeid());
+        nameText.setText(item);
         profileImage.setImageResource(R.mipmap.ic_launcher);
         return view;
     }
