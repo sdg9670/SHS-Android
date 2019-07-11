@@ -14,14 +14,21 @@ import com.example.nabot.R;
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.http.Url;
+
 public class ImageViewAdapterDown extends PagerAdapter {
     private Context mContext = null;
-    List<Uri> filepath=new ArrayList<Uri>();
-    public void setUri(List<Uri> filepath){
-        this.filepath=filepath;
-    }
+    int writing_id=0;
+    List<Uri>  filepath=new ArrayList<Uri>();
     public ImageViewAdapterDown(Context context) {
         mContext = context;
+    }
+
+    public void imageViewAdapterDown(List<String> filepath , int writing_id){
+        this.writing_id=writing_id;
+        for(int i=0; i<filepath.size();i++){
+            this.filepath.add(Uri.parse(filepath.get(i)));
+        }
     }
 
     @Override
