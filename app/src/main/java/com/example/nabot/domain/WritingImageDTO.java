@@ -12,6 +12,7 @@ public class WritingImageDTO implements Serializable {
         this.writing_id = writing_id;
     }
 
+
     public int getId() {
         return id;
     }

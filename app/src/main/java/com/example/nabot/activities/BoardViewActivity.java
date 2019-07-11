@@ -100,7 +100,7 @@ public class BoardViewActivity extends AppCompatActivity {
                 }
                 board_commentlist.setAdapter(commentListAdapter);
                 Call<List<WritingImageDTO>> call1 =retrofitRequest.getWriting_Image(writingDTO.getId());
-                call1.enqueue(new Callback<List<WritingImageDTO>>() {
+                call1.enqueue(new RetrofitRetry<List<WritingImageDTO>>(call1) {
                     @Override
                     public void onResponse(Call<List<WritingImageDTO>> call, Response<List<WritingImageDTO>> response) {
                         writingImgArray=response.body();
@@ -114,13 +114,7 @@ public class BoardViewActivity extends AppCompatActivity {
                             imageViewAdapterDown.imageViewAdapterDown(filepath,writingDTO.getId());
                             Log.e("image", String.valueOf(imageViewAdapterDown.getCount()));
                             viewPager.setAdapter(imageViewAdapterDown);
-                            imageViewAdapterDown.notifyDataSetChanged();
                         }
-                    }
-
-                    @Override
-                    public void onFailure(Call<List<WritingImageDTO>> call, Throwable t) {
-
                     }
                 });
             }

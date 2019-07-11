@@ -121,11 +121,13 @@ public class BoardActivity extends AppCompatActivity {
         listAdapter.clearItem();
         board = spinnerAdapter.getItem(position);
         RetrofitRequest retrofitRequest = RetrofitRequest.retrofit.create(RetrofitRequest.class);
+        Log.e("eff", "" + board.getId());
         Call<List<WritingDTO>> call = retrofitRequest.getWriting(board.getId());
         call.enqueue(new RetrofitRetry<List<WritingDTO>>(call) {
             @Override
             public void onResponse(Call<List<WritingDTO>> call, Response<List<WritingDTO>> response) {
                 writingArray = response.body();
+                Log.e("zxczxczxc", String.valueOf(writingArray.size()));
                 for (int i = 0; i < writingArray.size(); i++) {
                     listAdapter.addItem(writingArray.get(i));
                 }

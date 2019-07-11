@@ -20,6 +20,7 @@ import com.example.nabot.domain.WritingDTO;
 import com.example.nabot.domain.WritingImageDTO;
 import com.example.nabot.util.FireBaseStorage;
 import com.example.nabot.util.RetrofitRequest;
+import com.example.nabot.util.RetrofitRetry;
 import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
@@ -85,7 +86,7 @@ public class BoardInsertActivity extends AppCompatActivity {
                     public void onResponse(Call<Void> call, Response<Void> response) {
                         RetrofitRequest retrofitRequest1 = RetrofitRequest.retrofit.create(RetrofitRequest.class);
                         Call<List<WritingDTO>> call1 = retrofitRequest1.getlasat_writing();
-                        call1.enqueue(new Callback<List<WritingDTO>>() {
+                        call1.enqueue(new RetrofitRetry<List<WritingDTO>>(call1) {
                             @Override
                             public void onResponse(Call<List<WritingDTO>> call, Response<List<WritingDTO>> response) {
                                 writingDTO = response.body().get(0);
@@ -106,13 +107,10 @@ public class BoardInsertActivity extends AppCompatActivity {
                                         }
                                         @Override
                                         public void onFailure(Call<Void> call, Throwable t) {
-                                            Intent intent2 = new Intent();
-                                            BoardInsertActivity.this.setResult(RESULT_OK, intent2);
-                                            BoardInsertActivity.this.finish();
                                         }
                                     });
                                 }
-                                if (singleuri != null) {
+                                else if (singleuri != null) {
                                      String downloadUri= fireBaseStorage.SingleUploadFile(singleuri, writingDTO.getId());
                                     writingImageDTO=new WritingImageDTO(downloadUri,writingDTO.getId());
                                     Log.e("ddd",downloadUri);
@@ -129,16 +127,13 @@ public class BoardInsertActivity extends AppCompatActivity {
 
                                         @Override
                                         public void onFailure(Call<Void> call, Throwable t) {
-                                            Intent intent2 = new Intent();
-                                            BoardInsertActivity.this.setResult(RESULT_OK, intent2);
-                                            BoardInsertActivity.this.finish();
                                         }
                                     });
+                                } else {
+                                    Intent intent2 = new Intent();
+                                    BoardInsertActivity.this.setResult(RESULT_OK, intent2);
+                                    BoardInsertActivity.this.finish();
                                 }
-                            }
-
-                            @Override
-                            public void onFailure(Call<List<WritingDTO>> call, Throwable t) {
 
                             }
                         });
@@ -146,6 +141,8 @@ public class BoardInsertActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<Void> call, Throwable t) {
+                        Log.e("헤헿", "데데ㅔ데");
+                        this.onResponse(null, null);
                     }
                 });
             }

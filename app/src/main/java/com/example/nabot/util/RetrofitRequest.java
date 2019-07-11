@@ -57,6 +57,9 @@ public interface RetrofitRequest {
     @POST("writing_image")
     Call<Void>postWriting_Image(@Body WritingImageDTO writingImageDTO);
 
+    @POST("writing_image_multi")
+    Call<Void>postWriting_Image_Multi(@Body List<WritingImageDTO> writingImageDTO);
+
     @GET("writing_image")
     Call<List<WritingImageDTO>> getWriting_Image(@Query("writing_id") int writing_id);
 

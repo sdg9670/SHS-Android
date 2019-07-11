@@ -34,6 +34,8 @@ public class ImageViewAdapterDown extends PagerAdapter {
         mContext = context;
     }
 
+
+
     public void imageViewAdapterDown(List<String> filepath , int writing_id){
         this.writing_id=writing_id;
         this.filepath=filepath;
@@ -41,38 +43,40 @@ public class ImageViewAdapterDown extends PagerAdapter {
     }
 
     @Override
-    public Object instantiateItem(ViewGroup container ,int position) {
-    View view = null;
-    if(mContext !=null){
-        if(filepath!=null){
+    public Object instantiateItem(final ViewGroup container , int position) {
+        View view = null;
+        if(mContext !=null){
+            if(filepath!=null){
                 LayoutInflater inflater=(LayoutInflater)mContext
                         .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 view=inflater.inflate(R.layout.page,container,false);
                 imageView=(ImageView)view.findViewById(R.id.imgs);
-            FirebaseStorage fs=FirebaseStorage.getInstance();
-            StorageReference ref=fs.getReference().child(filepath.get(position));
-            Log.e("asdasdasdasd", String.valueOf(filepath.get(position)));
-            ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                @Override
-                public void onSuccess(Uri uri) {
-                    String imgUrl=uri.toString();
-                    Log.e("imgUrl",imgUrl);
-                    Glide.with(mContext)
-                            .load(imgUrl)
-                            .into(imageView)
-                    ;
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
 
-                }
-            });
+                FirebaseStorage fs=FirebaseStorage.getInstance();
+                StorageReference ref=fs.getReference().child(filepath.get(position));
+                Log.e("asdasdasdasd", String.valueOf(filepath.get(position)));
+                ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        String imgUrl=uri.toString();
+                        Log.e("imgUrl",imgUrl);
+                        Glide.with(mContext)
+                                .load(imgUrl)
+                                .into(imageView)
+                        ;
 
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
 
+                    }
+                });
+                container.addView(view);
+                notifyDataSetChanged();
+
+            }
         }
-    }
-        container.addView(view);
         return  view;
     }
 
