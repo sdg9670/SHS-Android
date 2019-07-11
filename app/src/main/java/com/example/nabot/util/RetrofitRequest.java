@@ -4,6 +4,7 @@ package com.example.nabot.util;
 import com.example.nabot.domain.BoardDTO;
 import com.example.nabot.domain.ClientDTO;
 import com.example.nabot.domain.CommentDTO;
+import com.example.nabot.domain.ContactDTO;
 import com.example.nabot.domain.WritingDTO;
 import java.util.List;
 import retrofit2.Call;
@@ -47,8 +48,31 @@ public interface RetrofitRequest {
     @PUT("comment")
     Call<Void> putComment(@Body CommentDTO comment);
 
+
+    //친구추가-요청
+
+    @GET("friendList")
+    Call<List<ClientDTO>> getFriendList();
+
+    @GET("friendCheck")
+    Call<List<ContactDTO>> getFriendCheckList();
+
+    @GET("friend")
+    Call<List<ContactDTO>> getFriend();
+
+    @POST("friend")
+    Call<List<ContactDTO>> postFriend(@Body ContactDTO contact);
+
+    @PUT("friend")
+    Class<List<ContactDTO>> getFriendCheck(@Query("someid") int someid);
+
+    @DELETE("friend")
+    Class<String> delFreind(@Query("someid") int someid);
+
+
+
     public static final Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl("http://simddong.ga:5001/")
+            .baseUrl("http://simddong.ga:5002/")
             .addConverterFactory(GsonConverterFactory.create())
             .build();
 }

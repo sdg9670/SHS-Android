@@ -73,7 +73,7 @@ public class BoardActivity extends AppCompatActivity {
                 spinnerAdapter = new BoardSpinnerAdapter(BoardActivity.this);
                 for (int i = 0; i < boardArray.size(); i++) {
                     spinnerAdapter.addItem(boardArray.get(i));
-                };
+                }
                 boardspinner.setAdapter(spinnerAdapter);
                 boardspinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
@@ -93,7 +93,8 @@ public class BoardActivity extends AppCompatActivity {
         writingList.setAdapter(listAdapter);
 
         writingList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            Intent intent = new Intent(getApplicationContext(), BoardViewActivity.class);@Override
+            Intent intent = new Intent(getApplicationContext(), BoardViewActivity.class);
+            @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                     Bundle bundle=new Bundle();
                     bundle.putSerializable("client",client);
