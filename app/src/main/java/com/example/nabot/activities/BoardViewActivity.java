@@ -1,7 +1,6 @@
 package com.example.nabot.activities;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -9,13 +8,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-
 import com.example.nabot.R;
 import com.example.nabot.adapter.CommentListAdapter;
-import com.example.nabot.adapter.ImageViewAdapter;
 import com.example.nabot.adapter.ImageViewAdapterDown;
 import com.example.nabot.domain.BoardDTO;
 import com.example.nabot.domain.ClientDTO;
@@ -24,15 +20,10 @@ import com.example.nabot.domain.WritingDTO;
 import com.example.nabot.domain.WritingImageDTO;
 import com.example.nabot.util.RetrofitRequest;
 import com.example.nabot.util.RetrofitRetry;
-import com.google.android.gms.common.data.DataBufferRef;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -123,7 +114,7 @@ public class BoardViewActivity extends AppCompatActivity {
                             imageViewAdapterDown.imageViewAdapterDown(filepath,writingDTO.getId());
                             Log.e("image", String.valueOf(imageViewAdapterDown.getCount()));
                             viewPager.setAdapter(imageViewAdapterDown);
-                            viewPager.notify();
+                            imageViewAdapterDown.notifyDataSetChanged();
                         }
                     }
 

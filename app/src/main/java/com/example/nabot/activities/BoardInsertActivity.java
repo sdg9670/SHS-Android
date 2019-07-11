@@ -20,7 +20,6 @@ import com.example.nabot.domain.WritingDTO;
 import com.example.nabot.domain.WritingImageDTO;
 import com.example.nabot.util.FireBaseStorage;
 import com.example.nabot.util.RetrofitRequest;
-import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -92,10 +91,8 @@ public class BoardInsertActivity extends AppCompatActivity {
                                 RetrofitRequest retrofitRequest2 = RetrofitRequest.retrofit.create(RetrofitRequest.class);
                                 if (multiUri != null) {
                                     fireBaseStorage.MultiUploadFile(multiUri, writingDTO.getId());
-                                    Log.e("asd", String.valueOf(fireBaseStorage.Firebase_MultiUri().size()));
                                     for(int i=0; i<multiUri.size();i++){
                                         writingImageDTO=new WritingImageDTO(String.valueOf(fireBaseStorage.Firebase_MultiUri().get(i)),writingDTO.getId());
-                                        Log.e("writingImageDTO", String.valueOf(writingImageDTO));
                                         Call<Void>call4=retrofitRequest2.postWriting_Image(writingImageDTO);
                                         call4.enqueue(new Callback<Void>() {
                                             @Override
@@ -110,9 +107,6 @@ public class BoardInsertActivity extends AppCompatActivity {
                                 if (singleuri != null) {
                                     fireBaseStorage.SingleUploadFile(singleuri, writingDTO.getId());
                                     writingImageDTO=new WritingImageDTO(fireBaseStorage.Firebase_SingleUri(),writingDTO.getId());
-                                   Log.e("ddd",fireBaseStorage.Firebase_SingleUri());
-                                   Log.e("aaa", String.valueOf(writingDTO.getId()));
-                                    Log.e("야야야", String.valueOf(writingImageDTO.getPath()));
                                     Call<Void>call3=retrofitRequest.postWriting_Image(writingImageDTO);
                                     call3.enqueue(new Callback<Void>() {
                                         @Override
