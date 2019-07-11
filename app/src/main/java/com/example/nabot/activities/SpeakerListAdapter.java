@@ -12,32 +12,35 @@ import android.support.annotation.Nullable;
 
 
 public class SpeakerListAdapter extends BaseAdapter {
-    ArrayList<String> items = new ArrayList<String>();
+    ArrayList<String> items1 = new ArrayList<String>();
+    ArrayList<String> items2 = new ArrayList<String>();
     public SpeakerListAdapter() {
 
-        items.add("배현지");
-        items.add("최우석스피커");
-        items.add("유명선스피커");
-        items.add("ㅂㅈ");
-        items.add("ㄹㄹ");
-        items.add("ㅎㅎ");
-        items.add("ㅍㅍ");
-        items.add("ㅇㄴ");
-        items.add("ㄴㅇ");
-        items.add("ㅁㅂ");
-        items.add("ㅂㅈㄷㄳ");
-        items.add("ㅎㅅㅈ슈ㅠ");
+        items1.add("배현지오바");
+        items1.add("최우석스피커");
+        items1.add("유명선스피커");
+        items1.add("심동근스피커");
+        items1.add("전우탁스피커");
+        items1.add("오승미스피커");
+        items2.add("on");
+        items2.add("off");
+        items2.add("off");
+        items2.add("off");
+        items2.add("on");
+        items2.add("on");
     }
 
     @Override
     public int getCount() {
-        return items.size();
+        return items1.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return items.get(position);
+        return items1.get(position);
+
     }
+
 
     @Override
     public long getItemId(int position) {
@@ -48,11 +51,12 @@ public class SpeakerListAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.speakerlistview, parent, false);
-        String item = items.get(position);
+        String item1 = items1.get(position);
+        String item2 = items2.get(position);
         TextView nameText = (TextView) view.findViewById(R.id.speakername);
         TextView onText = (TextView) view.findViewById(R.id.speakeron);
-        nameText.setText(item);
-        onText.setText(item);
+        nameText.setText(item1);
+        onText.setText(item2);
         return view;
     }
 }
