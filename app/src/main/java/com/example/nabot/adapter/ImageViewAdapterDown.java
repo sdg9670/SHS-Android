@@ -11,7 +11,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.Registry;
 import com.bumptech.glide.annotation.GlideModule;
+import com.bumptech.glide.module.AppGlideModule;
 import com.example.nabot.R;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -19,9 +21,11 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import retrofit2.http.Url;
 
@@ -55,23 +59,10 @@ public class ImageViewAdapterDown extends PagerAdapter {
                 FirebaseStorage fs=FirebaseStorage.getInstance();
                 StorageReference ref=fs.getReference().child(filepath.get(position));
                 Log.e("asdasdasdasd", String.valueOf(filepath.get(position)));
-                ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        String imgUrl=uri.toString();
-                        Log.e("imgUrl",imgUrl);
-                        Glide.with(mContext)
-                                .load(imgUrl)
-                                .into(imageView)
-                        ;
-
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-
-                    }
-                });
+                Glide.with(mContext)
+                        .load(ref)
+                        .into(imageView)
+                ;
                 container.addView(view);
                 notifyDataSetChanged();
 
