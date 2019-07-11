@@ -34,7 +34,6 @@ public class BoardActivity extends AppCompatActivity {
     static final int BoardViewActivityCode = 2;
 
     List<BoardDTO> boardArray = null;
-
     List<WritingDTO> writingArray = null;
     Spinner boardspinner;
     BoardSpinnerAdapter spinnerAdapter;
@@ -59,7 +58,6 @@ public class BoardActivity extends AppCompatActivity {
         setContentView(R.layout.activity_board);
         boardinsertbtn = (Button) findViewById(R.id.boardinsertbtn);
 
-        //유저
         Intent intent=getIntent();
         client= (ClientDTO)intent.getSerializableExtra("client");
 
