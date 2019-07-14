@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.PopupMenu;
@@ -22,6 +23,7 @@ import com.example.nabot.util.RetrofitRetry;
 import java.util.List;
 
 import retrofit2.Call;
+import retrofit2.Callback;
 import retrofit2.Response;
 
 public class FriendListActivity extends Activity {
@@ -32,6 +34,8 @@ public class FriendListActivity extends Activity {
     ListView friendList;
     Button button, button2;
     final FriendListAdapter ladapter = new FriendListAdapter();
+    
+
     ContactDTO name;
 
     @Override
@@ -46,7 +50,6 @@ public class FriendListActivity extends Activity {
         //유저
         Intent intent=getIntent();
         client= (ClientDTO)intent.getSerializableExtra("client");
-        contact = (ContactDTO) intent.getSerializableExtra("contact");
         Log.e("intentcheck","1234");
 
         RetrofitRequest retrofitRequest = RetrofitRequest.retrofit.create(RetrofitRequest.class);
@@ -73,7 +76,6 @@ public class FriendListActivity extends Activity {
                 //유저정보
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("client", client);
-                bundle.putSerializable("contact",contact);
                 intent.putExtras(bundle);
                 startActivityForResult(intent,REQUEST_TEST);
             }
@@ -91,40 +93,53 @@ public class FriendListActivity extends Activity {
             }
         });
         friendList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String item = String.valueOf(parent.getItemAtPosition(position));
-                Intent intent1 = new Intent();
                 Bundle bundle=new Bundle();
                 bundle.putSerializable("client",client);
-                bundle.putSerializable("contact", contact.toString());
-                intent1.putExtras(bundle);
-                Intent intent = new Intent(FriendListActivity.this, ChatActivity.class);
-                startActivityForResult(intent1,1);
-                startActivity(intent);
+                bundle.putSerializable("contact", contactArray.get(position));
+                intent.putExtras(bundle);
+                startActivityForResult(intent,1);
             }
         });
 
         friendList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
-                final PopupMenu popupMenu = new PopupMenu(FriendListActivity.this, view);
-                getMenuInflater().inflate(R.menu.menu_friend_list, popupMenu.getMenu());
+            final PopupMenu popupMenu = new PopupMenu(FriendListActivity.this, view);
+            getMenuInflater().inflate(R.menu.menu_friend_list, popupMenu.getMenu());
 
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        switch (item.getItemId()) {
-                            case R.id.delete:
-                                Toast.makeText(FriendListActivity.this, ladapter.getItem(position) + " 삭제", Toast.LENGTH_SHORT).show();
-                                ladapter.removeItem(position);
-                                break;
-                        }
-                        return false;
+            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.delete:
+                        Toast.makeText(FriendListActivity.this, ladapter.getItem(position) + " 삭제", Toast.LENGTH_SHORT).show();
+
+                        RetrofitRequest retrofitRequest = RetrofitRequest.retrofit.create(RetrofitRequest.class);
+                        Call<Void> call = retrofitRequest.delFreind(contact.getSomeid());
+                        call.enqueue(new Callback<Void>() {
+                            @Override
+                            public void onResponse(Call<Void> call, Response<Void> response) {
+                                Intent intent = new Intent();
+                                FriendListActivity.this.setResult(RESULT_OK, intent);
+                                FriendListActivity.this.finish();
+                            }
+                            @Override
+                            public void onFailure(Call<Void> call, Throwable t) {
+                                Intent intent = new Intent();
+                                FriendListActivity.this.setResult(RESULT_OK, intent);
+                                FriendListActivity.this.finish();
+                            }
+                        });
+                        break;
                     }
-                });
-                popupMenu.show();
-                return true;
+                return false;
+                }
+            });
+            popupMenu.show();
+            return true;
             }
         });
 
