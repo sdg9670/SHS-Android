@@ -7,6 +7,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.example.nabot.R;
+import com.example.nabot.domain.ClientDTO;
 import com.example.nabot.domain.ContactDTO;
 import com.example.nabot.domain.WritingDTO;
 
@@ -14,6 +15,9 @@ import java.util.ArrayList;
 
 public class FriendListAdapter extends BaseAdapter {
     public ArrayList<ContactDTO> items = new ArrayList<ContactDTO>();
+    ClientDTO client;
+    ContactDTO contact;
+    public ArrayList<String> item = new ArrayList<>();
 
     public FriendListAdapter() {
 
@@ -46,7 +50,7 @@ public class FriendListAdapter extends BaseAdapter {
         String item = view.toString();
         TextView nameText = (TextView) view.findViewById(R.id.nameText);
         ImageView profileImage = (ImageView) view.findViewById(R.id.profileimage);
-        nameText.setText(item);
+        nameText.setText(String.valueOf(items.get(position).getSomeid()));
         profileImage.setImageResource(R.mipmap.ic_launcher);
         return view;
     }

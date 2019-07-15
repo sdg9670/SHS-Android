@@ -6,6 +6,8 @@ import com.example.nabot.domain.ClientDTO;
 import com.example.nabot.domain.CommentDTO;
 import com.example.nabot.domain.ContactDTO;
 import com.example.nabot.domain.WritingDTO;
+import com.google.android.gms.common.api.Api;
+
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.Retrofit;
@@ -52,22 +54,22 @@ public interface RetrofitRequest {
     //친구추가-요청
 
     @GET("friendList")
-    Call<List<ClientDTO>> getFriendList();
+    Call<List<ContactDTO>> getFriend();
 
     @GET("friendCheck")
-    Call<List<ContactDTO>> getFriendCheckList(@Query("id") int id);
+    Call<List<ContactDTO>> getFriendCheckList();
 
     @GET("friend")
-    Call<List<ContactDTO>> getFriend();
+    Call<List<ClientDTO>> getFriendList();
 
     @POST("friend")
     Call<List<ContactDTO>> postFriend(@Body ContactDTO contact);
 
     @PUT("friend")
-    Class<List<ContactDTO>> getFriendCheck(@Query("someid") int someid);
+    Call<List<ContactDTO>> getFriendCheck(@Query("someid") int someid);
 
     @DELETE("friend")
-    Class<String> delFreind(@Query("someid") int someid);
+    Call<Void> delFreind(@Query("someid") int someid);
 
 
 

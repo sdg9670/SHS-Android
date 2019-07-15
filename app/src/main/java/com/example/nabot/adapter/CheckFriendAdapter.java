@@ -5,14 +5,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.nabot.R;
 import com.example.nabot.domain.ContactDTO;
-
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 
 public class CheckFriendAdapter extends BaseAdapter {
@@ -38,11 +34,6 @@ public class CheckFriendAdapter extends BaseAdapter {
         return position;
     }
 
-    public void removeItem(int position) {
-        items.remove(position);
-        super.notifyDataSetChanged();
-    }
-
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
@@ -51,11 +42,18 @@ public class CheckFriendAdapter extends BaseAdapter {
         idText = (TextView) view.findViewById(R.id.idText);
         agree = view.findViewById(R.id.agree);
         disagree = view.findViewById(R.id.disagree);
-        idText.setText(items.get(position).getSomeid());
+        idText.setText(String.valueOf(items.get(position).getSomeid()));
         return view;
     }
 
     public void addItem(ContactDTO contact) {
         items.add(contact);
+    }
+
+    public void removeItem(ContactDTO contact){
+        items.remove(contact);
+    }
+
+    public void removeItem() {
     }
 }

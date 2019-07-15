@@ -10,9 +10,6 @@ import android.widget.TextView;
 import com.example.nabot.R;
 import com.example.nabot.domain.ClientDTO;
 import com.example.nabot.domain.ContactDTO;
-import com.google.android.gms.common.api.Api;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -35,14 +32,16 @@ public class AddFriendAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.layout_add_friend, parent, false);
-        TextView idText = view.findViewById(R.id.idText);
-        idText.setText((items.get(position).getId())+(items.get(position).getName()));
+        final TextView idText = view.findViewById(R.id.idText);
+        idText.setText(String.valueOf(items.get(position).getId()));
+
         return view;
     }
     public void addItem(ClientDTO client) {
         items.add(client);
     }
+
+
 }

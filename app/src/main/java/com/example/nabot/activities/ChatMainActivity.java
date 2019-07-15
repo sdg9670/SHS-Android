@@ -15,11 +15,10 @@ public class ChatMainActivity extends AppCompatActivity {
     ClientDTO client;
     Button LoginButton;
     TextView IdText;
-    private Intent in;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_chatmain);
         LoginButton = (Button) findViewById(R.id.loginButton);
         IdText = (TextView) findViewById(R.id.idText);
 

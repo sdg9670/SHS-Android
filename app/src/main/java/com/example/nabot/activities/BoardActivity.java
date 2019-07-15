@@ -96,11 +96,11 @@ public class BoardActivity extends AppCompatActivity {
             Intent intent = new Intent(getApplicationContext(), BoardViewActivity.class);
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                    Bundle bundle=new Bundle();
-                    bundle.putSerializable("client",client);
-                    bundle.putSerializable("writing", listAdapter.getItem(position));
-                    bundle.putSerializable("board",board);
-                    intent.putExtras(bundle);
+                Bundle bundle=new Bundle();
+                bundle.putSerializable("client",client);
+                bundle.putSerializable("writing", listAdapter.getItem(position));
+                bundle.putSerializable("board",board);
+                intent.putExtras(bundle);
                 startActivityForResult(intent,BoardViewActivityCode);
 
             }

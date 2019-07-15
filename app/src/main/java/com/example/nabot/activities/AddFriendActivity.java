@@ -3,8 +3,6 @@ package com.example.nabot.activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,6 +18,7 @@ import com.example.nabot.util.RetrofitRetry;
 import java.util.List;
 
 import retrofit2.Call;
+import retrofit2.Callback;
 import retrofit2.Response;
 
 public class AddFriendActivity extends Activity {
@@ -55,8 +54,6 @@ public class AddFriendActivity extends Activity {
                      contactArray = response.body();
                      for (int i = 0; i < contactArray.size(); i++) {
                          friendAdapter.addItem(contactArray.get(i));
-                         client.setId(client.getId());
-                         client.setName(client.getName());
                      }
                      friendAdapter.notifyDataSetChanged();
                  }
@@ -64,21 +61,29 @@ public class AddFriendActivity extends Activity {
          });
         friendlistview.setAdapter(friendAdapter);
         friendAdapter.notifyDataSetChanged();
+
         if(agree != null) {
             agree.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    RetrofitRequest retrofitRequest = RetrofitRequest.retrofit.create(RetrofitRequest.class);
-                    Class<List<ContactDTO>> call = retrofitRequest.getFriendCheck(contact.getSomeid());
-                    Intent intent = new Intent(getApplicationContext(), FriendListActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("client", client);
-                    bundle.putSerializable("contact", contact);
-                    intent.putExtras(bundle);
-                    Log.e("Friendid", addFriend.getText().toString());
-                    //intent.putExtra("friendName",addFriend.getText().toString());
-                    setResult(RESULT_OK, intent);
-                    finish();
+                RetrofitRequest retrofitRequest = RetrofitRequest.retrofit.create(RetrofitRequest.class);
+                contact = new ContactDTO(contact.getSomeid(), client.getName());
+                Call<List<ContactDTO>> call = retrofitRequest.postFriend(contact);
+                call.enqueue(new Callback<List<ContactDTO>>() {
+                    @Override
+                    public void onResponse(Call<List<ContactDTO>> call, Response<List<ContactDTO>> response) {
+                        contact=response.body().get(0);
+                        friendAdapter.notifyDataSetChanged();
+                        friendlistview.setAdapter(friendAdapter);
+                        Intent intent2 = new Intent();
+                        AddFriendActivity.this.setResult(RESULT_OK, intent2);
+                        AddFriendActivity.this.finish();
+                    }
+                    @Override
+                    public void onFailure(Call<List<ContactDTO>> call, Throwable t) {
+
+                    }
+                });
                 }
             });
         }

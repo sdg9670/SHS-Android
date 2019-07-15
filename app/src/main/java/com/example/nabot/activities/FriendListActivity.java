@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.PopupMenu;
@@ -34,9 +33,6 @@ public class FriendListActivity extends Activity {
     ListView friendList;
     Button button, button2;
     final FriendListAdapter ladapter = new FriendListAdapter();
-    
-
-    ContactDTO name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +72,7 @@ public class FriendListActivity extends Activity {
                 //유저정보
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("client", client);
+                bundle.putSerializable("contact",contact);
                 intent.putExtras(bundle);
                 startActivityForResult(intent,REQUEST_TEST);
             }
@@ -148,8 +145,6 @@ public class FriendListActivity extends Activity {
     public void onActivityResult(int requestCode, int resultCode, Intent data){
         if(requestCode==REQUEST_TEST){
             if(resultCode == RESULT_OK){
-                String friendName = data.getStringExtra("friendName");
-                ladapter.items.add(name);
                 friendList.setAdapter(ladapter);
                 ladapter.notifyDataSetChanged();
             }else{
