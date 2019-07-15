@@ -12,7 +12,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import com.example.nabot.R;
 import com.example.nabot.adapter.CommentListAdapter;
-import com.example.nabot.adapter.ImageViewAdapterDown;
+import com.example.nabot.adapter.ImageViewAdapter;
 import com.example.nabot.domain.BoardDTO;
 import com.example.nabot.domain.ClientDTO;
 import com.example.nabot.domain.CommentDTO;
@@ -41,7 +41,7 @@ public class BoardViewActivity extends AppCompatActivity {
     static final int BoardModifyActivitycode = 3;
     CommentListAdapter commentListAdapter;
     ViewPager viewPager;
-    ImageViewAdapterDown imageViewAdapterDown;
+    ImageViewAdapter imageViewAdapter;
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == BoardModifyActivitycode) {
@@ -63,7 +63,7 @@ public class BoardViewActivity extends AppCompatActivity {
         viewPager=findViewById(R.id.viewPager2);
         board_view_title = findViewById(R.id.board_view_title);
         textView = findViewById(R.id.textView);
-        imageViewAdapterDown=new ImageViewAdapterDown(this);
+        imageViewAdapter =new ImageViewAdapter(this);
         board_view_user = findViewById(R.id.board_view_writer);
         board_view_text = findViewById(R.id.board_view_text);
         board_writedate = findViewById(R.id.board_writedate);
@@ -71,7 +71,7 @@ public class BoardViewActivity extends AppCompatActivity {
         board_view_delete_btn = findViewById(R.id.board_view_delete_btn);
         comment_text = findViewById(R.id.comment_text);
         commentinsert = findViewById(R.id.commentinsert);
-        board_commentlist = findViewById(R.id.board_commentlist);;
+        board_commentlist = findViewById(R.id.board_commentlist);
         final Intent intent = getIntent();
         writingDTO = (WritingDTO) intent.getSerializableExtra("writing");
         final BoardDTO boardDTO = (BoardDTO) intent.getSerializableExtra("board");
@@ -111,9 +111,9 @@ public class BoardViewActivity extends AppCompatActivity {
                                 Log.e("filepath", String.valueOf(filepath.get(i)));
                             }
 
-                            imageViewAdapterDown.imageViewAdapterDown(filepath,writingDTO.getId());
-                            Log.e("image", String.valueOf(imageViewAdapterDown.getCount()));
-                            viewPager.setAdapter(imageViewAdapterDown);
+                            imageViewAdapter.imageViewAdapterDown(filepath,writingDTO.getId());
+                            Log.e("image", String.valueOf(imageViewAdapter.getCount()));
+                            viewPager.setAdapter(imageViewAdapter);
                         }
                     }
                 });

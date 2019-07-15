@@ -1,58 +1,61 @@
 package com.example.nabot.adapter;
 
-import android.app.Dialog;
 import android.content.Context;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.nabot.R;
-import com.example.nabot.domain.ClientDTO;
-import com.example.nabot.domain.CommentDTO;
-import com.example.nabot.util.RetrofitRequest;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class ImageViewAdapter extends PagerAdapter {
     private Context mContext = null;
-    List<Uri> filepath=new ArrayList<Uri>();
-    public void setUri(List<Uri> filepath){
-        this.filepath=filepath;
-    }
+    ImageView imageView;
+    int writing_id=0;
+    List<String>  filepath=new ArrayList<String>();
     public ImageViewAdapter(Context context) {
         mContext = context;
     }
 
+
+
+    public void imageViewAdapterDown(List<String> filepath , int writing_id){
+        this.writing_id=writing_id;
+        this.filepath=filepath;
+
+    }
+
     @Override
-    public Object instantiateItem(ViewGroup container ,int position) {
+    public Object instantiateItem(final ViewGroup container , int position) {
         View view = null;
         if(mContext !=null){
             if(filepath!=null){
                 LayoutInflater inflater=(LayoutInflater)mContext
                         .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                view=inflater.inflate(R.layout.page,container,false);
-                ImageView imageView=(ImageView)view.findViewById(R.id.imgs);
-                imageView.setImageURI(filepath.get(position));
+                view=inflater.inflate(R.layout.flate_imageview,container,false);
+                imageView=(ImageView)view.findViewById(R.id.imgs);
+
+                FirebaseStorage fs=FirebaseStorage.getInstance();
+                StorageReference ref=fs.getReference().child(filepath.get(position));
+                Log.e("asdasdasdasd", String.valueOf(filepath.get(position)));
+                Glide.with(mContext)
+                        .load(ref)
+                        .into(imageView)
+                ;
+                container.addView(view);
+                notifyDataSetChanged();
+
             }
         }
-        container.addView(view);
         return  view;
     }
 
@@ -70,5 +73,6 @@ public class ImageViewAdapter extends PagerAdapter {
     public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
         return (view == (View)object);
     }
+
 
 }
