@@ -1,8 +1,6 @@
 package com.example.nabot.util;
 
 
-import android.support.design.widget.BaseTransientBottomBar;
-
 import com.example.nabot.domain.BoardDTO;
 import com.example.nabot.domain.ClientDTO;
 import com.example.nabot.domain.CommentDTO;
@@ -21,8 +19,17 @@ import retrofit2.http.PUT;
 import retrofit2.http.Query;
 
 public interface RetrofitRequest {
+    @PUT("updatefcm")
+    Call<Void> updateFCM(@Body ClientDTO client);
+
+    @GET("logincheck")
+    Call<List<ClientDTO>> loginCheck(@Query("id_name") String id_name, @Query("password") String password);
+
     @GET("client")
     Call<List<ClientDTO>> getClient(@Query("id") int id);
+
+    @PUT("client")
+    Call<Void> putClient(@Body ClientDTO client);
 
     @GET("board")
     Call<List<BoardDTO>> getBoard();

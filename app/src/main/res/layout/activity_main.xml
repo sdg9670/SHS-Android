@@ -15,74 +15,96 @@
         android:layout_marginBottom="50dp"
         app:srcCompat="@drawable/logo" />
 
-    <Button
-        android:id="@+id/boardButton"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/button"
-        android:layout_margin="10dp"
-        android:textColor="#FFFFFF"
-        android:textSize="15sp"
-        android:text="게시판" />
+        android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/button"
-        android:layout_margin="10dp"
-        android:textColor="#FFFFFF"
-        android:textSize="15sp"
-        android:text="채팅(제작중)" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
 
-    <Button
-        android:id="@+id/speakerButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/button"
-        android:layout_margin="10dp"
-        android:textColor="#FFFFFF"
-        android:textSize="15sp"
-        android:text="스피커" />
+            <Button
+                android:id="@+id/boardButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="@drawable/button"
+                android:text="게시판"
+                android:textColor="#FFFFFF"
+                android:textSize="15sp" />
 
-    <Button
-        android:id="@+id/doorlockButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/button"
-        android:layout_margin="10dp"
-        android:textColor="#FFFFFF"
-        android:textSize="15sp"
-        android:text="도어락" />
+            <Button
+                android:id="@+id/button2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="@drawable/button"
+                android:text="채팅(제작중)"
+                android:textColor="#FFFFFF"
+                android:textSize="15sp" />
 
-    <Button
-        android:id="@+id/windowButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/button"
-        android:layout_margin="10dp"
-        android:textColor="#FFFFFF"
-        android:textSize="15sp"
-        android:text="창문" />
+            <Button
+                android:id="@+id/windowButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="@drawable/button"
+                android:text="창문"
+                android:textColor="#FFFFFF"
+                android:textSize="15sp" />
 
-    <Button
-        android:id="@+id/curtainButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/button"
-        android:layout_margin="10dp"
-        android:textColor="#FFFFFF"
-        android:textSize="15sp"
-        android:text="커튼" />
+            <Button
+                android:id="@+id/curtainButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="@drawable/button"
+                android:text="커튼"
+                android:textColor="#FFFFFF"
+                android:textSize="15sp" />
 
-    <Button
-        android:id="@+id/statueButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/button"
-        android:layout_margin="10dp"
-        android:textColor="#FFFFFF"
-        android:textSize="15sp"
-        android:text="집안 상태" />
+            <Button
+                android:id="@+id/statueButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="@drawable/button"
+                android:text="집안 상태"
+                android:textColor="#FFFFFF"
+                android:textSize="15sp" />
+
+            <Button
+                android:id="@+id/speakerButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="@drawable/button"
+                android:text="스피커"
+                android:textColor="#FFFFFF"
+                android:textSize="15sp" />
+
+            <Button
+                android:id="@+id/doorlockButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="@drawable/button"
+                android:text="도어락"
+                android:textColor="#FFFFFF"
+                android:textSize="15sp" />
+
+            <Button
+                android:id="@+id/logout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="@drawable/button"
+                android:text="로그아웃"
+                android:textColor="#FFFFFF"
+                android:textSize="15sp" />
+
+        </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>
