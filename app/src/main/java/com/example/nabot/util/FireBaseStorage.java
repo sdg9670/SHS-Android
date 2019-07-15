@@ -18,32 +18,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FireBaseStorage {
-    Uri filepath = null;
     List<Uri> multifilepath = null;
     int writingid = 0;
 
-    public String SingleUploadFile(Uri filepath, int writingid) {
-        this.filepath = filepath;
-        this.writingid = writingid;
-        String downloadUri_single = null;
-        if (filepath != null) {
-            double d_randomValue = Math.random();
-            int randomValue = (int) (d_randomValue * 10000000) + 1;
-            FirebaseStorage storage = FirebaseStorage.getInstance();
-            String filename = Integer.toString(writingid) + "_" + Integer.toString(randomValue);
-            downloadUri_single = "board/" + filename;
-            final StorageReference storageReference = storage.getReferenceFromUrl("gs://nabot-application.appspot.com"
-            ).child(downloadUri_single);
-            storageReference.putFile(filepath)
-                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        }
-                    });
-        }
-        return downloadUri_single;
-    }
-   public  List<String> MultiUploadFile(List<Uri>multifilepath ,int writingid){
+
+   public  List<String> UploadFile(List<Uri>multifilepath ,int writingid){
     this.multifilepath=multifilepath;
     this.writingid=writingid;
        List<String> downloadUri_multi=new ArrayList<String>();

@@ -44,7 +44,7 @@ public class ImageListAdapter extends BaseAdapter {
         items=new ArrayList<String>();;
         for(int i=0; i <imagel.size(); i++){
             Log.e("itemsss",imagel.get(i).toString().substring(imagel.get(i).toString().lastIndexOf("/")));
-            items.add(imagel.get(i).toString().substring(imagel.get(i).toString().lastIndexOf("/")));
+            items.add(imagel.get(i).toString());
         }
         Log.e("a123sd", String.valueOf(imagel));
         Log.e("asdads",String.valueOf(imagel.size()));
@@ -62,6 +62,19 @@ public class ImageListAdapter extends BaseAdapter {
         return items.get(position);
     }
 
+    public  List<Uri> getItem(){
+       List<Uri> uri=new ArrayList<Uri>();
+       if(items!=null) {
+           for (int i = 0; i < items.size(); i++) {
+               uri.add(Uri.parse(items.get(i)));
+           }
+           return uri;
+       }
+       else{
+           return  null;
+       }
+    }
+
     @Override
     public long getItemId(int position) {
         return position;
@@ -76,8 +89,7 @@ public class ImageListAdapter extends BaseAdapter {
         View view = inflater.inflate(R.layout.flate_imageinsert, parent, false);
         TextView imagename = (TextView) view.findViewById(R.id.imagename);
         ImageButton imagecancel= (ImageButton)view.findViewById(R.id.imagecancel);
-        imagename.setText(String.valueOf(items.get(position)));
-        Log.e("asd", String.valueOf(imagel.get(position)));
+        imagename.setText(String.valueOf(items.get(position)).substring(items.get(position).lastIndexOf("/")));
         imagecancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

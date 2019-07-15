@@ -18,6 +18,7 @@ import com.example.nabot.domain.WritingDTO;
 import com.example.nabot.domain.WritingImageDTO;
 import com.example.nabot.util.FireBaseStorage;
 import com.example.nabot.util.RetrofitRequest;
+import com.example.nabot.util.RetrofitRetry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +34,6 @@ public class BoardInsertActivity extends AppCompatActivity {
     WritingDTO writingDTO;
     ImageListAdapter imageListAdapter;
     Button button_img;
-    int imgcount = 0;
     ListView imagelist;
     FireBaseStorage fireBaseStorage = new FireBaseStorage();
     WritingImageDTO writingImageDTO;
@@ -74,7 +74,38 @@ public class BoardInsertActivity extends AppCompatActivity {
                 call.enqueue(new Callback<Void>() {
                     @Override
                     public void onResponse(Call<Void> call, Response<Void> response) {
-
+                        RetrofitRequest retrofitRequest1 = RetrofitRequest.retrofit.create(RetrofitRequest.class);
+                        Call<List<WritingDTO>> call1=retrofitRequest1.getlasat_writing();
+                        call1.enqueue(new RetrofitRetry<List<WritingDTO>>(call1) {
+                            @Override
+                            public void onResponse(Call<List<WritingDTO>> call, Response<List<WritingDTO>> response) {
+                                writingDTO = response.body().get(0);
+                                if(imageListAdapter.getItem()!=null){
+                                    List<String>downloadUri=fireBaseStorage.UploadFile(imageListAdapter.getItem(), writingDTO.getId());
+                                    List<WritingImageDTO> writingImages = new ArrayList<WritingImageDTO>();
+                                    for(int i=0; i<downloadUri.size();i++) {
+                                        Log.e("eff", downloadUri.get(i));
+                                        writingImages.add(new WritingImageDTO(String.valueOf(downloadUri.get(i)), writingDTO.getId()));
+                                    }
+                                    Call<Void>call2=retrofitRequest.postWriting_Image_Multi(writingImages);
+                                    call2.enqueue(new Callback<Void>() {
+                                        @Override
+                                        public void onResponse(Call<Void> call, Response<Void> response) {
+                                            Intent intent2 = new Intent();
+                                            BoardInsertActivity.this.setResult(RESULT_OK, intent2);
+                                            BoardInsertActivity.this.finish();
+                                        }
+                                        @Override
+                                        public void onFailure(Call<Void> call, Throwable t) {
+                                        }
+                                    });
+                                }else{
+                                    Intent intent2 = new Intent();
+                                    BoardInsertActivity.this.setResult(RESULT_OK, intent2);
+                                    BoardInsertActivity.this.finish();
+                                }
+                            }
+                        });
                     }
 
                     @Override
@@ -89,9 +120,12 @@ public class BoardInsertActivity extends AppCompatActivity {
         protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 0 && resultCode == RESULT_OK) {
-                if (data.getClipData() != null) {
-                    imgcount = data.getClipData().getItemCount();
-                    for (int i = 0; i < imgcount; i++) {
+            imguri=imageListAdapter.getItem();
+            if(imguri ==null){
+                imguri=new ArrayList<Uri>();
+            }
+            if (data.getClipData() != null) {
+                for (int i = 0; i < data.getClipData().getItemCount(); i++) {
                         imguri.add((Uri) data.getClipData().getItemAt(i).getUri());
                     }
                 }
@@ -101,6 +135,6 @@ public class BoardInsertActivity extends AppCompatActivity {
             imageListAdapter.addItem(imguri);
                 Log.e("imguri", String.valueOf(imguri.size()));
             imagelist.setAdapter(imageListAdapter);
-            }
+        }
         }
     }

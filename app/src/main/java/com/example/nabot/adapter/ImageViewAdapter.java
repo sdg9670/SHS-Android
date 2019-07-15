@@ -43,18 +43,18 @@ public class ImageViewAdapter extends PagerAdapter {
                         .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 view=inflater.inflate(R.layout.flate_imageview,container,false);
                 imageView=(ImageView)view.findViewById(R.id.imgs);
-
                 FirebaseStorage fs=FirebaseStorage.getInstance();
                 StorageReference ref=fs.getReference().child(filepath.get(position));
+                Log.e("sssssssssssssss", String.valueOf(filepath.size()));
                 Log.e("asdasdasdasd", String.valueOf(filepath.get(position)));
                 Glide.with(mContext)
                         .load(ref)
                         .into(imageView)
                 ;
                 container.addView(view);
-                notifyDataSetChanged();
-
             }
+            notifyDataSetChanged();
+
         }
         return  view;
     }
