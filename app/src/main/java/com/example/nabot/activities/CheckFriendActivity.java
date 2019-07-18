@@ -29,9 +29,10 @@ import retrofit2.Response;
 public class CheckFriendActivity extends Activity {
     ClientDTO client;
     ContactDTO contact;
+    private int REQUEST_TEST = 1;
 
     ListView checklist;
-    Button agree, disagree, backBtn;
+    Button agree, disagree, backBtn, button, button2;
     List<ContactDTO> contactArray = null;
     final CheckFriendAdapter checkadapter = new CheckFriendAdapter();
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,10 +42,36 @@ public class CheckFriendActivity extends Activity {
         agree = findViewById(R.id.agree);
         disagree = findViewById(R.id.disagree);
         backBtn = findViewById(R.id.backBtn);
-
+        button = findViewById(R.id.button);
+        button2 = findViewById(R.id.button2);
         Intent intent = getIntent();
         client= (ClientDTO)intent.getSerializableExtra("client");
         contact = (ContactDTO) intent.getSerializableExtra("contact");
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), AddFriendActivity.class);
+                //유저정보
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("client", client);
+                bundle.putSerializable("contact",contact);
+                intent.putExtras(bundle);
+                startActivityForResult(intent,REQUEST_TEST);
+            }
+        });
+        button2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), CheckFriendActivity.class);
+                //유저정보
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("client", client);
+                bundle.putSerializable("contact",contact);
+                intent.putExtras(bundle);
+                startActivityForResult(intent,REQUEST_TEST);
+            }
+        });
 
         if(checkadapter != null) {
             RetrofitRequest retrofitRequest = RetrofitRequest.retrofit.create(RetrofitRequest.class);
@@ -63,44 +90,7 @@ public class CheckFriendActivity extends Activity {
             });
             checklist.setAdapter(checkadapter);
         }
-        if(agree!=null) {
-            agree.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    RetrofitRequest retrofitRequest2 = RetrofitRequest.retrofit.create(RetrofitRequest.class);
-                    contact = new ContactDTO(contact.getSomeid(), client.getName());
-                    Call<List<ContactDTO>> call = retrofitRequest2.getFriendCheck(contact.getSomeid());
-                    call.enqueue(new Callback<List<ContactDTO>>() {
-                        @Override
-                        public void onResponse(Call<List<ContactDTO>> call, Response<List<ContactDTO>> response) {
-                            checkadapter.removeItem(contact);
-                            contact = response.body().get(0);
-                            checkadapter.notifyDataSetChanged();
-                            checklist.setAdapter(checkadapter);
-                            Intent intent2 = new Intent();
-                            CheckFriendActivity.this.setResult(RESULT_OK, intent2);
-                            CheckFriendActivity.this.finish();
-                        }
-                        @Override
-                        public void onFailure(Call<List<ContactDTO>> call, Throwable t) {
 
-                        }
-                    });
-                }
-            });
-        }
-        if(disagree!=null) {
-            disagree.setOnClickListener(new AdapterView.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    checkadapter.idText.setVisibility(View.GONE);
-                    checkadapter.agree.setVisibility(View.GONE);
-                    checkadapter.disagree.setVisibility(View.GONE);
-                    Intent intent = new Intent(getApplicationContext(), FriendListActivity.class);
-                    startActivityForResult(intent, 1);
-                }
-            });
-        }
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -108,6 +98,15 @@ public class CheckFriendActivity extends Activity {
             }
         });
     }
-
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
+        if(requestCode==REQUEST_TEST){
+            if(resultCode == RESULT_OK){
+                checklist.setAdapter(checkadapter);
+                checkadapter.notifyDataSetChanged();
+            }else{
+                Toast.makeText(this, "실패", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 
 }

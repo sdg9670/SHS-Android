@@ -90,7 +90,6 @@ public class BoardInsertActivity extends AppCompatActivity {
                         BoardInsertActivity.this.setResult(RESULT_OK, intent2);
                         BoardInsertActivity.this.finish();
                     }
-
                     @Override
                     public void onFailure(Call<List<WritingDTO>> call, Throwable t) {
 

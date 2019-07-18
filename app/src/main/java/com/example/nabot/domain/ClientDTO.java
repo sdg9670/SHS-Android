@@ -2,14 +2,17 @@ package com.example.nabot.domain;
 
 import java.io.Serializable;
 
-public class ClientDTO implements Serializable {
+public class ClientDTO extends ContactDTO implements Serializable {
     private int id;
     private String password;
     private String name;
     private int ho_id;
     private int dong_id;
-    public ClientDTO(){
-
+    public ClientDTO(int id, String s, int ho_id, int dong_id){
+        this.id = id;
+        this.name = name;
+        this.ho_id = ho_id;
+        this.dong_id = dong_id;
     }
 
     public ClientDTO(int id, String password, String name, int ho_id, int dong_id) {
@@ -18,6 +21,10 @@ public class ClientDTO implements Serializable {
         this.name = name;
         this.ho_id = ho_id;
         this.dong_id = dong_id;
+    }
+
+    public ClientDTO() {
+
     }
 
     public int getId() {

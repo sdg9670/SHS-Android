@@ -9,6 +9,10 @@ public class ContactDTO implements Serializable {
     private int newmsg;
 
 
+    public ContactDTO(int someid) {
+    }
+
+
     public int getClientid(){
         return clientid;
     }
@@ -45,7 +49,7 @@ public class ContactDTO implements Serializable {
         this.someid = someid;
         this.newmsg = newmsg;
     }
-    public ContactDTO(int clientid, String name) {
+    public ContactDTO() {
 
     }
 }

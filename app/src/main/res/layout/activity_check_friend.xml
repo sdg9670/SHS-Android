@@ -8,6 +8,32 @@
     android:orientation="vertical"
     tools:context=".activities.CheckFriendActivity">
     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="친구추가" />
+
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="친구확인" />
+
+        <Button
+            android:id="@+id/button3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="채팅" />
+    </LinearLayout>
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
         <TextView
@@ -24,12 +50,12 @@
         <ListView
             android:id="@+id/checklist"
             android:layout_width="match_parent"
-            android:layout_height="383dp" />
+            android:layout_height="match_parent" />
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="109dp"
-        android:layout_height="121dp">
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
         <Button
             android:id="@+id/backBtn"

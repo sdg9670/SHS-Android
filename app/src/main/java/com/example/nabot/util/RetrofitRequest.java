@@ -65,8 +65,8 @@ public interface RetrofitRequest {
     @POST("friend")
     Call<List<ContactDTO>> postFriend(@Body ContactDTO contact);
 
-    @PUT("friend")
-    Call<List<ContactDTO>> getFriendCheck(@Query("someid") int someid);
+    @PUT("friendCheck")
+    Call<Void> putFriendCheck(@Query("someid") int someid);
 
     @DELETE("friend")
     Call<Void> delFreind(@Query("someid") int someid);

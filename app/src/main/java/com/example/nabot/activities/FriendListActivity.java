@@ -57,9 +57,10 @@ public class FriendListActivity extends Activity {
                 if(contactArray!=null) {
                     for (int i = 0; i < contactArray.size(); i++) {
                         ladapter.addItem(contactArray.get(i));
+
                     }
-                    ladapter.notifyDataSetChanged();
                 }
+                ladapter.notifyDataSetChanged();
             }
         });
         friendList.setAdapter(ladapter);
