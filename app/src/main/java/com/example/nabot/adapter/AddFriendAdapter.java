@@ -26,8 +26,8 @@ public class AddFriendAdapter extends BaseAdapter {
     public ArrayList<ClientDTO> items = new ArrayList<ClientDTO>();
     List<ContactDTO> contactList = null;
     Button agree;
-    CheckFriendAdapter checkadapter = new CheckFriendAdapter();
-    CheckFriendActivity checkFriendActivity = new CheckFriendActivity();
+    final CheckFriendAdapter checkadapter = new CheckFriendAdapter();
+    final CheckFriendActivity checkFriendActivity = new CheckFriendActivity();
     final Intent intent2 = new Intent();
     final ClientDTO client= (ClientDTO)intent2.getSerializableExtra("client");
     final ContactDTO contactDTO= (ContactDTO)intent2.getSerializableExtra("contact");
@@ -69,9 +69,9 @@ public class AddFriendAdapter extends BaseAdapter {
                         public void onResponse(Call<List<ContactDTO>> call, Response<List<ContactDTO>> response) {
                             Intent intent2 = new Intent();
                             Bundle bundle = new Bundle();
-                            getContactDTO(client);
-                            
-                            notifyDataSetChanged();
+                            checkFriendActivity.checklist.setAdapter(checkadapter);
+                            checkadapter.addItem(contactDTO);
+                            checkadapter.notifyDataSetChanged();
                             bundle.putSerializable("contact", contactDTO);
                             intent2.putExtras(bundle);
                         }

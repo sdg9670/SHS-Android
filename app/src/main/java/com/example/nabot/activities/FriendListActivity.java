@@ -46,6 +46,7 @@ public class FriendListActivity extends Activity {
         //유저
         Intent intent=getIntent();
         client= (ClientDTO)intent.getSerializableExtra("client");
+        contact = (ContactDTO)intent.getSerializableExtra("contact");
         Log.e("intentcheck","1234");
 
         RetrofitRequest retrofitRequest = RetrofitRequest.retrofit.create(RetrofitRequest.class);

@@ -8,14 +8,10 @@ public class ContactDTO implements Serializable {
     private int someid;
     private int newmsg;
 
-
-    public ContactDTO(int someid) {
-    }
-
-
     public int getClientid(){
         return clientid;
     }
+
     public void setClientid(int clientid) {
         this.clientid = clientid;
     }
@@ -43,7 +39,7 @@ public class ContactDTO implements Serializable {
     public void setNewmsg(int newmsg) {
         this.newmsg = newmsg;
     }
-    public ContactDTO(int id, int clientId, int newmsg) {
+    public ContactDTO(int id, int clientId) {
         this.id = this.id;
         this.clientid = clientid;
         this.someid = someid;

@@ -37,10 +37,6 @@ public class FriendListAdapter extends BaseAdapter {
         return position;
     }
 
-    public void removeItem(int position) {
-        items.remove(position);
-        super.notifyDataSetChanged();
-    }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -57,5 +53,9 @@ public class FriendListAdapter extends BaseAdapter {
 
     public void addItem(ContactDTO contact) {
         items.add(contact);
+    }
+
+    public void removeItem(int position) {
+        items.remove(position);
     }
 }

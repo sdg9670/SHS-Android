@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.example.nabot.R;
 import com.example.nabot.adapter.AddFriendAdapter;
+import com.example.nabot.adapter.CheckFriendAdapter;
 import com.example.nabot.domain.ClientDTO;
 import com.example.nabot.domain.ContactDTO;
 import com.example.nabot.util.RetrofitRequest;
@@ -29,7 +30,10 @@ public class AddFriendActivity extends Activity {
     Button agree,cenBtn, button, button2;
     ListView friendlistview;
     List<ClientDTO> contactArray = null;
+    List<ContactDTO> contactarr = null;
     final AddFriendAdapter friendAdapter = new AddFriendAdapter();
+    final CheckFriendActivity checkFriendActivity =  new CheckFriendActivity();
+    final CheckFriendAdapter checkadapter = new CheckFriendAdapter();
     private int REQUEST_TEST = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,24 +101,24 @@ public class AddFriendActivity extends Activity {
                 @Override
                 public void onClick(View v) {
                 RetrofitRequest retrofitRequest2 = RetrofitRequest.retrofit.create(RetrofitRequest.class);
-                contact = new ContactDTO(contact.getSomeid());
+                contact = new ContactDTO(client.getId(), contact.getSomeid());
                 Call<List<ContactDTO>> call = retrofitRequest2.postFriend(contact);
                 call.enqueue(new Callback<List<ContactDTO>>() {
                     @Override
                     public void onResponse(Call<List<ContactDTO>> call, Response<List<ContactDTO>> response) {
-                        contact=response.body().get(0);
+                        contactarr = response.body();
+                        contactarr.add(contact);
                         contact.setSomeid(client.getId());
-                        friendAdapter.addItem(client);
-                        friendAdapter.notifyDataSetChanged();
-                        Intent intent2 = new Intent();
-                        AddFriendActivity.this.setResult(RESULT_OK, intent2);
-                        AddFriendActivity.this.finish();
+                        checkadapter.addItem(contact);
+                        checkadapter.notifyDataSetChanged();
                     }
-                    @Override
+                     @Override
                     public void onFailure(Call<List<ContactDTO>> call, Throwable t) {
 
                     }
                 });
+                    checkFriendActivity.checklist.setAdapter(checkadapter);
+                    checkadapter.notifyDataSetChanged();
                 }
             });
         }

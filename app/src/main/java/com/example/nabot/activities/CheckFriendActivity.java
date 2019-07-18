@@ -30,11 +30,10 @@ public class CheckFriendActivity extends Activity {
     ClientDTO client;
     ContactDTO contact;
     private int REQUEST_TEST = 1;
-
-    ListView checklist;
+    public ListView checklist;
     Button agree, disagree, backBtn, button, button2;
     List<ContactDTO> contactArray = null;
-    final CheckFriendAdapter checkadapter = new CheckFriendAdapter();
+    public CheckFriendAdapter checkadapter = new CheckFriendAdapter();
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_check_friend);
