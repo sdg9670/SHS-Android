@@ -1,8 +1,6 @@
 package com.example.nabot.util;
 
 
-import android.support.design.widget.BaseTransientBottomBar;
-
 import com.example.nabot.domain.BoardDTO;
 import com.example.nabot.domain.ClientDTO;
 import com.example.nabot.domain.CommentDTO;
@@ -16,6 +14,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
+import retrofit2.http.HTTP;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Query;
@@ -54,14 +53,14 @@ public interface RetrofitRequest {
     @PUT("comment")
     Call<Void> putComment(@Body CommentDTO comment);
 
-    @POST("writing_image")
-    Call<Void>postWriting_Image(@Body WritingImageDTO writingImageDTO);
-
     @POST("writing_image_multi")
-    Call<Void>postWriting_Image_Multi(@Body List<WritingImageDTO> writingImageDTO);
+    Call<Void>postWriting_Image_Multi(@Body List<WritingImageDTO> writingImageInsertDTOS);
 
     @GET("writing_image")
     Call<List<WritingImageDTO>> getWriting_Image(@Query("writing_id") int writing_id);
+
+    @HTTP(method = "DELETE", path = "writing_image", hasBody = true)
+    Call<Void>deleteWriting_Image(@Body List<WritingImageDTO> writingImageDTO);
 
 
     public static final Retrofit retrofit = new Retrofit.Builder()

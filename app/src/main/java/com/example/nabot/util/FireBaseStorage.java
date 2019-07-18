@@ -18,32 +18,34 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FireBaseStorage {
-    List<Uri> multifilepath = null;
+    List<Uri> multifilepath = new ArrayList<Uri>();
     int writingid = 0;
 
 
    public  List<String> UploadFile(List<Uri>multifilepath ,int writingid){
-    this.multifilepath=multifilepath;
-    this.writingid=writingid;
-       List<String> downloadUri_multi=new ArrayList<String>();
-       Log.e("asd", String.valueOf(writingid));
-       for(int i=0; i<multifilepath.size(); i++){
-        if(multifilepath != null) {
-            double d_randomValue=Math.random();
-            int  randomValue=(int)(d_randomValue*10000000)+1;
-            final FirebaseStorage storage = FirebaseStorage.getInstance();
-            String filename = Integer.toString(writingid)+"_"+Integer.toString(randomValue);
-            downloadUri_multi.add("board/" + filename);
-            final StorageReference storageReference = storage.getReferenceFromUrl("gs://nabot-application.appspot.com"
-            ).child(downloadUri_multi.get(i));
-            storageReference.putFile(multifilepath.get(i)).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    Log.e("asd", String.valueOf(taskSnapshot));
-                }
-            });
+        this.multifilepath=multifilepath;
+        this.writingid=writingid;
+        List<String> downloadUri_multi=new ArrayList<String>();
+        for(int i=0; i<multifilepath.size(); i++){
+            if(multifilepath != null) {
+                double d_randomValue=Math.random();
+                String str = "";
+                for(int j = 0; j < 8; j++)
+                    str +=  "" + (int) (Math.random() * 10);
+                final FirebaseStorage storage = FirebaseStorage.getInstance();
+                String filename = Integer.toString(writingid)+"_"+str;
+                Log.e("filename222222",filename);
+                downloadUri_multi.add("board/" + filename);
+                final StorageReference storageReference = storage.getReferenceFromUrl("gs://nabot-application.appspot.com"
+                ).child(downloadUri_multi.get(i));
+                storageReference.putFile(multifilepath.get(i)).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        Log.e("success", String.valueOf(taskSnapshot));
+                    }
+                });
+            }
         }
+        return downloadUri_multi;
     }
-       return downloadUri_multi;
-    }
-   }
+}

@@ -127,7 +127,6 @@ public class BoardActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<WritingDTO>> call, Response<List<WritingDTO>> response) {
                 writingArray = response.body();
-                Log.e("zxczxczxc", String.valueOf(writingArray.size()));
                 for (int i = 0; i < writingArray.size(); i++) {
                     listAdapter.addItem(writingArray.get(i));
                 }

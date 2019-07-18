@@ -53,7 +53,7 @@ public class ImageViewAdapter extends PagerAdapter {
                 ;
                 container.addView(view);
             }
-            notifyDataSetChanged();
+//            notifyDataSetChanged();
 
         }
         return  view;

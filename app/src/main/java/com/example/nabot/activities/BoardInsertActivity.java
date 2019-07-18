@@ -36,7 +36,6 @@ public class BoardInsertActivity extends AppCompatActivity {
     Button button_img;
     ListView imagelist;
     FireBaseStorage fireBaseStorage = new FireBaseStorage();
-    WritingImageDTO writingImageDTO;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,15 +81,17 @@ public class BoardInsertActivity extends AppCompatActivity {
                                 writingDTO = response.body().get(0);
                                 if(imageListAdapter.getItem()!=null){
                                     List<String>downloadUri=fireBaseStorage.UploadFile(imageListAdapter.getItem(), writingDTO.getId());
-                                    List<WritingImageDTO> writingImages = new ArrayList<WritingImageDTO>();
+                                    List<WritingImageDTO> writingImageInsertDTOS = new ArrayList<WritingImageDTO>();
                                     for(int i=0; i<downloadUri.size();i++) {
-                                        Log.e("eff", downloadUri.get(i));
-                                        writingImages.add(new WritingImageDTO(String.valueOf(downloadUri.get(i)), writingDTO.getId()));
+                                        writingImageInsertDTOS.add(new WritingImageDTO(String.valueOf(downloadUri.get(i)), writingDTO.getId(),imageListAdapter.getName().get(i)));
+                                        Log.e("imageListAdpater", String.valueOf(imageListAdapter.getName().get(i)));
                                     }
-                                    Call<Void>call2=retrofitRequest.postWriting_Image_Multi(writingImages);
+                                    Call<Void>call2=retrofitRequest.postWriting_Image_Multi(writingImageInsertDTOS);
                                     call2.enqueue(new Callback<Void>() {
                                         @Override
                                         public void onResponse(Call<Void> call, Response<Void> response) {
+                                            Log.e("writing_id", String.valueOf(writingDTO.getId()));
+
                                             Intent intent2 = new Intent();
                                             BoardInsertActivity.this.setResult(RESULT_OK, intent2);
                                             BoardInsertActivity.this.finish();
@@ -117,7 +118,7 @@ public class BoardInsertActivity extends AppCompatActivity {
         });
 
     }
-        protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 0 && resultCode == RESULT_OK) {
             imguri=imageListAdapter.getItem();
@@ -126,15 +127,14 @@ public class BoardInsertActivity extends AppCompatActivity {
             }
             if (data.getClipData() != null) {
                 for (int i = 0; i < data.getClipData().getItemCount(); i++) {
-                        imguri.add((Uri) data.getClipData().getItemAt(i).getUri());
-                    }
+                    imguri.add((Uri) data.getClipData().getItemAt(i).getUri());
                 }
-                if (data.getData() != null) {
-                    imguri.add((Uri) data.getData());
-                }
+            }
+            if (data.getData() != null) {
+                imguri.add((Uri) data.getData());
+            }
             imageListAdapter.addItem(imguri);
-                Log.e("imguri", String.valueOf(imguri.size()));
             imagelist.setAdapter(imageListAdapter);
         }
-        }
     }
+}

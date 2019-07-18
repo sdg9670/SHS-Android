@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import com.example.nabot.R;
@@ -20,6 +21,8 @@ import com.example.nabot.domain.WritingDTO;
 import com.example.nabot.domain.WritingImageDTO;
 import com.example.nabot.util.RetrofitRequest;
 import com.example.nabot.util.RetrofitRetry;
+
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -36,6 +39,7 @@ public class BoardViewActivity extends AppCompatActivity {
     WritingDTO writingDTO;
     ClientDTO clientDTO;
     List<WritingImageDTO> writingImgArray = null;
+    List <String> filepath = new ArrayList<String>();
 
     CommentDTO commentDTO;
     static final int BoardModifyActivitycode = 3;
@@ -47,6 +51,14 @@ public class BoardViewActivity extends AppCompatActivity {
         if (requestCode == BoardModifyActivitycode) {
             if (resultCode == RESULT_OK) {
                 writingDTO = (WritingDTO) data.getSerializableExtra("writing");
+                writingImgArray=(List<WritingImageDTO>)data.getSerializableExtra("writingimg");
+                filepath.clear();
+                for(int i=0; i<writingImgArray.size();i++){
+                    Log.e("writingimg", String.valueOf(writingImgArray.get(i)));
+                    filepath.add(writingImgArray.get(i).getPath());
+                }
+                imageViewAdapter.imageViewAdapterDown(filepath,writingDTO.getId());
+                viewPager.setAdapter(imageViewAdapter);
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
                 board_writedate.setText(sdf.format(new Date()));
             } else {
@@ -104,15 +116,11 @@ public class BoardViewActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<List<WritingImageDTO>> call, Response<List<WritingImageDTO>> response) {
                         writingImgArray=response.body();
-                        List <String> filepath = new ArrayList<String>();
                         if(writingImgArray != null){
                             for(int i=0; i<writingImgArray.size() ; i++){
                                 filepath.add(writingImgArray.get(i).getPath());
-                                Log.e("filepath", String.valueOf(filepath.get(i)));
                             }
-
                             imageViewAdapter.imageViewAdapterDown(filepath,writingDTO.getId());
-                            Log.e("image", String.valueOf(imageViewAdapter.getCount()));
                             viewPager.setAdapter(imageViewAdapter);
                         }
                     }
@@ -120,18 +128,18 @@ public class BoardViewActivity extends AppCompatActivity {
             }
         });
 
-
-
         board_view_modify_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent in = new Intent(BoardViewActivity.this, BoardModifyActivity.class);
                 Bundle bundle = new Bundle();
+                bundle.putSerializable("writingImgArray", (Serializable) writingImgArray);
                 bundle.putSerializable("writing", writingDTO);
                 bundle.putSerializable("client", clientDTO);
                 bundle.putSerializable("board", boardDTO);
                 in.putExtras(bundle);
                 startActivityForResult(in, BoardModifyActivitycode);
+                finish();
             }
         });
         board_view_delete_btn.setOnClickListener(new View.OnClickListener() {
@@ -194,6 +202,7 @@ public class BoardViewActivity extends AppCompatActivity {
         Intent intent = new Intent();
         BoardViewActivity.this.setResult(RESULT_OK, intent);
         BoardViewActivity.this.finish();
+
     }
 
 }
