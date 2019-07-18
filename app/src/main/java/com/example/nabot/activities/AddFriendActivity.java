@@ -26,12 +26,11 @@ import retrofit2.Response;
 public class AddFriendActivity extends Activity {
     ClientDTO client;
     ContactDTO contact;
-    Button agree, button, button2, backBtn;
+    Button agree,cenBtn, button, button2;
     ListView friendlistview;
     List<ClientDTO> contactArray = null;
-    CheckFriendActivity checkFriendActivity = new CheckFriendActivity();
-    private int REQUEST_TEST = 1;
     final AddFriendAdapter friendAdapter = new AddFriendAdapter();
+    private int REQUEST_TEST = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,16 +38,16 @@ public class AddFriendActivity extends Activity {
 
         friendlistview = findViewById(R.id.friendlistview);
         agree = findViewById(R.id.agree);
+        cenBtn = findViewById(R.id.backBtn);
         button = findViewById(R.id.button);
         button2 = findViewById(R.id.button2);
-        backBtn = findViewById(R.id.backBtn);
+
         final Intent in = getIntent();
         in.getStringExtra("check");
 
         Intent intent = getIntent();
-        client= (ClientDTO)intent.getSerializableExtra("client");
-        contact= (ContactDTO)intent.getSerializableExtra("contact");
-
+        client = (ClientDTO)intent.getSerializableExtra("client");
+        contact = (ContactDTO)intent.getSerializableExtra("contact");
         if(friendAdapter!=null){
             RetrofitRequest retrofitRequest = RetrofitRequest.retrofit.create(RetrofitRequest.class);
             Call<List<ClientDTO>> call = retrofitRequest.getFriendList();
@@ -67,13 +66,6 @@ public class AddFriendActivity extends Activity {
         }
         friendlistview.setAdapter(friendAdapter);
         friendAdapter.notifyDataSetChanged();
-
-        backBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,8 +104,11 @@ public class AddFriendActivity extends Activity {
                     public void onResponse(Call<List<ContactDTO>> call, Response<List<ContactDTO>> response) {
                         contact=response.body().get(0);
                         contact.setSomeid(client.getId());
-                        friendAdapter.addItem(contact);
+                        friendAdapter.addItem(client);
                         friendAdapter.notifyDataSetChanged();
+                        Intent intent2 = new Intent();
+                        AddFriendActivity.this.setResult(RESULT_OK, intent2);
+                        AddFriendActivity.this.finish();
                     }
                     @Override
                     public void onFailure(Call<List<ContactDTO>> call, Throwable t) {
@@ -123,6 +118,12 @@ public class AddFriendActivity extends Activity {
                 }
             });
         }
+        cenBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data){
