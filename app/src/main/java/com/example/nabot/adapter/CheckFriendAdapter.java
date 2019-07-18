@@ -55,18 +55,19 @@ public class CheckFriendAdapter extends BaseAdapter {
         agree = view.findViewById(R.id.agree);
         disagree = view.findViewById(R.id.disagree);
         idText.setText(String.valueOf(items.get(position).getSomeid()));
-        final ContactDTO item = items.get(position);
 
         agree.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 RetrofitRequest retrofitRequest = RetrofitRequest.retrofit.create(RetrofitRequest.class);
-                Call<Void> call = retrofitRequest.putFriendCheck(item.getSomeid());
+                Call<Void> call = retrofitRequest.putFriendCheck(contact.getSomeid());
                 call.enqueue(new Callback<Void>() {
                     @Override
                     public void onResponse(Call<Void> call, Response<Void> response) {
                         Intent intent2 = new Intent();
                         Bundle bundle = new Bundle();
+                        addItem(contact);
+                        notifyDataSetChanged();
                         bundle.putSerializable("contact",contact);
                         intent2.putExtras(bundle);
                     }
@@ -82,7 +83,7 @@ public class CheckFriendAdapter extends BaseAdapter {
             @Override
             public void onClick(View view) {
                 RetrofitRequest retrofitRequest = RetrofitRequest.retrofit.create(RetrofitRequest.class);
-                Call<Void> call = retrofitRequest.delFreind(item.getSomeid());
+                Call<Void> call = retrofitRequest.delFreind(contact.getSomeid());
                 call.enqueue(new Callback<Void>() {
                     @Override
                     public void onResponse(Call<Void> call, Response<Void> response) {

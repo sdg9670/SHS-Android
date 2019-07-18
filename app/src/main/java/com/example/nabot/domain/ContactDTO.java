@@ -49,7 +49,7 @@ public class ContactDTO implements Serializable {
         this.someid = someid;
         this.newmsg = newmsg;
     }
-    public ContactDTO() {
+    public ContactDTO(int id, String name) {
 
     }
 }
