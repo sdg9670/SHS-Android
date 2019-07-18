@@ -111,15 +111,9 @@ public class AddFriendActivity extends Activity {
                     @Override
                     public void onResponse(Call<List<ContactDTO>> call, Response<List<ContactDTO>> response) {
                         contact=response.body().get(0);
-
-                        Intent intent = getIntent();
-                        Bundle bundle = new Bundle();
-                        bundle.getSerializable("client");
-                        bundle.getSerializable("contact");
                         contact.setSomeid(client.getId());
-                        friendAdapter.addItem(friendAdapter.getContactDTO());
+                        friendAdapter.addItem(contact);
                         friendAdapter.notifyDataSetChanged();
-                        friendlistview.setSelection(friendAdapter.getCount()-1);
                     }
                     @Override
                     public void onFailure(Call<List<ContactDTO>> call, Throwable t) {
