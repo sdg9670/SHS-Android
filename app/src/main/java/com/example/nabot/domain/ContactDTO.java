@@ -39,13 +39,13 @@ public class ContactDTO implements Serializable {
     public void setNewmsg(int newmsg) {
         this.newmsg = newmsg;
     }
-    public ContactDTO(int id, int clientId) {
+    public ContactDTO(int clientId, int id) {
         this.id = this.id;
         this.clientid = clientid;
         this.someid = someid;
         this.newmsg = newmsg;
     }
-    public ContactDTO(int id, String name) {
+    public ContactDTO(int id) {
 
     }
 }

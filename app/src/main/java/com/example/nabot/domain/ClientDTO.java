@@ -21,7 +21,7 @@ public class ClientDTO implements Serializable {
         this.dong_id = dong_id;
     }
 
-    public ClientDTO() {
+    public ClientDTO(int id) {
 
     }
 

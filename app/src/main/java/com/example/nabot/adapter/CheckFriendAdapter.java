@@ -25,7 +25,7 @@ import retrofit2.Response;
 
 public class CheckFriendAdapter extends BaseAdapter {
     public ArrayList<ContactDTO> items = new ArrayList<ContactDTO>();
-    private ContactDTO contact;
+
     public Button agree;
     public Button disagree;
     public CheckFriendAdapter() {
@@ -48,56 +48,10 @@ public class CheckFriendAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.layout_check_friend, parent, false);
         final TextView idText = (TextView) view.findViewById(R.id.idText);
-        agree = view.findViewById(R.id.agree);
-        disagree = view.findViewById(R.id.disagree);
         idText.setText(String.valueOf(items.get(position).getSomeid()));
-
-        agree.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                RetrofitRequest retrofitRequest = RetrofitRequest.retrofit.create(RetrofitRequest.class);
-                Call<Void> call = retrofitRequest.putFriendCheck(contact.getSomeid());
-                call.enqueue(new Callback<Void>() {
-                    @Override
-                    public void onResponse(Call<Void> call, Response<Void> response) {
-                        Intent intent2 = new Intent();
-                        Bundle bundle = new Bundle();
-                        addItem(contact);
-                        notifyDataSetChanged();
-                        bundle.putSerializable("contact",contact);
-                        intent2.putExtras(bundle);
-                    }
-
-                    @Override
-                    public void onFailure(Call<Void> call, Throwable t) {
-
-                    }
-                });
-            }
-        });
-        disagree.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                RetrofitRequest retrofitRequest = RetrofitRequest.retrofit.create(RetrofitRequest.class);
-                Call<Void> call = retrofitRequest.delFreind(contact.getSomeid());
-                call.enqueue(new Callback<Void>() {
-                    @Override
-                    public void onResponse(Call<Void> call, Response<Void> response) {
-                        removeItem(position);
-                        notifyDataSetChanged();
-                    }
-                    @Override
-                    public void onFailure(Call<Void> call, Throwable t) {
-                        removeItem(position);
-                        notifyDataSetChanged();
-                    }
-                });
-            }
-        });
         return view;
     }
 
@@ -107,5 +61,10 @@ public class CheckFriendAdapter extends BaseAdapter {
 
     public void removeItem(int position) {
         items.remove(position);
+    }
+
+    public void addFreind(ContactDTO contact){
+        contact.setNewmsg(contact.getNewmsg());
+        items.add(contact);
     }
 }
