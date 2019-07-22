@@ -125,7 +125,6 @@ public class BoardInsertActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 0 && resultCode == RESULT_OK) {
             imguri=imageListAdapter.getItem();
-            Log.e("imguri", String.valueOf(imguri));
             if(imguri ==null){
                 imguri=new ArrayList<Uri>();
             }

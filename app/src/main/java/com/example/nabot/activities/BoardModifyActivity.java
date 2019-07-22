@@ -178,8 +178,11 @@ public class BoardModifyActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 0 && resultCode == RESULT_OK) {
-            imguri = new ArrayList<Uri>();
-            if (data.getClipData() != null) {
+            imguri=imageListAdapterModify.getItem();
+            if(imguri ==null){
+                imguri=new ArrayList<Uri>();
+            }
+                if (data.getClipData() != null) {
                 for (int i = 0; i < data.getClipData().getItemCount(); i++) {
                     imguri.add((Uri) data.getClipData().getItemAt(i).getUri());
                 }
