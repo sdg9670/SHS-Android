@@ -62,7 +62,6 @@ public class ImageListAdapter extends BaseAdapter {
     }
 
     public List<String>getName(){
-        Log.e("ttttaa", String.valueOf(name.size()));
         return name;}
 
     @Override

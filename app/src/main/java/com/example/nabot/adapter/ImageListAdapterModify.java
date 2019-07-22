@@ -20,21 +20,21 @@ import java.util.List;
 public class ImageListAdapterModify extends BaseAdapter {
     private final Context context;
     ArrayList<String> items = null;
+    ArrayList<String> items1 = null;
     List<WritingImageDTO> writingImgArray =new ArrayList<WritingImageDTO>();
-    int id=0;
     List<Uri> uri= null;
     List<String> name =new ArrayList<String>();
     List<WritingImageDTO> destroyid=new ArrayList<WritingImageDTO>();
 
+
     public  List<WritingImageDTO> getDestroyposition(){
         if(destroyid!=null)
-        return destroyid;
+            return destroyid;
         else
             return null;
     }
-    public ImageListAdapterModify(Context context  , int id ,List<WritingImageDTO> writingImgArray) {
+    public ImageListAdapterModify(Context context  ,List<WritingImageDTO> writingImgArray) {
         this.context = context;
-        this.id=id;
         this.writingImgArray=writingImgArray;
     }
 
@@ -44,12 +44,16 @@ public class ImageListAdapterModify extends BaseAdapter {
         for(int i=0; i <writingImgArray.size(); i++){
             items.add(writingImgArray.get(i).getName());
         }
+        items1=new ArrayList<String>();
     }
 
     public  void addItems(List<Uri> uri){
         this.uri=new ArrayList<Uri>();
         this.uri=uri;
-        for(int i=0; i<uri.size();i++){
+        items1=new ArrayList<String>();
+        name=new ArrayList<String>();
+        for(int i=0; i <uri.size(); i++){
+            items1.add(uri.get(i).toString());
             items.add(uri.get(i).toString());
             String[] spl = uri.get(i).toString().split("/");
             name.add(spl[spl.length-1]);
@@ -65,23 +69,29 @@ public class ImageListAdapterModify extends BaseAdapter {
     @Override
     public Uri getItem(int position) {
         notifyDataSetChanged();
-        return Uri.parse(items.get(position));
+        return Uri.parse(items1.get(position));
     }
 
+    public  List<Uri> getItem(){
+        List<Uri> uri=new ArrayList<Uri>();
+        if(items1!=null) {
+            for (int i = 0; i < items1.size(); i++) {
+                uri.add(Uri.parse(items1.get(i)));
+            }
+            return uri;
+        }
+        else{
+            return  null;
+        }
+    }
 
     public List<String>getName(){
-        notifyDataSetChanged();
         return name;}
 
     @Override
-    public long getItemId(int position) {
-        return position;
-    }
+    public long getItemId(int position) {return position; }
 
-    public void removeItem(int position) {
-        name.remove(position);
-        items.remove(position);
-    }
+    public void removeItem(int position) { items.remove(position); }
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {

@@ -91,7 +91,8 @@ public class BoardActivity extends AppCompatActivity {
         writingList.setAdapter(listAdapter);
 
         writingList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            Intent intent = new Intent(getApplicationContext(), BoardViewActivity.class);@Override
+            Intent intent = new Intent(getApplicationContext(), BoardViewActivity.class);
+            @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                     Bundle bundle=new Bundle();
                     bundle.putSerializable("client",client);
@@ -106,7 +107,6 @@ public class BoardActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent in = new Intent(BoardActivity.this, BoardInsertActivity.class);
-                //유저정보
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("client", client);
                 bundle.putSerializable("board", board);;
