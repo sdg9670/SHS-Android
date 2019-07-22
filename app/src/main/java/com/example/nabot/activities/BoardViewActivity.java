@@ -120,6 +120,7 @@ public class BoardViewActivity extends AppCompatActivity {
                             for(int i=0; i<writingImgArray.size() ; i++){
                                 filepath.add(writingImgArray.get(i).getPath());
                             }
+                            Log.e("filepath", String.valueOf(filepath));
                             imageViewAdapter.imageViewAdapterDown(filepath,writingDTO.getId());
                             viewPager.setAdapter(imageViewAdapter);
                         }

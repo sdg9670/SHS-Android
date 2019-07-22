@@ -34,7 +34,6 @@ public class ImageListAdapter extends BaseAdapter {
             String[] spl = imagel.get(i).toString().split("/");
             name.add(spl[spl.length-1]);
         }
-
     }
 
 

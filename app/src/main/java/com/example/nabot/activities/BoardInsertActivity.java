@@ -31,11 +31,13 @@ public class BoardInsertActivity extends AppCompatActivity {
     Button board_insert_btn;
     EditText board_insert_title;
     List<Uri> imguri= new ArrayList<Uri>();
+    int index=0;
     WritingDTO writingDTO;
     ImageListAdapter imageListAdapter;
     Button button_img;
     ListView imagelist;
     FireBaseStorage fireBaseStorage = new FireBaseStorage();
+    List<String>downloadUri=new ArrayList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,18 +82,19 @@ public class BoardInsertActivity extends AppCompatActivity {
                             public void onResponse(Call<List<WritingDTO>> call, Response<List<WritingDTO>> response) {
                                 writingDTO = response.body().get(0);
                                 if(imageListAdapter.getItem()!=null){
-                                    List<String>downloadUri=fireBaseStorage.UploadFile(imageListAdapter.getItem(), writingDTO.getId());
+                                    downloadUri.clear();
+                                    downloadUri=fireBaseStorage.UploadFile(imageListAdapter.getItem(), writingDTO.getId());
                                     List<WritingImageDTO> writingImageInsertDTOS = new ArrayList<WritingImageDTO>();
+                                    Log.e("qqqqqq", String.valueOf(downloadUri));
                                     for(int i=0; i<downloadUri.size();i++) {
                                         writingImageInsertDTOS.add(new WritingImageDTO(String.valueOf(downloadUri.get(i)), writingDTO.getId(),imageListAdapter.getName().get(i)));
-                                        Log.e("imageListAdpater", String.valueOf(imageListAdapter.getName().get(i)));
+                                        Log.e("asdasdasdasdasdasdqwe", String.valueOf(imageListAdapter.getName().get(i)));
                                     }
                                     Call<Void>call2=retrofitRequest.postWriting_Image_Multi(writingImageInsertDTOS);
                                     call2.enqueue(new Callback<Void>() {
                                         @Override
                                         public void onResponse(Call<Void> call, Response<Void> response) {
                                             Log.e("writing_id", String.valueOf(writingDTO.getId()));
-
                                             Intent intent2 = new Intent();
                                             BoardInsertActivity.this.setResult(RESULT_OK, intent2);
                                             BoardInsertActivity.this.finish();
@@ -122,6 +125,7 @@ public class BoardInsertActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 0 && resultCode == RESULT_OK) {
             imguri=imageListAdapter.getItem();
+            Log.e("imguri", String.valueOf(imguri));
             if(imguri ==null){
                 imguri=new ArrayList<Uri>();
             }

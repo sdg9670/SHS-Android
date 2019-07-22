@@ -21,8 +21,8 @@ public class FireBaseStorage {
     List<Uri> multifilepath = new ArrayList<Uri>();
     int writingid = 0;
 
-
    public  List<String> UploadFile(List<Uri>multifilepath ,int writingid){
+        this.multifilepath.clear();
         this.multifilepath=multifilepath;
         this.writingid=writingid;
         List<String> downloadUri_multi=new ArrayList<String>();
@@ -38,6 +38,7 @@ public class FireBaseStorage {
                 downloadUri_multi.add("board/" + filename);
                 final StorageReference storageReference = storage.getReferenceFromUrl("gs://nabot-application.appspot.com"
                 ).child(downloadUri_multi.get(i));
+                Log.e("업", multifilepath.get(i).toString());
                 storageReference.putFile(multifilepath.get(i)).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -48,4 +49,5 @@ public class FireBaseStorage {
         }
         return downloadUri_multi;
     }
+
 }

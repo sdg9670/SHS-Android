@@ -81,14 +81,18 @@ public class BoardModifyActivity extends AppCompatActivity {
                 call.enqueue(new Callback<Void>() {
                     @Override
                     public void onResponse(Call<Void> call, Response<Void> response) {
-                        Log.e("ㅋㅋ", "" + imageListAdapterModify.getCount());
-                        for(int i = 0; i < imageListAdapterModify.getCount(); i++)
-                            Log.e("ㅎㅎ", imageListAdapterModify.getItem(i).toString());
                         Call<Void> call1=retrofitRequest.deleteWriting_Image(imageListAdapterModify.getDestroyposition());
                         call1.enqueue(new Callback<Void>() {
                             @Override
                             public void onResponse(Call<Void> call, Response<Void> response) {
-                                List<String>uploadFile=fireBaseStorage.UploadFile(imageListAdapterModify.getItem(), writingDTO.getId());
+                                ArrayList<Uri> img=new ArrayList<Uri>();
+                                for(int i=0; i<imageListAdapterModify.getCount();i++){
+                                    img.add(imageListAdapterModify.getItem(i));
+                                }
+                                for(int i=0; i<writingImgArray.size();i++){
+                                    img.remove(i);
+                                }
+                                List<String>uploadFile=fireBaseStorage.UploadFile(img, writingDTO.getId());
                                 writingImgArray.clear();
                                 for(int i=0; i<uploadFile.size();i++) {
                                     try {

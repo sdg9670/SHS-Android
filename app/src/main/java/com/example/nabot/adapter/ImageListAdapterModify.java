@@ -27,7 +27,10 @@ public class ImageListAdapterModify extends BaseAdapter {
     List<WritingImageDTO> destroyid=new ArrayList<WritingImageDTO>();
 
     public  List<WritingImageDTO> getDestroyposition(){
+        if(destroyid!=null)
         return destroyid;
+        else
+            return null;
     }
     public ImageListAdapterModify(Context context  , int id ,List<WritingImageDTO> writingImgArray) {
         this.context = context;
@@ -35,7 +38,7 @@ public class ImageListAdapterModify extends BaseAdapter {
         this.writingImgArray=writingImgArray;
     }
 
-   public void setItems(List<WritingImageDTO> writingImgArray )
+    public void setItems(List<WritingImageDTO> writingImgArray )
     {
         items=new ArrayList<String>();
         for(int i=0; i <writingImgArray.size(); i++){
@@ -60,24 +63,15 @@ public class ImageListAdapterModify extends BaseAdapter {
 
 
     @Override
-    public Object getItem(int position) {
-        return items.get(position);
+    public Uri getItem(int position) {
+        notifyDataSetChanged();
+        return Uri.parse(items.get(position));
     }
 
-    public  List<Uri> getItem(){
-       List<Uri> uri=new ArrayList<Uri>();
-       if(items!=null) {
-           for (int i = 0; i < items.size(); i++) {
-               uri.add(Uri.parse(items.get(i)));
-           }
-           return uri;
-       }
-       else{
-           return  null;
-       }
-    }
 
-    public List<String>getName(){ return name;}
+    public List<String>getName(){
+        notifyDataSetChanged();
+        return name;}
 
     @Override
     public long getItemId(int position) {
@@ -85,6 +79,7 @@ public class ImageListAdapterModify extends BaseAdapter {
     }
 
     public void removeItem(int position) {
+        name.remove(position);
         items.remove(position);
     }
 
