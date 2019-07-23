@@ -3,7 +3,9 @@ package com.example.nabot.activities;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -16,11 +18,16 @@ import com.example.nabot.domain.CommentDTO;
 import com.example.nabot.util.RetrofitRequest;
 import com.example.nabot.util.RetrofitRetry;
 import com.google.android.gms.common.api.Api;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.List;
 
 import retrofit2.Call;
+import retrofit2.Callback;
 import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity {
@@ -69,16 +76,39 @@ public class LoginActivity extends AppCompatActivity {
                             public void onResponse(Call<List<ClientDTO>> call, Response<List<ClientDTO>> response) {
 
                                 if (response.body() != null && response.body().size() != 0) {
-                                    ClientDTO clientDTO = response.body().get(0);
+                                    final ClientDTO clientDTO = response.body().get(0);
                                     SharedPreferences.Editor seditor = getSharedPreferences("login", MODE_PRIVATE).edit();
                                     seditor.putInt("id", clientDTO.getId());
                                     seditor.commit();
-                                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                    Bundle bundle = new Bundle();
-                                    bundle.putSerializable("client", clientDTO);
-                                    intent.putExtras(bundle);
-                                    startActivity(intent);
-                                    finish();
+                                    FirebaseInstanceId.getInstance().getInstanceId()
+                                            .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                                                    if (!task.isSuccessful()) {
+                                                        return;
+                                                    }
+                                                    String token = task.getResult().getToken();
+                                                    clientDTO.setFcm(token);
+                                                    RetrofitRequest retrofitRequest = RetrofitRequest.retrofit.create(RetrofitRequest.class);
+                                                    Call<Void> call = retrofitRequest.updateFCM(clientDTO);
+                                                    call.enqueue(new Callback<Void>() {
+                                                        @Override
+                                                        public void onResponse(Call<Void> call, Response<Void> response) {
+                                                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                                            Bundle bundle = new Bundle();
+                                                            bundle.putSerializable("client", clientDTO);
+                                                            intent.putExtras(bundle);
+                                                            startActivity(intent);
+                                                            finish();
+                                                        }
+
+                                                        @Override
+                                                        public void onFailure(Call<Void> call, Throwable t) {
+
+                                                        }
+                                                    });
+                                                }
+                                            });
                                 } else {
                                     Toast.makeText(LoginActivity.this, "잘못된 계정 입니다.", Toast.LENGTH_SHORT).show();
                                 }

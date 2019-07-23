@@ -21,6 +21,7 @@ import com.example.nabot.util.RetrofitRetry;
 import java.util.List;
 
 import retrofit2.Call;
+import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
@@ -51,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
         speakerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Camera camera = new Camera("Speaker", "192.168.1.100", 6000);
+                Camera camera = new Camera("Speaker", "192.168.1.100", 5000);
                 Intent intent = new Intent(getApplicationContext(), VideoActivity.class);
                 intent.putExtra(VideoActivity.CAMERA, camera);
                 startActivity(intent);
@@ -60,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
         doorlockButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Camera camera = new Camera("DoorLock", "192.168.1.101", 6001);
+                Camera camera = new Camera("DoorLock", "192.168.1.101", 5000);
                 Intent intent = new Intent(getApplicationContext(), VideoActivity.class);
                 intent.putExtra(VideoActivity.CAMERA, camera);
                 startActivity(intent);
@@ -72,9 +73,21 @@ public class MainActivity extends AppCompatActivity {
                 SharedPreferences.Editor seditor = getSharedPreferences("login", MODE_PRIVATE).edit();
                 seditor.putInt("id", -1);
                 seditor.commit();
-                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                startActivity(intent);
-                finish();
+                RetrofitRequest retrofitRequest = RetrofitRequest.retrofit.create(RetrofitRequest.class);
+                client.setFcm("널");
+                Call<Void> call = retrofitRequest.updateFCM(client);
+                call.enqueue(new Callback<Void>() {
+                    @Override
+                    public void onResponse(Call<Void> call, Response<Void> response) {
+                        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                    @Override
+                    public void onFailure(Call<Void> call, Throwable t) {
+
+                    }
+                });
             }
         });
 

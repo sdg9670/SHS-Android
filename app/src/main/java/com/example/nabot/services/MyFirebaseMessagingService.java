@@ -6,6 +6,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -16,11 +17,17 @@ import android.util.Log;
 
 import com.example.nabot.R;
 import com.example.nabot.activities.MainActivity;
+import com.example.nabot.domain.ClientDTO;
+import com.example.nabot.util.RetrofitRequest;
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
 import com.firebase.jobdispatcher.GooglePlayDriver;
 import com.firebase.jobdispatcher.Job;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
@@ -104,7 +111,23 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         Log.d(TAG, "Short lived task is done.");
     }
     private void sendRegistrationToServer(String token) {
-        // TODO: Implement this method to send token to your app server.
+        SharedPreferences sharedPreferences = getSharedPreferences("login", MODE_PRIVATE);
+        int id = sharedPreferences.getInt("id", -1);
+        if(id != -1) {
+            RetrofitRequest retrofitRequest = RetrofitRequest.retrofit.create(RetrofitRequest.class);
+            ClientDTO clientDTO = new ClientDTO(id, token);
+            Call<Void> call = retrofitRequest.updateFCM(clientDTO);
+            call.enqueue(new Callback<Void>() {
+                @Override
+                public void onResponse(Call<Void> call, Response<Void> response) {
+                }
+
+                @Override
+                public void onFailure(Call<Void> call, Throwable t) {
+
+                }
+            });
+        }
     }
 
     private void sendNotification() {

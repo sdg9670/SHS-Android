@@ -7,20 +7,20 @@ public class ClientDTO implements Serializable {
     private String id_name;
     private String password;
     private String name;
-    private int ho_id;
-    private int dong_id;
+    private int ho;
+    private int dong;
     private String fcm;
     public ClientDTO(){
 
     }
 
-    public ClientDTO(int id, String id_name, String password, String name, int ho_id, int dong_id, String fcm) {
+    public ClientDTO(int id, String id_name, String password, String name, int ho, int dong, String fcm) {
         this.id = id;
         this.id_name = id_name;
         this.password = password;
         this.name = name;
-        this.ho_id = ho_id;
-        this.dong_id = dong_id;
+        this.ho = ho;
+        this.dong = dong;
         this.fcm = fcm;
     }
 
@@ -53,20 +53,20 @@ public class ClientDTO implements Serializable {
         this.name = name;
     }
 
-    public int getHo_id() {
-        return ho_id;
+    public int getHo() {
+        return ho;
     }
 
-    public void setHo_id(int ho_id) {
-        this.ho_id = ho_id;
+    public void setHo(int ho) {
+        this.ho = ho;
     }
 
-    public int getDong_id() {
-        return dong_id;
+    public int getDong() {
+        return dong;
     }
 
-    public void setDong_id(int dong_id) {
-        this.dong_id = dong_id;
+    public void setDong(int dong) {
+        this.dong = dong;
     }
 
     public String getFcm() {
