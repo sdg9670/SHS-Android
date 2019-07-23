@@ -1,26 +1,24 @@
 package com.example.nabot.activities;
 
-import android.content.ClipData;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import com.example.nabot.R;
-import com.example.nabot.adapter.ImageViewAdapter;
+import com.example.nabot.adapter.ImageListAdapter;
 import com.example.nabot.domain.BoardDTO;
 import com.example.nabot.domain.ClientDTO;
 import com.example.nabot.domain.WritingDTO;
 import com.example.nabot.domain.WritingImageDTO;
 import com.example.nabot.util.FireBaseStorage;
 import com.example.nabot.util.RetrofitRequest;
-import com.google.firebase.storage.FirebaseStorage;
+import com.example.nabot.util.RetrofitRetry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,29 +30,26 @@ public class BoardInsertActivity extends AppCompatActivity {
     TextView board_insert_boardname, board_insert_content;
     Button board_insert_btn;
     EditText board_insert_title;
-    List<Uri> multiUri =null;
-    Uri singleuri = null;
+    List<Uri> imguri= new ArrayList<Uri>();
+    int index=0;
     WritingDTO writingDTO;
+    ImageListAdapter imageListAdapter;
     Button button_img;
-    ImageView singleimg;
-    int imgcount = 0;
+    ListView imagelist;
     FireBaseStorage fireBaseStorage = new FireBaseStorage();
-    ViewPager viewPager;
-    ImageViewAdapter imageViewAdapter;
-    WritingImageDTO writingImageDTO;
+    List<String>downloadUri=new ArrayList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_boardinsert);
-        viewPager = findViewById(R.id.viewPager);
-        imageViewAdapter = new ImageViewAdapter(this);
         button_img = findViewById(R.id.button_img);
+        imageListAdapter = new ImageListAdapter(this, imguri);
         board_insert_boardname = findViewById(R.id.board_insert_boardname);
         board_insert_content = findViewById(R.id.board_insert_content);
         board_insert_btn = findViewById(R.id.board_insert_btn);
         board_insert_title = findViewById(R.id.board_insert_title);
-        singleimg = findViewById(R.id.singleimg);
+        imagelist=findViewById(R.id.imagelist);
         Intent in = getIntent();
         final ClientDTO clientDTO = (ClientDTO) in.getSerializableExtra("client");
         final BoardDTO boardDTO = (BoardDTO) in.getSerializableExtra("board");
@@ -63,8 +58,6 @@ public class BoardInsertActivity extends AppCompatActivity {
         button_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                multiUri=new ArrayList<Uri>();
-                singleuri=null;
                 Intent imgintent = new Intent();
                 imgintent.setType("image/*");
                 imgintent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
@@ -75,8 +68,7 @@ public class BoardInsertActivity extends AppCompatActivity {
 
         board_insert_btn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-
+            public void onClick(View v) {
                 final RetrofitRequest retrofitRequest = RetrofitRequest.retrofit.create(RetrofitRequest.class);
                 writingDTO = new WritingDTO(board_insert_title.getText().toString(), clientDTO.getId(), board_insert_content.getText().toString(), boardDTO.getId());
                 Call<Void> call = retrofitRequest.postWriting(writingDTO);
@@ -84,90 +76,68 @@ public class BoardInsertActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<Void> call, Response<Void> response) {
                         RetrofitRequest retrofitRequest1 = RetrofitRequest.retrofit.create(RetrofitRequest.class);
-                        Call<List<WritingDTO>> call1 = retrofitRequest1.getlasat_writing();
-                        call1.enqueue(new Callback<List<WritingDTO>>() {
+                        Call<List<WritingDTO>> call1=retrofitRequest1.getlasat_writing();
+                        call1.enqueue(new RetrofitRetry<List<WritingDTO>>(call1) {
                             @Override
                             public void onResponse(Call<List<WritingDTO>> call, Response<List<WritingDTO>> response) {
                                 writingDTO = response.body().get(0);
-                                RetrofitRequest retrofitRequest2 = RetrofitRequest.retrofit.create(RetrofitRequest.class);
-                                if (multiUri != null) {
-                                    fireBaseStorage.MultiUploadFile(multiUri, writingDTO.getId());
-                                    Log.e("asd", String.valueOf(fireBaseStorage.Firebase_MultiUri().size()));
-                                    for(int i=0; i<multiUri.size();i++){
-                                        writingImageDTO=new WritingImageDTO(String.valueOf(fireBaseStorage.Firebase_MultiUri().get(i)),writingDTO.getId());
-                                        Log.e("writingImageDTO", String.valueOf(writingImageDTO));
-                                        Call<Void>call4=retrofitRequest2.postWriting_Image(writingImageDTO);
-                                        call4.enqueue(new Callback<Void>() {
-                                            @Override
-                                            public void onResponse(Call<Void> call, Response<Void> response) {
-                                            }
-                                            @Override
-                                            public void onFailure(Call<Void> call, Throwable t) {
-                                            }
-                                        });
+                                if(imageListAdapter.getItem()!=null){
+                                    downloadUri.clear();
+                                    downloadUri=fireBaseStorage.UploadFile(imageListAdapter.getItem(), writingDTO.getId());
+                                    List<WritingImageDTO> writingImageInsertDTOS = new ArrayList<WritingImageDTO>();
+                                    Log.e("qqqqqq", String.valueOf(downloadUri));
+                                    for(int i=0; i<downloadUri.size();i++) {
+                                        writingImageInsertDTOS.add(new WritingImageDTO(String.valueOf(downloadUri.get(i)), writingDTO.getId(),imageListAdapter.getName().get(i)));
+                                        Log.e("asdasdasdasdasdasdqwe", String.valueOf(imageListAdapter.getName().get(i)));
                                     }
-                                }
-                                if (singleuri != null) {
-                                    fireBaseStorage.SingleUploadFile(singleuri, writingDTO.getId());
-                                    writingImageDTO=new WritingImageDTO(fireBaseStorage.Firebase_SingleUri(),writingDTO.getId());
-                                   Log.e("ddd",fireBaseStorage.Firebase_SingleUri());
-                                   Log.e("aaa", String.valueOf(writingDTO.getId()));
-                                    Log.e("야야야", String.valueOf(writingImageDTO.getPath()));
-                                    Call<Void>call3=retrofitRequest.postWriting_Image(writingImageDTO);
-                                    call3.enqueue(new Callback<Void>() {
+                                    Call<Void>call2=retrofitRequest.postWriting_Image_Multi(writingImageInsertDTOS);
+                                    call2.enqueue(new Callback<Void>() {
                                         @Override
                                         public void onResponse(Call<Void> call, Response<Void> response) {
-
+                                            Log.e("writing_id", String.valueOf(writingDTO.getId()));
+                                            Intent intent2 = new Intent();
+                                            BoardInsertActivity.this.setResult(RESULT_OK, intent2);
+                                            BoardInsertActivity.this.finish();
                                         }
-
                                         @Override
                                         public void onFailure(Call<Void> call, Throwable t) {
-
                                         }
                                     });
+                                }else{
+                                    Intent intent2 = new Intent();
+                                    BoardInsertActivity.this.setResult(RESULT_OK, intent2);
+                                    BoardInsertActivity.this.finish();
                                 }
-                                Intent intent2 = new Intent();
-                                BoardInsertActivity.this.setResult(RESULT_OK, intent2);
-                                BoardInsertActivity.this.finish();
-                            }
-
-                            @Override
-                            public void onFailure(Call<List<WritingDTO>> call, Throwable t) {
-
                             }
                         });
                     }
 
                     @Override
                     public void onFailure(Call<Void> call, Throwable t) {
+
                     }
                 });
             }
         });
+
     }
-
-
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 0 && resultCode == RESULT_OK) {
-            //사진 여러장 클릭 시
-            if (data.getClipData() != null) {
-                singleimg.setImageURI(null);
-
-                imgcount = data.getClipData().getItemCount();
-                for (int i = 0; i < imgcount; i++) {
-                    multiUri.add((Uri) data.getClipData().getItemAt(i).getUri());
-                }
-                imageViewAdapter.setUri(multiUri);
-                viewPager.setAdapter(imageViewAdapter);
-                singleuri=null;
-            }  if (data.getData() != null ){
-                viewPager.setAdapter(null);
-                singleuri = data.getData();
-                Log.e("single", String.valueOf(singleuri));
-                singleimg.setImageURI(singleuri);
-                multiUri=null;
+            imguri=imageListAdapter.getItem();
+            if(imguri ==null){
+                imguri=new ArrayList<Uri>();
             }
+            if (data.getClipData() != null) {
+                for (int i = 0; i < data.getClipData().getItemCount(); i++) {
+                    imguri.add((Uri) data.getClipData().getItemAt(i).getUri());
+                }
+            }
+            if (data.getData() != null) {
+                imguri.add((Uri) data.getData());
+            }
+            imageListAdapter.addItem(imguri);
+            imagelist.setAdapter(imageListAdapter);
         }
     }
 }

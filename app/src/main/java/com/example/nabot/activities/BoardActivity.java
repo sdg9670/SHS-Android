@@ -40,6 +40,9 @@ public class BoardActivity extends AppCompatActivity {
     Button boardinsertbtn;
     WritingListAdapter listAdapter;
 
+
+
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == BoardInserActivityCode && resultCode == RESULT_OK) {
@@ -48,7 +51,9 @@ public class BoardActivity extends AppCompatActivity {
         else if (requestCode == BoardViewActivityCode && resultCode == RESULT_OK) {
             refreshBoard(spinnerAdapter.getItemPosition(board.getId()));
         }
+
         super.onActivityResult(requestCode, resultCode, data);
+
     }
 
     @Override
@@ -58,8 +63,14 @@ public class BoardActivity extends AppCompatActivity {
         setContentView(R.layout.activity_board);
         boardinsertbtn = (Button) findViewById(R.id.boardinsertbtn);
 
+        Intent intent2= getIntent();
+        final  int isModify=intent2.getIntExtra("isModify",-1);
+
         Intent intent=getIntent();
         client= (ClientDTO)intent.getSerializableExtra("client");
+
+        boardspinner = (Spinner) findViewById(R.id.boardspinner);
+        spinnerAdapter = new BoardSpinnerAdapter(BoardActivity.this);
 
         RetrofitRequest retrofitRequest = RetrofitRequest.retrofit.create(RetrofitRequest.class);
         Call<List<BoardDTO>> call = retrofitRequest.getBoard();
@@ -67,12 +78,12 @@ public class BoardActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<BoardDTO>> call, Response<List<BoardDTO>> response) {
                 boardArray = response.body();
-                boardspinner = (Spinner) findViewById(R.id.boardspinner);
-                spinnerAdapter = new BoardSpinnerAdapter(BoardActivity.this);
                 for (int i = 0; i < boardArray.size(); i++) {
                     spinnerAdapter.addItem(boardArray.get(i));
                 };
                 boardspinner.setAdapter(spinnerAdapter);
+
+
                 boardspinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -91,22 +102,22 @@ public class BoardActivity extends AppCompatActivity {
         writingList.setAdapter(listAdapter);
 
         writingList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            Intent intent = new Intent(getApplicationContext(), BoardViewActivity.class);@Override
+            Intent intent = new Intent(getApplicationContext(), BoardViewActivity.class);
+            @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                     Bundle bundle=new Bundle();
                     bundle.putSerializable("client",client);
+                    Log.e("asdasdadadasd", String.valueOf(client.getId()));
                     bundle.putSerializable("writing", listAdapter.getItem(position));
                     bundle.putSerializable("board",board);
                     intent.putExtras(bundle);
                 startActivityForResult(intent,BoardViewActivityCode);
-
             }
         });
         boardinsertbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent in = new Intent(BoardActivity.this, BoardInsertActivity.class);
-                //유저정보
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("client", client);
                 bundle.putSerializable("board", board);;
@@ -115,12 +126,25 @@ public class BoardActivity extends AppCompatActivity {
 
             }
         });
+        if(isModify==31){
+            board=new BoardDTO();
+            board=(BoardDTO)intent2.getSerializableExtra("board");
+            client=(ClientDTO)intent2.getSerializableExtra("client");
+            for(int i=0; i<spinnerAdapter.getCount();i++){
+                if(board.getId()==spinnerAdapter.getItem(i).getId()){
+                    refreshBoard(spinnerAdapter.getItemPosition(board.getId()));
+                }
+            }
+        }
+
+
     }
 
     private void refreshBoard(int position) {
         listAdapter.clearItem();
         board = spinnerAdapter.getItem(position);
         RetrofitRequest retrofitRequest = RetrofitRequest.retrofit.create(RetrofitRequest.class);
+
         Call<List<WritingDTO>> call = retrofitRequest.getWriting(board.getId());
         call.enqueue(new RetrofitRetry<List<WritingDTO>>(call) {
             @Override
@@ -132,5 +156,6 @@ public class BoardActivity extends AppCompatActivity {
                 listAdapter.notifyDataSetChanged();
             }
         });
+
     }
 }

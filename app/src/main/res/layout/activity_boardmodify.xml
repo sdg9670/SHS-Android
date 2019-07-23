@@ -32,7 +32,7 @@
             android:background="@drawable/button"
             android:gravity="center"
             android:textColor="#ffffff"
-            android:text="글등록" />
+            android:text="글수정" />
     </LinearLayout>
 
 
@@ -42,6 +42,12 @@
         android:layout_height="wrap_content"
         android:hint="제목"
         android:text="" />
+
+    <ListView
+        android:id="@+id/imagelist"
+        android:layout_width="wrap_content"
+        android:layout_height="83dp"
+        android:padding="5dp"></ListView>
 
     <EditText
         android:id="@+id/board_modify_content"
@@ -58,8 +64,9 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
+
         <Button
-            android:id="@+id/button"
+            android:id="@+id/button_img"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="5dp"
