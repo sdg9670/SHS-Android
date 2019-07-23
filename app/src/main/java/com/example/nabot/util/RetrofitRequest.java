@@ -4,6 +4,7 @@ package com.example.nabot.util;
 import com.example.nabot.domain.BoardDTO;
 import com.example.nabot.domain.ClientDTO;
 import com.example.nabot.domain.CommentDTO;
+import com.example.nabot.domain.ContactDTO;
 import com.example.nabot.domain.WritingDTO;
 import com.example.nabot.domain.WritingImageDTO;
 
@@ -71,6 +72,26 @@ public interface RetrofitRequest {
     @HTTP(method = "DELETE", path = "writing_image", hasBody = true)
     Call<Void>deleteWriting_Image(@Body List<WritingImageDTO> writingImageDTO);
 
+
+    //친구추가-요청
+
+    @GET("friendList")
+    Call<List<ContactDTO>> getFriend();
+
+    @GET("friendCheck")
+    Call<List<ContactDTO>> getFriendCheckList();
+
+    @GET("friend")
+    Call<List<ClientDTO>> getFriendList();
+
+    @POST("friend")
+    Call<List<ContactDTO>> postFriend(@Body ContactDTO contact);
+
+    @PUT("friendCheck")
+    Call<Void> putFriendCheck(@Query("someid") int someid);
+
+    @DELETE("friend")
+    Call<Void> delFreind(@Query("someid") int someid);
 
     public static final Retrofit retrofit = new Retrofit.Builder()
             .baseUrl("http://simddong.ga:5001/")

@@ -37,12 +37,23 @@ public class MainActivity extends AppCompatActivity {
 
         Button speakerButton = (Button) findViewById(R.id.speakerButton);
         Button doorlockButton = (Button) findViewById(R.id.doorlockButton);
+        Button chatButton = (Button) findViewById(R.id.button2);
         Button boardButton = (Button) findViewById(R.id.boardButton);
         Button logoutButton = (Button) findViewById(R.id.logout);
         boardButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), BoardActivity.class);
+                Bundle bundle =new Bundle();
+                bundle.putSerializable("client",client);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
+        chatButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), FriendListActivity.class);
                 Bundle bundle =new Bundle();
                 bundle.putSerializable("client",client);
                 intent.putExtras(bundle);

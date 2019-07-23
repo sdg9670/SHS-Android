@@ -6,7 +6,7 @@ import android.content.Context;
 import android.support.v4.content.ContextCompat;
 
 public class App extends Application
-{
+{//기능tet
     // instance variables
     private static Context context;
 
