@@ -6,6 +6,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -33,6 +34,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static android.view.View.inflate;
+
 public class BoardViewActivity extends AppCompatActivity {
     TextView board_view_title, textView, board_view_user, board_view_text, board_writedate;
     EditText comment_text;
@@ -48,7 +51,7 @@ public class BoardViewActivity extends AppCompatActivity {
     CommentListAdapter commentListAdapter;
     ViewPager viewPager;
     ImageViewAdapter imageViewAdapter;
-
+    View ImgViewPager;
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -59,6 +62,7 @@ public class BoardViewActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_boardview);
+        ImgViewPager = findViewById(R.id.imgViewPager2);
         viewPager = findViewById(R.id.viewPager2);
         board_view_title = findViewById(R.id.board_view_title);
         textView = findViewById(R.id.textView);
@@ -102,7 +106,8 @@ public class BoardViewActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<List<WritingImageDTO>> call, Response<List<WritingImageDTO>> response) {
                         writingImgArray = response.body();
-                        if (writingImgArray != null) {
+                        if (writingImgArray.size() > 0) {
+                            ImgViewPager.setVisibility(View.VISIBLE);
                             for (int i = 0; i < writingImgArray.size(); i++) {
                                 filepath.add(writingImgArray.get(i).getPath());
                             }
