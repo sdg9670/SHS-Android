@@ -7,6 +7,7 @@ import com.example.nabot.domain.CommentDTO;
 import com.example.nabot.domain.ContactDTO;
 import com.example.nabot.domain.WritingDTO;
 import com.example.nabot.domain.WritingImageDTO;
+import com.google.gson.JsonArray;
 
 import java.util.List;
 import retrofit2.Call;
@@ -76,16 +77,19 @@ public interface RetrofitRequest {
     //친구추가-요청
 
     @GET("friendList")
-    Call<List<ContactDTO>> getFriend();
+    Call<List<ContactDTO>> getFriend(@Query("id") int id);
 
     @GET("friendCheck")
-    Call<List<ContactDTO>> getFriendCheckList();
+    Call<List<ContactDTO>> getFriendCheck(@Query("clientid") int clientid, @Query("someidname") String someidname);
+
+    @GET("friendCheck2")
+    Call<List<ContactDTO>> getFriendCheck2(@Query("someidname") String someidname);
 
     @GET("friend")
     Call<List<ClientDTO>> getFriendList();
 
     @POST("friend")
-    Call<List<ContactDTO>> postFriend(@Body ContactDTO contact);
+    Call<Void> postFriend(@Body ContactDTO contact);
 
     @PUT("friendCheck")
     Call<Void> putFriendCheck(@Query("someid") int someid);

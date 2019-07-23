@@ -1,6 +1,7 @@
 package com.example.nabot.activities;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.Toast;
@@ -18,6 +20,7 @@ import com.example.nabot.domain.ClientDTO;
 import com.example.nabot.domain.ContactDTO;
 import com.example.nabot.util.RetrofitRequest;
 import com.example.nabot.util.RetrofitRetry;
+import com.google.gson.JsonArray;
 
 import java.util.List;
 
@@ -49,34 +52,73 @@ public class FriendListActivity extends Activity {
         contact = (ContactDTO)intent.getSerializableExtra("contact");
         Log.e("intentcheck","1234");
 
-        RetrofitRequest retrofitRequest = RetrofitRequest.retrofit.create(RetrofitRequest.class);
-        Call<List<ContactDTO>> call = retrofitRequest.getFriend();
-        call.enqueue(new RetrofitRetry<List<ContactDTO>>(call) {
-            @Override
-            public void onResponse(Call<List<ContactDTO>> call, Response<List<ContactDTO>> response) {
-                contactArray = response.body();
-                if(contactArray!=null) {
-                    for (int i = 0; i < contactArray.size(); i++) {
-                        ladapter.addItem(contactArray.get(i));
-
-                    }
-                }
-                ladapter.notifyDataSetChanged();
-            }
-        });
-        friendList.setAdapter(ladapter);
-        ladapter.notifyDataSetChanged();
+        refreshFriendList();
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(FriendListActivity.this, AddFriendActivity.class);
-                //유저정보
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("client", client);
-                bundle.putSerializable("contact",contact);
-                intent.putExtras(bundle);
-                startActivityForResult(intent,REQUEST_TEST);
+                final Dialog dialog = new Dialog(FriendListActivity.this);
+                dialog.setContentView(R.layout.dialog_addfriend);
+                Button ok = (Button) dialog.findViewById(R.id.add_friend_ok);
+                Button cancle = (Button) dialog.findViewById(R.id.add_friend_cancle);
+                ok.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        EditText idname = dialog.findViewById(R.id.add_friend_text);
+                        Log.e("체크", client.getId_name() + ": " + idname.getText().toString());
+                        if(idname.getText().toString() == null || client.getId_name().equals(idname.getText().toString()))
+                        {
+                            Toast.makeText(FriendListActivity.this, "추가할 수 없는 아이디 입니다.", Toast.LENGTH_SHORT).show();
+                            dialog.dismiss();
+                            return ;
+                        }
+                        RetrofitRequest retrofitRequest = RetrofitRequest.retrofit.create(RetrofitRequest.class);
+                        Call<List<ContactDTO>> calls = retrofitRequest.getFriendCheck2(idname.getText().toString());
+                        calls.enqueue(new RetrofitRetry<List<ContactDTO>>(calls) {
+                            @Override
+                            public void onResponse(Call<List<ContactDTO>> call, Response<List<ContactDTO>> response) {
+                                if(response.body().size() == 0)
+                                    Toast.makeText(FriendListActivity.this, "존재하지 않는 아이디 입니다.", Toast.LENGTH_SHORT).show();
+                                else {
+                                    EditText idname = dialog.findViewById(R.id.add_friend_text);
+                                    RetrofitRequest retrofitRequest = RetrofitRequest.retrofit.create(RetrofitRequest.class);
+                                    Call<List<ContactDTO>> calls = retrofitRequest.getFriendCheck(client.getId(), idname.getText().toString());
+                                    calls.enqueue(new RetrofitRetry<List<ContactDTO>>(calls) {
+                                        @Override
+                                        public void onResponse(Call<List<ContactDTO>> call, Response<List<ContactDTO>> response) {
+                                            if(response.body().size() > 0)
+                                                Toast.makeText(FriendListActivity.this, "이미 친구 요청한 아이디 입니다.", Toast.LENGTH_SHORT).show();
+                                            else {
+                                                EditText idname = dialog.findViewById(R.id.add_friend_text);
+                                                RetrofitRequest retrofitRequest = RetrofitRequest.retrofit.create(RetrofitRequest.class);
+                                                Call<Void> calls = retrofitRequest.postFriend(new ContactDTO(client.getId(), idname.getText().toString()));
+                                                calls.enqueue(new Callback<Void>() {
+                                                    @Override
+                                                    public void onResponse(Call<Void> call, Response<Void> response) {
+                                                        refreshFriendList();
+                                                        dialog.dismiss();
+                                                    }
+
+                                                    @Override
+                                                    public void onFailure(Call<Void> call, Throwable t) {
+
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    }
+                });
+                cancle.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog.dismiss();
+                    }
+                });
+                dialog.show();
             }
         });
         button2.setOnClickListener(new View.OnClickListener() {
@@ -153,5 +195,27 @@ public class FriendListActivity extends Activity {
                 Toast.makeText(this, "실패", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    public  void refreshFriendList() {
+        RetrofitRequest retrofitRequest = RetrofitRequest.retrofit.create(RetrofitRequest.class);
+        Call<List<ContactDTO>> call = retrofitRequest.getFriend(client.getId());
+        call.enqueue(new RetrofitRetry<List<ContactDTO>>(call) {
+            @Override
+            public void onResponse(Call<List<ContactDTO>> call, Response<List<ContactDTO>> response) {
+                ladapter.items.clear();
+                contactArray = response.body();
+                Log.e("test1", ""+contactArray.size());
+                if(contactArray!=null) {
+                    for (int i = 0; i < contactArray.size(); i++) {
+                        ladapter.addItem(contactArray.get(i));
+                        Log.e("test", ""+contactArray.get(i).getSomeid());
+                    }
+                }
+
+                friendList.setAdapter(ladapter);
+                ladapter.notifyDataSetChanged();
+            }
+        });
     }
 }

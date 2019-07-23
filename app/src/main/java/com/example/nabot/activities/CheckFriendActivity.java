@@ -60,13 +60,6 @@ public class CheckFriendActivity extends Activity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), AddFriendActivity.class);
-                //유저정보
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("client", client);
-                bundle.putSerializable("contact", contact);
-                intent.putExtras(bundle);
-                startActivityForResult(intent, REQUEST_TEST);
             }
         });
         button2.setOnClickListener(new View.OnClickListener() {
@@ -83,7 +76,7 @@ public class CheckFriendActivity extends Activity {
         });
 
         RetrofitRequest retrofitRequest = RetrofitRequest.retrofit.create(RetrofitRequest.class);
-        Call<List<ContactDTO>> call = retrofitRequest.getFriendCheckList();
+        Call<List<ContactDTO>> call = retrofitRequest.getFriendCheck(1, "ZZ");
         call.enqueue(new RetrofitRetry<List<ContactDTO>>(call) {
             @Override
             public void onResponse(Call<List<ContactDTO>> call, Response<List<ContactDTO>> response) {

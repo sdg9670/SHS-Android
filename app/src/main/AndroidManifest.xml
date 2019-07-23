@@ -42,7 +42,6 @@
         <activity android:name=".activities.BoardInsertActivity"> </activity>
         <activity android:name=".activities.BoardViewActivity"> </activity>
         <activity android:name=".activities.BoardActivity"> </activity>
-        <activity android:name=".activities.AddFriendActivity"/>
         <activity android:name=".activities.ChatActivity"/>
         <activity android:name=".activities.ChatMainActivity"/>
         <activity android:name=".activities.FriendListActivity"/>
