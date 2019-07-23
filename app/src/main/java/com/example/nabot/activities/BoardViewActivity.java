@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
 import com.example.nabot.R;
 import com.example.nabot.adapter.CommentListAdapter;
 import com.example.nabot.adapter.ImageViewAdapter;
@@ -27,6 +28,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -39,32 +41,17 @@ public class BoardViewActivity extends AppCompatActivity {
     WritingDTO writingDTO;
     ClientDTO clientDTO;
     List<WritingImageDTO> writingImgArray = null;
-    List <String> filepath = new ArrayList<String>();
+    List<String> filepath = new ArrayList<String>();
 
     CommentDTO commentDTO;
     static final int BoardModifyActivitycode = 3;
     CommentListAdapter commentListAdapter;
     ViewPager viewPager;
     ImageViewAdapter imageViewAdapter;
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == BoardModifyActivitycode) {
-            if (resultCode == RESULT_OK) {
-                writingDTO = (WritingDTO) data.getSerializableExtra("writing");
-                writingImgArray=(List<WritingImageDTO>)data.getSerializableExtra("writingimg");
-                filepath.clear();
-                for(int i=0; i<writingImgArray.size();i++){
-                    Log.e("writingimg", String.valueOf(writingImgArray.get(i)));
-                    filepath.add(writingImgArray.get(i).getPath());
-                }
-                imageViewAdapter.imageViewAdapterDown(filepath,writingDTO.getId());
-                viewPager.setAdapter(imageViewAdapter);
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-                board_writedate.setText(sdf.format(new Date()));
-            } else {
-                Log.e("dd", "dddddd");
-            }
-        }
+
         super.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -72,10 +59,10 @@ public class BoardViewActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_boardview);
-        viewPager=findViewById(R.id.viewPager2);
+        viewPager = findViewById(R.id.viewPager2);
         board_view_title = findViewById(R.id.board_view_title);
         textView = findViewById(R.id.textView);
-        imageViewAdapter =new ImageViewAdapter(this);
+        imageViewAdapter = new ImageViewAdapter(this);
         board_view_user = findViewById(R.id.board_view_writer);
         board_view_text = findViewById(R.id.board_view_text);
         board_writedate = findViewById(R.id.board_writedate);
@@ -89,8 +76,7 @@ public class BoardViewActivity extends AppCompatActivity {
         final BoardDTO boardDTO = (BoardDTO) intent.getSerializableExtra("board");
         clientDTO = (ClientDTO) intent.getSerializableExtra("client");
 
-        if(clientDTO.getId() != writingDTO.getWriter())
-        {
+        if (clientDTO.getId() != writingDTO.getWriter()) {
             board_view_modify_btn.setVisibility(View.INVISIBLE);
             board_view_delete_btn.setVisibility(View.INVISIBLE);
         }
@@ -106,22 +92,22 @@ public class BoardViewActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<CommentDTO>> call, Response<List<CommentDTO>> response) {
                 List<CommentDTO> commentDTO = response.body();
-                commentListAdapter=new CommentListAdapter(BoardViewActivity.this, clientDTO);
-                for(CommentDTO i : commentDTO) {
+                commentListAdapter = new CommentListAdapter(BoardViewActivity.this, clientDTO);
+                for (CommentDTO i : commentDTO) {
                     commentListAdapter.addItem(i);
                 }
                 board_commentlist.setAdapter(commentListAdapter);
-                Call<List<WritingImageDTO>> call1 =retrofitRequest.getWriting_Image(writingDTO.getId());
+                Call<List<WritingImageDTO>> call1 = retrofitRequest.getWriting_Image(writingDTO.getId());
                 call1.enqueue(new RetrofitRetry<List<WritingImageDTO>>(call1) {
                     @Override
                     public void onResponse(Call<List<WritingImageDTO>> call, Response<List<WritingImageDTO>> response) {
-                        writingImgArray=response.body();
-                        if(writingImgArray != null){
-                            for(int i=0; i<writingImgArray.size() ; i++){
+                        writingImgArray = response.body();
+                        if (writingImgArray != null) {
+                            for (int i = 0; i < writingImgArray.size(); i++) {
                                 filepath.add(writingImgArray.get(i).getPath());
                             }
                             Log.e("filepath", String.valueOf(filepath));
-                            imageViewAdapter.imageViewAdapterDown(filepath,writingDTO.getId());
+                            imageViewAdapter.imageViewAdapterDown(filepath, writingDTO.getId());
                             viewPager.setAdapter(imageViewAdapter);
                         }
                     }
@@ -140,7 +126,7 @@ public class BoardViewActivity extends AppCompatActivity {
                 bundle.putSerializable("board", boardDTO);
                 in.putExtras(bundle);
                 startActivityForResult(in, BoardModifyActivitycode);
-                finish();
+
             }
         });
         board_view_delete_btn.setOnClickListener(new View.OnClickListener() {
@@ -155,6 +141,7 @@ public class BoardViewActivity extends AppCompatActivity {
                         BoardViewActivity.this.setResult(RESULT_OK, intent);
                         BoardViewActivity.this.finish();
                     }
+
                     @Override
                     public void onFailure(Call<Void> call, Throwable t) {
                         Intent intent = new Intent();
@@ -181,6 +168,7 @@ public class BoardViewActivity extends AppCompatActivity {
                         commentListAdapter.notifyDataSetChanged();
                         board_commentlist.setSelection(commentListAdapter.getCount() - 1);
                     }
+
                     @Override
                     public void onFailure(Call<Void> call, Throwable t) {
                         commentDTO.setWriter_name(clientDTO.getName());
@@ -195,7 +183,6 @@ public class BoardViewActivity extends AppCompatActivity {
         });
 
 
-
     }
 
     @Override
@@ -203,7 +190,7 @@ public class BoardViewActivity extends AppCompatActivity {
         Intent intent = new Intent();
         BoardViewActivity.this.setResult(RESULT_OK, intent);
         BoardViewActivity.this.finish();
-
     }
+
 
 }

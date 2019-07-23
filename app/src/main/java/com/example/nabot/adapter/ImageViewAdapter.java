@@ -21,18 +21,25 @@ public class ImageViewAdapter extends PagerAdapter {
     private Context mContext = null;
     ImageView imageView;
     int writing_id=0;
-    List<String>  filepath=new ArrayList<String>();
+    List<String>  filepath=null;
     public ImageViewAdapter(Context context) {
         mContext = context;
+
     }
-
-
 
     public void imageViewAdapterDown(List<String> filepath , int writing_id){
+        this.filepath=new ArrayList<>();
         this.writing_id=writing_id;
         this.filepath=filepath;
-
+        notifyDataSetChanged();
     }
+
+    public  void refreshData(List<String> filepath){
+        this.filepath=new ArrayList<>();
+        this.filepath=filepath;
+        notifyDataSetChanged();
+    }
+
 
     @Override
     public Object instantiateItem(final ViewGroup container , int position) {
@@ -58,6 +65,9 @@ public class ImageViewAdapter extends PagerAdapter {
 
         }
         return  view;
+    }
+    public void clearItem() {
+        filepath.clear();
     }
 
     @Override

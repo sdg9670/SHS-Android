@@ -44,6 +44,10 @@ public class BoardSpinnerAdapter extends BaseAdapter implements SpinnerAdapter {
         return items.get(position);
     }
 
+    public  ArrayList<BoardDTO> getItem(){
+        return items;
+    }
+
     @Override
     public long getItemId(int arg0) {
         // TODO Auto-generated method stub
