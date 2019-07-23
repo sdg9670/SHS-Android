@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -77,7 +78,7 @@ public class ImageListAdapter extends BaseAdapter {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.flate_imagelist, parent, false);
         TextView imagename = (TextView) view.findViewById(R.id.imagename);
-        ImageButton imagecancel= (ImageButton)view.findViewById(R.id.imagecancel);
+        Button imagecancel= (Button)view.findViewById(R.id.imagecancel);
         String[] spl = String.valueOf(items.get(position)).split("/");
         imagename.setText(spl[spl.length-1]);
         imagecancel.setOnClickListener(new View.OnClickListener() {

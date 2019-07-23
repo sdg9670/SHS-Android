@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -98,7 +99,7 @@ public class ImageListAdapterModify extends BaseAdapter {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.flate_imagelist, parent, false);
         TextView imagename = (TextView) view.findViewById(R.id.imagename);
-        ImageButton imagecancel= (ImageButton)view.findViewById(R.id.imagecancel);
+        Button imagecancel= (Button)view.findViewById(R.id.imagecancel);
 
         if(writingImgArray!=null && items.size()<=writingImgArray.size()) {
             imagename.setText(writingImgArray.get(position).getName());

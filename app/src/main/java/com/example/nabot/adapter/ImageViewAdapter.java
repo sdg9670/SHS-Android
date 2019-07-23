@@ -52,9 +52,6 @@ public class ImageViewAdapter extends PagerAdapter {
                 imageView=(ImageView)view.findViewById(R.id.imgs);
                 FirebaseStorage fs=FirebaseStorage.getInstance();
                 StorageReference ref=fs.getReference().child(filepath.get(position));
-                Log.e("sssssssssssssss", String.valueOf(filepath.size()));
-                Log.e("asdadsadasdasdasd",String.valueOf(filepath));
-                Log.e("asdasdasdasd", String.valueOf(filepath.get(position)));
                 Glide.with(mContext)
                         .load(ref)
                         .into(imageView)

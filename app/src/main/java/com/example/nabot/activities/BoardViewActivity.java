@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.example.nabot.R;
 import com.example.nabot.adapter.CommentListAdapter;
 import com.example.nabot.adapter.ImageViewAdapter;
+import com.example.nabot.classes.SquareViewPager;
 import com.example.nabot.domain.BoardDTO;
 import com.example.nabot.domain.ClientDTO;
 import com.example.nabot.domain.CommentDTO;
@@ -49,9 +50,8 @@ public class BoardViewActivity extends AppCompatActivity {
     CommentDTO commentDTO;
     static final int BoardModifyActivitycode = 3;
     CommentListAdapter commentListAdapter;
-    ViewPager viewPager;
+    SquareViewPager viewPager;
     ImageViewAdapter imageViewAdapter;
-    View ImgViewPager;
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -62,7 +62,6 @@ public class BoardViewActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_boardview);
-        ImgViewPager = findViewById(R.id.imgViewPager2);
         viewPager = findViewById(R.id.viewPager2);
         board_view_title = findViewById(R.id.board_view_title);
         textView = findViewById(R.id.textView);
@@ -107,13 +106,13 @@ public class BoardViewActivity extends AppCompatActivity {
                     public void onResponse(Call<List<WritingImageDTO>> call, Response<List<WritingImageDTO>> response) {
                         writingImgArray = response.body();
                         if (writingImgArray.size() > 0) {
-                            ImgViewPager.setVisibility(View.VISIBLE);
                             for (int i = 0; i < writingImgArray.size(); i++) {
                                 filepath.add(writingImgArray.get(i).getPath());
                             }
                             Log.e("filepath", String.valueOf(filepath));
                             imageViewAdapter.imageViewAdapterDown(filepath, writingDTO.getId());
                             viewPager.setAdapter(imageViewAdapter);
+                            viewPager.setVisibility(View.VISIBLE);
                         }
                     }
                 });
