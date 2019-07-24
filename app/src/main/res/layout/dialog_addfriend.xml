@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:background="@drawable/button"
-            android:textColor="#ffffff"
+            android:textColor="#FFFFFF"
             android:text="요청" />
 
         <Button
@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:background="@drawable/button"
-            android:textColor="#ffffff"
+            android:textColor="#FFFFFF"
             android:text="취소" />
     </LinearLayout>
 

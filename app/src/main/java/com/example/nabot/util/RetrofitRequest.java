@@ -76,8 +76,12 @@ public interface RetrofitRequest {
 
     //친구추가-요청
 
-    @GET("friendList")
-    Call<List<ContactDTO>> getFriend(@Query("id") int id);
+
+    @DELETE("requestFriend")
+    Call<Void> delRequestFreind(@Query("clientid") int clientid, @Query("someid") int someid);
+
+    @GET("requestFriend")
+    Call<List<ContactDTO>> getRequestFriendList(@Query("id") int id);
 
     @GET("friendCheck")
     Call<List<ContactDTO>> getFriendCheck(@Query("clientid") int clientid, @Query("someidname") String someidname);
@@ -86,16 +90,13 @@ public interface RetrofitRequest {
     Call<List<ContactDTO>> getFriendCheck2(@Query("someidname") String someidname);
 
     @GET("friend")
-    Call<List<ClientDTO>> getFriendList();
+    Call<List<ContactDTO>> getFriend(@Query("id") int id);
 
     @POST("friend")
     Call<Void> postFriend(@Body ContactDTO contact);
 
-    @PUT("friendCheck")
-    Call<Void> putFriendCheck(@Query("someid") int someid);
-
     @DELETE("friend")
-    Call<Void> delFreind(@Query("someid") int someid);
+    Call<Void> delFreind(@Query("clientid") int clientid, @Query("someid") int someid);
 
     public static final Retrofit retrofit = new Retrofit.Builder()
             .baseUrl("http://simddong.ga:5001/")

@@ -95,4 +95,8 @@ public class ContactDTO implements Serializable {
         this.clientid = clientid;
         this.someidname = someidname;
     }
+    public ContactDTO(int clientid, int someid) {
+        this.clientid = clientid;
+        this.someid = someid;
+    }
 }

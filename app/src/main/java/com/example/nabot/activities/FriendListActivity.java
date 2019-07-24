@@ -20,7 +20,6 @@ import com.example.nabot.domain.ClientDTO;
 import com.example.nabot.domain.ContactDTO;
 import com.example.nabot.util.RetrofitRequest;
 import com.example.nabot.util.RetrofitRetry;
-import com.google.gson.JsonArray;
 
 import java.util.List;
 
@@ -124,7 +123,7 @@ public class FriendListActivity extends Activity {
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(FriendListActivity.this, CheckFriendActivity.class);
+                Intent intent = new Intent(FriendListActivity.this, RequestFriendListActivity.class);
                 //유저정보
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("client", client);
@@ -156,22 +155,17 @@ public class FriendListActivity extends Activity {
                 public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.delete:
-                        Toast.makeText(FriendListActivity.this, ladapter.getItem(position) + " 삭제", Toast.LENGTH_SHORT).show();
-
                         RetrofitRequest retrofitRequest = RetrofitRequest.retrofit.create(RetrofitRequest.class);
-                        Call<Void> call = retrofitRequest.delFreind(contact.getSomeid());
+                        //수정할것
+                        Call<Void> call = retrofitRequest.delFreind(client.getId(), ladapter.getItem(position).getSomeid());
                         call.enqueue(new Callback<Void>() {
                             @Override
                             public void onResponse(Call<Void> call, Response<Void> response) {
-                                Intent intent = new Intent();
-                                FriendListActivity.this.setResult(RESULT_OK, intent);
-                                FriendListActivity.this.finish();
+                                ladapter.removeItem(position);
+                                ladapter.notifyDataSetChanged();
                             }
                             @Override
                             public void onFailure(Call<Void> call, Throwable t) {
-                                Intent intent = new Intent();
-                                FriendListActivity.this.setResult(RESULT_OK, intent);
-                                FriendListActivity.this.finish();
                             }
                         });
                         break;
@@ -186,13 +180,12 @@ public class FriendListActivity extends Activity {
 
     }
 
-    public void onActivityResult(int requestCode, int resultCode, Intent data){
-        if(requestCode==REQUEST_TEST){
-            if(resultCode == RESULT_OK){
-                friendList.setAdapter(ladapter);
-                ladapter.notifyDataSetChanged();
-            }else{
-                Toast.makeText(this, "실패", Toast.LENGTH_SHORT).show();
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_TEST)
+        {
+            if (resultCode == RESULT_OK) {
+            } else if (resultCode == RESULT_CANCELED) {
+                refreshFriendList();
             }
         }
     }
