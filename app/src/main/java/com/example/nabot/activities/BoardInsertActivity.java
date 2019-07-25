@@ -10,10 +10,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+
 import com.example.nabot.R;
 import com.example.nabot.adapter.ImageListAdapter;
+import com.example.nabot.adapter.VoteInsertListAdapter;
 import com.example.nabot.domain.BoardDTO;
 import com.example.nabot.domain.ClientDTO;
+import com.example.nabot.domain.VoteDTO;
 import com.example.nabot.domain.WritingDTO;
 import com.example.nabot.domain.WritingImageDTO;
 import com.example.nabot.util.FireBaseStorage;
@@ -22,6 +25,7 @@ import com.example.nabot.util.RetrofitRetry;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -30,30 +34,45 @@ public class BoardInsertActivity extends AppCompatActivity {
     TextView board_insert_boardname, board_insert_content;
     Button board_insert_btn;
     EditText board_insert_title;
-    List<Uri> imguri= new ArrayList<Uri>();
-    int index=0;
+    List<Uri> imguri = new ArrayList<Uri>();
+    ListView votelist;
+    VoteInsertListAdapter voteInsertListAdapter;
+    int index = 0;
     WritingDTO writingDTO;
     ImageListAdapter imageListAdapter;
-    Button button_img;
+    Button button_img, button_vote;
     ListView imagelist;
     FireBaseStorage fireBaseStorage = new FireBaseStorage();
-    List<String>downloadUri=new ArrayList<String>();
+    List<VoteDTO> votearray = null;
+    List<String> downloadUri = new ArrayList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_boardinsert);
         button_img = findViewById(R.id.button_img);
+        voteInsertListAdapter = new VoteInsertListAdapter(this);
+        votelist = findViewById(R.id.votelist);
+        votelist.setAdapter(voteInsertListAdapter);
         imageListAdapter = new ImageListAdapter(this, imguri);
         board_insert_boardname = findViewById(R.id.board_insert_boardname);
         board_insert_content = findViewById(R.id.board_insert_content);
         board_insert_btn = findViewById(R.id.board_insert_btn);
+        button_vote = findViewById(R.id.button_vote);
         board_insert_title = findViewById(R.id.board_insert_title);
-        imagelist=findViewById(R.id.imagelist);
+        imagelist = findViewById(R.id.imagelist);
         Intent in = getIntent();
         final ClientDTO clientDTO = (ClientDTO) in.getSerializableExtra("client");
         final BoardDTO boardDTO = (BoardDTO) in.getSerializableExtra("board");
         board_insert_boardname.setText(boardDTO.getName());
+
+        button_vote.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent voteintent = new Intent(BoardInsertActivity.this, BoardVoteActivity.class);
+                startActivityForResult(voteintent, 123);
+            }
+        });
 
         button_img.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,35 +94,71 @@ public class BoardInsertActivity extends AppCompatActivity {
                 call.enqueue(new Callback<Void>() {
                     @Override
                     public void onResponse(Call<Void> call, Response<Void> response) {
-                        RetrofitRequest retrofitRequest1 = RetrofitRequest.retrofit.create(RetrofitRequest.class);
-                        Call<List<WritingDTO>> call1=retrofitRequest1.getlasat_writing();
+                        Call<List<WritingDTO>> call1 = retrofitRequest.getlasat_writing();
                         call1.enqueue(new RetrofitRetry<List<WritingDTO>>(call1) {
                             @Override
                             public void onResponse(Call<List<WritingDTO>> call, Response<List<WritingDTO>> response) {
                                 writingDTO = response.body().get(0);
-                                if(imageListAdapter.getItem()!=null){
+                                if (imageListAdapter.getItem() != null) {
                                     downloadUri.clear();
-                                    downloadUri=fireBaseStorage.UploadFile(imageListAdapter.getItem(), writingDTO.getId());
+                                    downloadUri = fireBaseStorage.UploadFile(imageListAdapter.getItem(), writingDTO.getId());
                                     List<WritingImageDTO> writingImageInsertDTOS = new ArrayList<WritingImageDTO>();
-                                    Log.e("qqqqqq", String.valueOf(downloadUri));
-                                    for(int i=0; i<downloadUri.size();i++) {
-                                        writingImageInsertDTOS.add(new WritingImageDTO(String.valueOf(downloadUri.get(i)), writingDTO.getId(),imageListAdapter.getName().get(i)));
-                                        Log.e("asdasdasdasdasdasdqwe", String.valueOf(imageListAdapter.getName().get(i)));
+                                    for (int i = 0; i < downloadUri.size(); i++) {
+                                        writingImageInsertDTOS.add(new WritingImageDTO(String.valueOf(downloadUri.get(i)), writingDTO.getId(), imageListAdapter.getName().get(i)));
                                     }
-                                    Call<Void>call2=retrofitRequest.postWriting_Image_Multi(writingImageInsertDTOS);
+                                    Call<Void> call2 = retrofitRequest.postWriting_Image_Multi(writingImageInsertDTOS);
                                     call2.enqueue(new Callback<Void>() {
                                         @Override
                                         public void onResponse(Call<Void> call, Response<Void> response) {
-                                            Log.e("writing_id", String.valueOf(writingDTO.getId()));
+                                            if (votearray != null) {
+                                                for (int i = 0; i < votearray.size(); i++) {
+                                                    votearray.get(i).setWriting_id(writingDTO.getId());
+                                                    Log.e("자자자", "wiritngid" + votearray.get(i).getWriting_id()
+                                                            + votearray.get(i).getName());
+
+                                                }
+                                                Call<Void> call3 = retrofitRequest.postWriting_Vote(votearray);
+                                                call3.enqueue(new Callback<Void>() {
+                                                    @Override
+                                                    public void onResponse(Call<Void> call, Response<Void> response) {
+
+                                                    }
+
+                                                    @Override
+                                                    public void onFailure(Call<Void> call, Throwable t) {
+
+                                                    }
+                                                });
+                                            }
                                             Intent intent2 = new Intent();
                                             BoardInsertActivity.this.setResult(RESULT_OK, intent2);
                                             BoardInsertActivity.this.finish();
                                         }
+
                                         @Override
                                         public void onFailure(Call<Void> call, Throwable t) {
                                         }
                                     });
-                                }else{
+                                } else {
+                                    if (votearray != null) {
+                                        for (int i = 0; i < votearray.size(); i++) {
+                                            Log.e("자자자", "wiritngid" + votearray.get(i).getWriting_id()
+                                                    + votearray.get(i).getName());
+                                            votearray.get(i).setWriting_id(writingDTO.getId());
+                                        }
+                                        Call<Void> call3 = retrofitRequest.postWriting_Vote(votearray);
+                                        call3.enqueue(new Callback<Void>() {
+                                            @Override
+                                            public void onResponse(Call<Void> call, Response<Void> response) {
+
+                                            }
+
+                                            @Override
+                                            public void onFailure(Call<Void> call, Throwable t) {
+
+                                            }
+                                        });
+                                    }
                                     Intent intent2 = new Intent();
                                     BoardInsertActivity.this.setResult(RESULT_OK, intent2);
                                     BoardInsertActivity.this.finish();
@@ -111,6 +166,7 @@ public class BoardInsertActivity extends AppCompatActivity {
                             }
                         });
                     }
+
                     @Override
                     public void onFailure(Call<Void> call, Throwable t) {
 
@@ -120,12 +176,27 @@ public class BoardInsertActivity extends AppCompatActivity {
         });
 
     }
+
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 123 && resultCode == RESULT_OK) {
+            if (data.getBooleanExtra("isvoting", false) == true) {
+                Log.e("ttttt", "xczxczxczx");
+                votearray = new ArrayList<VoteDTO>();
+                votearray = (List<VoteDTO>) data.getSerializableExtra("voteDTOS");
+                Log.e("vovvv", String.valueOf(votearray));
+                for (int i = 0; i < votearray.size(); i++) {
+                    voteInsertListAdapter.addItem(votearray.get(i).getName());
+                }
+            } else
+                votearray = null;
+        }
+
         if (requestCode == 0 && resultCode == RESULT_OK) {
-            imguri=imageListAdapter.getItem();
-            if(imguri ==null){
-                imguri=new ArrayList<Uri>();
+            imguri = imageListAdapter.getItem();
+            if (imguri == null) {
+                imguri = new ArrayList<Uri>();
             }
             if (data.getClipData() != null) {
                 for (int i = 0; i < data.getClipData().getItemCount(); i++) {

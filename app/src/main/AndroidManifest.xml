@@ -45,6 +45,8 @@
         <activity android:name=".activities.ChatActivity"/>
         <activity android:name=".activities.ChatMainActivity"/>
         <activity android:name=".activities.FriendListActivity"/>
+        <activity android:name=".activities.BoardVoteActivity"
+            android:windowSoftInputMode="adjustPan"/>
         <activity android:name=".activities.RequestFriendListActivity"/>
         <provider
             android:name="android.support.v4.content.FileProvider"

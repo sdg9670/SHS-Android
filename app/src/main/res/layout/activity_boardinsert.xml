@@ -47,7 +47,9 @@
         android:id="@+id/imagelist"
         android:layout_width="match_parent"
         android:layout_height="83dp"
-        android:padding="5dp"></ListView>
+        android:padding="5dp">
+
+    </ListView>
 
 
     <EditText
@@ -59,6 +61,12 @@
         android:gravity="start|top"
         android:hint="내용"
         android:inputType="textMultiLine" />
+
+    <ListView
+        android:id="@+id/votelist"
+        android:layout_width="match_parent"
+        android:layout_height="83dp"
+        android:padding="5dp"></ListView>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -77,23 +85,15 @@
             android:text="이미지" />
 
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/button_vote"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="5dp"
             android:layout_weight="1"
             android:background="@drawable/button"
-            android:textColor="#ffffff"
-            android:text="동영상" />
+            android:text="투표"
+            android:textColor="#ffffff" />
 
-        <Button
-            android:id="@+id/button3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/button"
-            android:textColor="#ffffff"
-            android:text="파일" />
     </LinearLayout>
 
 </LinearLayout>

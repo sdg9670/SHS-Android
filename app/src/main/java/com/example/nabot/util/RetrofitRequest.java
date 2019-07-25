@@ -5,6 +5,7 @@ import com.example.nabot.domain.BoardDTO;
 import com.example.nabot.domain.ClientDTO;
 import com.example.nabot.domain.CommentDTO;
 import com.example.nabot.domain.ContactDTO;
+import com.example.nabot.domain.VoteDTO;
 import com.example.nabot.domain.WritingDTO;
 import com.example.nabot.domain.WritingImageDTO;
 import com.google.gson.JsonArray;
@@ -66,6 +67,10 @@ public interface RetrofitRequest {
 
     @POST("writing_image_multi")
     Call<Void>postWriting_Image_Multi(@Body List<WritingImageDTO> writingImageInsertDTOS);
+
+    @POST("writing_vote")
+    Call<Void>postWriting_Vote(@Body List<VoteDTO> voteDTOS);
+
 
     @GET("writing_image")
     Call<List<WritingImageDTO>> getWriting_Image(@Query("writing_id") int writing_id);

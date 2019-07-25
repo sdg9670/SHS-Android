@@ -1,7 +1,9 @@
 package com.example.nabot.adapter;
 
+import android.content.ClipData;
 import android.content.Context;
 import android.net.Uri;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +17,7 @@ import com.example.nabot.R;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 public class ImageListAdapter extends BaseAdapter {
     private final Context context;
