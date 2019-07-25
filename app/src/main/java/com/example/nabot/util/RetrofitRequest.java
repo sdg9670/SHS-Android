@@ -2,6 +2,7 @@ package com.example.nabot.util;
 
 
 import com.example.nabot.domain.BoardDTO;
+import com.example.nabot.domain.ChatDTO;
 import com.example.nabot.domain.ClientDTO;
 import com.example.nabot.domain.CommentDTO;
 import com.example.nabot.domain.ContactDTO;
@@ -76,7 +77,6 @@ public interface RetrofitRequest {
 
     //친구추가-요청
 
-
     @DELETE("requestFriend")
     Call<Void> delRequestFreind(@Query("clientid") int clientid, @Query("someid") int someid);
 
@@ -98,8 +98,16 @@ public interface RetrofitRequest {
     @DELETE("friend")
     Call<Void> delFreind(@Query("clientid") int clientid, @Query("someid") int someid);
 
+    // 채팅
+
+    @POST("chat")
+    Call<List<ChatDTO>> postChat(@Body ChatDTO chat);
+
+    @DELETE("chat")
+    Call<Void> delChat(@Query("sendid") int sendid, @Query("recvid") int recvid);
+
     public static final Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl("http://simddong.ga:5001/")
+            .baseUrl("http://simddong.ga:5002/")
             .addConverterFactory(GsonConverterFactory.create())
             .build();
 }
