@@ -1,0 +1,149 @@
+package com.example.nabot.activities;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.example.nabot.R;
+import com.example.nabot.adapter.VoteAddListAdapter;
+import com.example.nabot.domain.CheckVoteDTO;
+import com.example.nabot.domain.ClientDTO;
+import com.example.nabot.domain.VoteDTO;
+import com.example.nabot.domain.VoteWheterDTO;
+import com.example.nabot.domain.WritingDTO;
+import com.example.nabot.util.RetrofitRequest;
+import com.example.nabot.util.RetrofitRetry;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class BoardVoteViewActivity extends AppCompatActivity {
+    RadioGroup vote_radiogroup;
+    TextView vote_view_text, votetitle;
+    Button btnvoting, btnvoteresult, btnvotecancel;
+    List<VoteDTO> voteDTOS = new ArrayList<VoteDTO>();
+    WritingDTO writingDTO = new WritingDTO();
+    ClientDTO clientDTO;
+    RadioGroup radioGroup;
+    VoteWheterDTO voteWheterDTO = null;
+    Boolean ischekced = false;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_writingvoteview);
+        Intent intent = getIntent();
+        voteDTOS = (List<VoteDTO>) intent.getSerializableExtra("voteDTOS");
+        writingDTO = (WritingDTO) intent.getSerializableExtra("writing");
+        clientDTO = (ClientDTO) intent.getSerializableExtra("client");
+        vote_radiogroup = findViewById(R.id.vote_radiogroup);
+        vote_view_text = findViewById(R.id.vote_view_text);
+        btnvoting = findViewById(R.id.btnvoting);
+        votetitle = findViewById(R.id.votetitle);
+        btnvotecancel = findViewById(R.id.btnvotecancel);
+        btnvoteresult = findViewById(R.id.btnvoteresult);
+        votetitle.setText(writingDTO.getTitle());
+        radioGroup = findViewById(R.id.vote_radiogroup);
+        radioGroup.setOrientation(LinearLayout.VERTICAL);
+
+        for (int i = 1; i <= voteDTOS.size(); i++) {
+            RadioButton radioButton = new RadioButton(this);
+            radioButton.setId(View.generateViewId());
+            radioButton.setText(voteDTOS.get(i - 1).getName());
+            radioGroup.addView(radioButton);
+        }
+        btnvotecancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+        btnvoteresult.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent1 = new Intent(BoardVoteViewActivity.this, BoardVoteViewResultActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("clientDTO", clientDTO);
+                bundle.putSerializable("writingDTO", writingDTO);
+                intent1.putExtras(bundle);
+                startActivity(intent1);
+                finish();
+            }
+        });
+
+        btnvoting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (ischekced == true && voteWheterDTO != null) {
+                    final RetrofitRequest retrofitRequest = RetrofitRequest.retrofit.create(RetrofitRequest.class);
+                    Call<List<CheckVoteDTO>> call = retrofitRequest.check_Vote(writingDTO.getId(), clientDTO.getId());
+                    call.enqueue(new RetrofitRetry<List<CheckVoteDTO>>(call) {
+                        @Override
+                        public void onResponse(Call<List<CheckVoteDTO>> call, Response<List<CheckVoteDTO>> response) {
+                            if (response.body() == null || response.body().size() == 0) {
+                                Call<Void> call2 = retrofitRequest.postVoteWheter(voteWheterDTO);
+                                call2.enqueue(new Callback<Void>() {
+                                    @Override
+                                    public void onResponse(Call<Void> call, Response<Void> response) {
+                                        Intent intent1 = new Intent(BoardVoteViewActivity.this, BoardVoteViewResultActivity.class);
+                                        Bundle bundle = new Bundle();
+                                        bundle.putSerializable("clientDTO", clientDTO);
+                                        bundle.putSerializable("writingDTO", writingDTO);
+                                        intent1.putExtras(bundle);
+                                        startActivity(intent1);
+                                        finish();
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<Void> call, Throwable t) {
+                                    }
+                                });
+                            }
+                        }
+                    });
+
+
+                } else
+                    Toast.makeText(BoardVoteViewActivity.this, "먼저 입력해주세요", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                RadioButton checkedRadioButton = (RadioButton) group.findViewById(checkedId);
+                ischekced = checkedRadioButton.isChecked();
+                if (ischekced == true) {
+                    for (int i = 0; i < voteDTOS.size(); i++) {
+                        Log.e("eeeee", checkedRadioButton.getText().toString());
+                        if (voteDTOS.get(i).getName().equals(checkedRadioButton.getText().toString())) {
+                            Log.e("eeeee22222", voteDTOS.get(i).getName());
+                            voteWheterDTO = new VoteWheterDTO(voteDTOS.get(i).getId(), clientDTO.getId());
+                        }
+                    }
+                } else {
+                    voteWheterDTO = null;
+                    Toast.makeText(BoardVoteViewActivity.this, "항목을 체크해주세요123123", Toast.LENGTH_SHORT).show();
+                    ischekced = false;
+                }
+            }
+        });
+    }
+}
+

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <RadioGroup
+        android:id="@+id/vote_radiogroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:orientation="vertical">
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+           >
+
+            <TextView
+                android:id="@+id/vote_view_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+    </RadioGroup>
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="30dp">
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#ddd"
+        android:text="투표하기"
+        android:layout_weight="1"
+        android:id="@+id/btnvoting"
+        android:background="@drawable/button"
+        />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#ddd"
+        android:text="결과보기"
+        android:id="@+id/btnvoteresult"
+        android:layout_weight="1"
+        android:background="@drawable/button"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#ddd"
+        android:text="취소"
+        android:id="@+id/btnvotecancel"
+        android:layout_weight="1"
+        android:background="@drawable/button"/>
+
+</LinearLayout>
+
+    <TextView
+        android:id="@+id/votetitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="40dp"/>
+
+</LinearLayout>
+
+</RelativeLayout>
