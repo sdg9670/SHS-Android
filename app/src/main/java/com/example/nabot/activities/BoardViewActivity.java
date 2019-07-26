@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.nabot.R;
 import com.example.nabot.adapter.CommentListAdapter;
@@ -20,6 +21,7 @@ import com.example.nabot.classes.SquareViewPager;
 import com.example.nabot.domain.BoardDTO;
 import com.example.nabot.domain.ClientDTO;
 import com.example.nabot.domain.CommentDTO;
+import com.example.nabot.domain.VoteDTO;
 import com.example.nabot.domain.WritingDTO;
 import com.example.nabot.domain.WritingImageDTO;
 import com.example.nabot.util.RetrofitRequest;
@@ -41,7 +43,7 @@ public class BoardViewActivity extends AppCompatActivity {
     TextView board_view_title, textView, board_view_user, board_view_text, board_writedate;
     EditText comment_text;
     ListView board_commentlist;
-    Button board_view_modify_btn, board_view_delete_btn, commentinsert;
+    Button board_view_modify_btn, board_view_delete_btn, commentinsert,board_view_vote;
     WritingDTO writingDTO;
     ClientDTO clientDTO;
     List<WritingImageDTO> writingImgArray = null;
@@ -63,6 +65,7 @@ public class BoardViewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_boardview);
         viewPager = findViewById(R.id.viewPager2);
+        board_view_vote=findViewById(R.id.board_view_vote);
         board_view_title = findViewById(R.id.board_view_title);
         textView = findViewById(R.id.textView);
         imageViewAdapter = new ImageViewAdapter(this);
@@ -119,6 +122,7 @@ public class BoardViewActivity extends AppCompatActivity {
             }
         });
 
+
         board_view_modify_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -133,6 +137,34 @@ public class BoardViewActivity extends AppCompatActivity {
 
             }
         });
+
+
+        board_view_vote.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RetrofitRequest retrofitRequest = RetrofitRequest.retrofit.create(RetrofitRequest.class);
+                Call<List<VoteDTO>> call = retrofitRequest.getWriting_Vote(writingDTO.getId());
+                call.enqueue(new RetrofitRetry<List<VoteDTO>>(call) {
+                    @Override
+                    public void onResponse(Call<List<VoteDTO>> call, Response<List<VoteDTO>> response) {
+                        if(response.body()!=null) {
+                            List<VoteDTO> voteDTOS = response.body();
+                            Intent intent1 = new Intent(BoardViewActivity.this, BoardVoteViewActivity.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putSerializable("client",(Serializable)clientDTO);
+                            bundle.putSerializable("writing",(Serializable)writingDTO);
+                            bundle.putSerializable("voteDTOS", (Serializable) voteDTOS);
+                            intent1.putExtras(bundle);
+                            startActivity(intent1);
+                        }
+                        else
+                            Toast.makeText(BoardViewActivity.this, "해당 게시글에는 투표가 없습니다.", Toast.LENGTH_SHORT).show();
+
+                    }
+                });
+            }
+        });
+
         board_view_delete_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

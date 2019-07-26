@@ -46,6 +46,9 @@ public class BoardActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == BoardInserActivityCode && resultCode == RESULT_OK) {
+            BoardDTO boardDTO=  new BoardDTO();
+            boardDTO=(BoardDTO)data.getSerializableExtra("boardDTO");
+            board.setId(boardDTO.getId());
             refreshBoard(spinnerAdapter.getItemPosition(board.getId()));
         }
         else if (requestCode == BoardViewActivityCode && resultCode == RESULT_OK) {

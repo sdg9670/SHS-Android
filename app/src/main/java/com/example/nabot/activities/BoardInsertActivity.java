@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.example.nabot.R;
 import com.example.nabot.adapter.ImageListAdapter;
-import com.example.nabot.adapter.VoteInsertListAdapter;
+import com.example.nabot.adapter.VoteInsertViewListAdapter;
 import com.example.nabot.domain.BoardDTO;
 import com.example.nabot.domain.ClientDTO;
 import com.example.nabot.domain.VoteDTO;
@@ -36,7 +36,7 @@ public class BoardInsertActivity extends AppCompatActivity {
     EditText board_insert_title;
     List<Uri> imguri = new ArrayList<Uri>();
     ListView votelist;
-    VoteInsertListAdapter voteInsertListAdapter;
+    VoteInsertViewListAdapter voteInsertListAdapter;
     int index = 0;
     WritingDTO writingDTO;
     ImageListAdapter imageListAdapter;
@@ -51,7 +51,7 @@ public class BoardInsertActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_boardinsert);
         button_img = findViewById(R.id.button_img);
-        voteInsertListAdapter = new VoteInsertListAdapter(this);
+        voteInsertListAdapter = new VoteInsertViewListAdapter(this);
         votelist = findViewById(R.id.votelist);
         votelist.setAdapter(voteInsertListAdapter);
         imageListAdapter = new ImageListAdapter(this, imguri);
@@ -121,7 +121,12 @@ public class BoardInsertActivity extends AppCompatActivity {
                                                 call3.enqueue(new Callback<Void>() {
                                                     @Override
                                                     public void onResponse(Call<Void> call, Response<Void> response) {
-
+                                                        Intent intent2 = new Intent();
+                                                        Bundle bundle=new Bundle();
+                                                        bundle.putSerializable("boardDTO",boardDTO);
+                                                        intent2.putExtras(bundle);
+                                                        BoardInsertActivity.this.setResult(RESULT_OK, intent2);
+                                                        BoardInsertActivity.this.finish();
                                                     }
 
                                                     @Override
@@ -129,28 +134,37 @@ public class BoardInsertActivity extends AppCompatActivity {
 
                                                     }
                                                 });
+                                            } else if (votearray == null) {
+                                                Intent intent2 = new Intent();
+                                                Bundle bundle=new Bundle();
+                                                bundle.putSerializable("boardDTO",boardDTO);
+                                                intent2.putExtras(bundle);
+                                                BoardInsertActivity.this.setResult(RESULT_OK, intent2);
+                                                BoardInsertActivity.this.finish();
                                             }
-                                            Intent intent2 = new Intent();
-                                            BoardInsertActivity.this.setResult(RESULT_OK, intent2);
-                                            BoardInsertActivity.this.finish();
                                         }
 
                                         @Override
                                         public void onFailure(Call<Void> call, Throwable t) {
                                         }
                                     });
-                                } else {
+                                } else if(imageListAdapter.getItem()==null) {
                                     if (votearray != null) {
                                         for (int i = 0; i < votearray.size(); i++) {
+                                            votearray.get(i).setWriting_id(writingDTO.getId());
                                             Log.e("자자자", "wiritngid" + votearray.get(i).getWriting_id()
                                                     + votearray.get(i).getName());
-                                            votearray.get(i).setWriting_id(writingDTO.getId());
                                         }
                                         Call<Void> call3 = retrofitRequest.postWriting_Vote(votearray);
                                         call3.enqueue(new Callback<Void>() {
                                             @Override
                                             public void onResponse(Call<Void> call, Response<Void> response) {
-
+                                                Intent intent2 = new Intent();
+                                                Bundle bundle=new Bundle();
+                                                bundle.putSerializable("boardDTO",boardDTO);
+                                                intent2.putExtras(bundle);
+                                                BoardInsertActivity.this.setResult(RESULT_OK, intent2);
+                                                BoardInsertActivity.this.finish();
                                             }
 
                                             @Override
@@ -158,10 +172,14 @@ public class BoardInsertActivity extends AppCompatActivity {
 
                                             }
                                         });
+                                    } else if (votearray == null) {
+                                        Intent intent2 = new Intent();
+                                        Bundle bundle=new Bundle();
+                                        bundle.putSerializable("boardDTO",boardDTO);
+                                        intent2.putExtras(bundle);
+                                        BoardInsertActivity.this.setResult(RESULT_OK, intent2);
+                                        BoardInsertActivity.this.finish();
                                     }
-                                    Intent intent2 = new Intent();
-                                    BoardInsertActivity.this.setResult(RESULT_OK, intent2);
-                                    BoardInsertActivity.this.finish();
                                 }
                             }
                         });

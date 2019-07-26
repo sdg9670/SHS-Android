@@ -48,6 +48,9 @@
         <activity android:name=".activities.BoardVoteActivity"
             android:windowSoftInputMode="adjustPan"/>
         <activity android:name=".activities.RequestFriendListActivity"/>
+        <activity android:name=".activities.BoardVoteViewActivity"/>
+        <activity android:name=".activities.BoardVoteViewResultActivity"/>
+
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="@string/file_provider"
