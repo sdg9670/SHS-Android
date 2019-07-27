@@ -25,6 +25,10 @@ public class ChatDTO implements Serializable {
         this.someidname = someidname;
     }
 
+    public ChatDTO() {
+
+    }
+
     public ChatDTO(int id, int sendid, int recvid, String msg, Timestamp datetime,String someidname){
         this.id = id;
         this.sendid = sendid;
@@ -35,10 +39,28 @@ public class ChatDTO implements Serializable {
 
     }
 
-    public ChatDTO(String roomnum, int sendid, String someidname, String msg){
+    public ChatDTO(String roomnum, int sendid, int recvid, String msg, Timestamp datetime){
         this.roomnum = roomnum;
         this.sendid = sendid;
-        this.someidname = someidname;
+        this.recvid = recvid;
+        this.msg = msg;
+        this.datetime = datetime;
+
+    }
+
+    public ChatDTO(int id, String roomnum,int sendid, int recvid, String msg, Timestamp datetime){
+        this.id = id;
+        this.sendid = sendid;
+        this.recvid = recvid;
+        this.msg = msg;
+        this.datetime = datetime;
+
+    }
+
+    public ChatDTO(String roomnum, int sendid,int recvid, String msg){
+        this.roomnum = roomnum;
+        this.sendid = sendid;
+        this.recvid =recvid;
         this.msg = msg;
     }
 
