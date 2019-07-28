@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ScrollView;
+import android.widget.TextView;
 
 import com.example.nabot.R;
 import com.example.nabot.domain.ChatDTO;
@@ -24,6 +25,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -32,16 +35,16 @@ import java.util.Map;
 public class ChatActivity extends AppCompatActivity {
     Button SendButton;
     EditText SendContentText;
-    ScrollView ChatScroll;
     ListView chatlist;
     private ChatDTO chat;
     private ClientDTO client;
     private ContactDTO contact;
     private String roomNum;
+    TextView textView;
 
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
-    private DatabaseReference myRef = database.getReference("message");
-
+    private DatabaseReference myRef = database.getReference("chat");
+    private ArrayAdapter<String> adapter;
     private ArrayList<String > list;
     private String chat_user, chat_msg;
     @Override
@@ -49,18 +52,18 @@ public class ChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
+        textView = findViewById(R.id.textView2);
         list = new ArrayList<String>();
         SendButton = (Button) findViewById(R.id.sendbutton);
         chatlist = findViewById(R.id.chatlist);
+        chatlist.setTranscriptMode(ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
         SendContentText = (EditText) findViewById(R.id.sendcontenttext);
-        ChatScroll = (ScrollView) findViewById(R.id.chatscroll);
-
+        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1);
+        chatlist.setAdapter(adapter);
         final Intent intent = getIntent();
         client = (ClientDTO) intent.getSerializableExtra("client");
         contact = (ContactDTO) intent.getSerializableExtra("contact");
         chat = (ChatDTO) intent.getSerializableExtra("chat");
-
-        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1);
 
         if(client.getId() > contact.getSomeid()) {
             roomNum = contact.getSomeid() + "_" + client.getId();
@@ -68,28 +71,66 @@ public class ChatActivity extends AppCompatActivity {
             roomNum = client.getId() + "_" + contact.getSomeid();
         }
 
-        openChat(roomNum);
-
         SendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(SendContentText.getText().toString().equals(("")))
                     return ;
 
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                //chat.setDatetime(sdf.format(new Date()));
                 chat = new ChatDTO(roomNum, client.getId(), contact.getSomeid(), SendContentText.getText().toString());
-                list.add(String.valueOf(chat));
                 Log.e("addString", String.valueOf(chat));
-                //myRef.child("chat").child(chat.getRoomnum()).push().setValue(chat);
-                myRef.child("chat").child(roomNum).push().setValue(chat);
-                //arrayAdapter.add(String.valueOf(chat));
-
+                myRef.child(roomNum).push().setValue(chat);
                 SendContentText.setText("");
-                ChatScroll.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        ChatScroll.fullScroll(ScrollView.FOCUS_DOWN);
-                    }
-                });
+            }
+        });
+//        chatlist.setAdapter(adapter);
+//        myRef.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                adapter.clear();
+//                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+//                    ChatDTO chatDTO = snapshot.getValue(ChatDTO.class);
+//                    String cDTO = snapshot.getKey();
+//                    Log.e("cDTO",cDTO);
+//                    adapter.add(chatDTO.getSendid() + ": " + chatDTO.getMsg());
+//                }
+//                adapter.notifyDataSetChanged();
+//                chatlist.setSelection(adapter.getCount()+1);
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+        myRef.child(roomNum).addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                ChatDTO chatDTO = dataSnapshot.getValue(ChatDTO.class);
+                adapter.add(chatDTO.getSendid() + ": " + chatDTO.getMsg());
+                chatlist.setSelection(adapter.getCount() -1);
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         });
     }
@@ -114,31 +155,6 @@ public class ChatActivity extends AppCompatActivity {
 //        adapter.notifyDataSetChanged();
     }
 
-    private void openChat(final String roomnum) {
-        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1);
-
-        chatlist.setAdapter(adapter);
-
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            String roomName = null;
-
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    roomName = snapshot.getKey();
-                    if (roomnum.equals(roomName)) {
-                        addMessage(dataSnapshot, adapter);
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
-//        myRef.child("chat").child(roomnum).addChildEventListener(new ChildEventListener() {
 
     private void showChatList(){
         final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1);
