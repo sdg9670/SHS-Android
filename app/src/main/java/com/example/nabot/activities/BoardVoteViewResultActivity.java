@@ -32,16 +32,20 @@ public class BoardVoteViewResultActivity extends AppCompatActivity {
     ClientDTO clientDTO;
     WritingDTO writingDTO;
     List<VoteDTO> voteDTOS;
+    TextView result_title_text;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_writingvoteviewresult);
         vote_result=findViewById(R.id.vote_result);
         Intent intent=getIntent();
-        clientDTO= (ClientDTO) intent.getSerializableExtra("clientDTO");
-        writingDTO= (WritingDTO) intent.getSerializableExtra("writingDTO");
+        clientDTO= (ClientDTO) intent.getSerializableExtra("client");
+        writingDTO= (WritingDTO) intent.getSerializableExtra("writing");
+        result_title_text=findViewById(R.id.vote_result_title);
         Log.e("qweqweqwe",String.valueOf(clientDTO.getId()));
         Log.e("asdasdads", String.valueOf(writingDTO.getId()));
+        result_title_text.setText(writingDTO.getTitle());
+        result_title_text.setTextSize(20);
         final RetrofitRequest retrofitRequest = RetrofitRequest.retrofit.create(RetrofitRequest.class);
         Call<List<VoteDTO>> call = retrofitRequest.getWriting_Vote(writingDTO.getId());
         call.enqueue(new RetrofitRetry<List<VoteDTO>>(call) {

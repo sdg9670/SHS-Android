@@ -35,7 +35,7 @@ import retrofit2.Response;
 public class BoardVoteViewActivity extends AppCompatActivity {
     RadioGroup vote_radiogroup;
     TextView vote_view_text, votetitle;
-    Button btnvoting, btnvoteresult, btnvotecancel;
+    Button btnvoting;
     List<VoteDTO> voteDTOS = new ArrayList<VoteDTO>();
     WritingDTO writingDTO = new WritingDTO();
     ClientDTO clientDTO;
@@ -55,49 +55,30 @@ public class BoardVoteViewActivity extends AppCompatActivity {
         vote_view_text = findViewById(R.id.vote_view_text);
         btnvoting = findViewById(R.id.btnvoting);
         votetitle = findViewById(R.id.votetitle);
-        btnvotecancel = findViewById(R.id.btnvotecancel);
-        btnvoteresult = findViewById(R.id.btnvoteresult);
         votetitle.setText(writingDTO.getTitle());
         radioGroup = findViewById(R.id.vote_radiogroup);
         radioGroup.setOrientation(LinearLayout.VERTICAL);
 
         for (int i = 1; i <= voteDTOS.size(); i++) {
             RadioButton radioButton = new RadioButton(this);
-            radioButton.setId(View.generateViewId());
+            radioButton.setId(voteDTOS.get(i - 1).getId());
             radioButton.setText(voteDTOS.get(i - 1).getName());
             radioGroup.addView(radioButton);
         }
-        btnvotecancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-        btnvoteresult.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent1 = new Intent(BoardVoteViewActivity.this, BoardVoteViewResultActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("clientDTO", clientDTO);
-                bundle.putSerializable("writingDTO", writingDTO);
-                intent1.putExtras(bundle);
-                startActivity(intent1);
-                finish();
-            }
-        });
-
         btnvoting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (ischekced == true && voteWheterDTO != null) {
+                    Log.e("ischecked", String.valueOf(ischekced));
+                    Log.e("votewheter", String.valueOf(voteWheterDTO));
                     final RetrofitRequest retrofitRequest = RetrofitRequest.retrofit.create(RetrofitRequest.class);
                     Call<List<CheckVoteDTO>> call = retrofitRequest.check_Vote(writingDTO.getId(), clientDTO.getId());
                     call.enqueue(new RetrofitRetry<List<CheckVoteDTO>>(call) {
                         @Override
                         public void onResponse(Call<List<CheckVoteDTO>> call, Response<List<CheckVoteDTO>> response) {
-                            if (response.body() == null || response.body().size() == 0) {
-                                Call<Void> call2 = retrofitRequest.postVoteWheter(voteWheterDTO);
-                                call2.enqueue(new Callback<Void>() {
+                            if (response.body().size() == 0 || response.body() == null) {
+                                Call<Void> call1 = retrofitRequest.postVoteWheter(voteWheterDTO);
+                                call1.enqueue(new Callback<Void>() {
                                     @Override
                                     public void onResponse(Call<Void> call, Response<Void> response) {
                                         Intent intent1 = new Intent(BoardVoteViewActivity.this, BoardVoteViewResultActivity.class);
@@ -111,19 +92,19 @@ public class BoardVoteViewActivity extends AppCompatActivity {
 
                                     @Override
                                     public void onFailure(Call<Void> call, Throwable t) {
+
                                     }
                                 });
+                            }if(response.body().size() >0 || response.body()!=null){ {
+                                Toast.makeText(BoardVoteViewActivity.this, "이미햇음", Toast.LENGTH_SHORT).show();
+                                }
                             }
                         }
                     });
-
-
                 } else
                     Toast.makeText(BoardVoteViewActivity.this, "먼저 입력해주세요", Toast.LENGTH_SHORT).show();
             }
         });
-
-
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -132,7 +113,7 @@ public class BoardVoteViewActivity extends AppCompatActivity {
                 if (ischekced == true) {
                     for (int i = 0; i < voteDTOS.size(); i++) {
                         Log.e("eeeee", checkedRadioButton.getText().toString());
-                        if (voteDTOS.get(i).getName().equals(checkedRadioButton.getText().toString())) {
+                        if (voteDTOS.get(i).getId() == checkedRadioButton.getId()) {
                             Log.e("eeeee22222", voteDTOS.get(i).getName());
                             voteWheterDTO = new VoteWheterDTO(voteDTOS.get(i).getId(), clientDTO.getId());
                         }

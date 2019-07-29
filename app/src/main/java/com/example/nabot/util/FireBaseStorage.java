@@ -21,6 +21,8 @@ public class FireBaseStorage {
     List<Uri> multifilepath = new ArrayList<Uri>();
     int writingid = 0;
 
+
+
    public  List<String> UploadFile(List<Uri>multifilepath ,int writingid){
         this.multifilepath.clear();
         this.multifilepath=multifilepath;

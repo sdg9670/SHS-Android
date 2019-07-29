@@ -122,8 +122,8 @@ public class BoardInsertActivity extends AppCompatActivity {
                                                     @Override
                                                     public void onResponse(Call<Void> call, Response<Void> response) {
                                                         Intent intent2 = new Intent();
-                                                        Bundle bundle=new Bundle();
-                                                        bundle.putSerializable("boardDTO",boardDTO);
+                                                        Bundle bundle = new Bundle();
+                                                        bundle.putSerializable("boardDTO", boardDTO);
                                                         intent2.putExtras(bundle);
                                                         BoardInsertActivity.this.setResult(RESULT_OK, intent2);
                                                         BoardInsertActivity.this.finish();
@@ -136,8 +136,8 @@ public class BoardInsertActivity extends AppCompatActivity {
                                                 });
                                             } else if (votearray == null) {
                                                 Intent intent2 = new Intent();
-                                                Bundle bundle=new Bundle();
-                                                bundle.putSerializable("boardDTO",boardDTO);
+                                                Bundle bundle = new Bundle();
+                                                bundle.putSerializable("boardDTO", boardDTO);
                                                 intent2.putExtras(bundle);
                                                 BoardInsertActivity.this.setResult(RESULT_OK, intent2);
                                                 BoardInsertActivity.this.finish();
@@ -148,7 +148,7 @@ public class BoardInsertActivity extends AppCompatActivity {
                                         public void onFailure(Call<Void> call, Throwable t) {
                                         }
                                     });
-                                } else if(imageListAdapter.getItem()==null) {
+                                } else if (imageListAdapter.getItem() == null) {
                                     if (votearray != null) {
                                         for (int i = 0; i < votearray.size(); i++) {
                                             votearray.get(i).setWriting_id(writingDTO.getId());
@@ -160,8 +160,8 @@ public class BoardInsertActivity extends AppCompatActivity {
                                             @Override
                                             public void onResponse(Call<Void> call, Response<Void> response) {
                                                 Intent intent2 = new Intent();
-                                                Bundle bundle=new Bundle();
-                                                bundle.putSerializable("boardDTO",boardDTO);
+                                                Bundle bundle = new Bundle();
+                                                bundle.putSerializable("boardDTO", boardDTO);
                                                 intent2.putExtras(bundle);
                                                 BoardInsertActivity.this.setResult(RESULT_OK, intent2);
                                                 BoardInsertActivity.this.finish();
@@ -174,8 +174,8 @@ public class BoardInsertActivity extends AppCompatActivity {
                                         });
                                     } else if (votearray == null) {
                                         Intent intent2 = new Intent();
-                                        Bundle bundle=new Bundle();
-                                        bundle.putSerializable("boardDTO",boardDTO);
+                                        Bundle bundle = new Bundle();
+                                        bundle.putSerializable("boardDTO", boardDTO);
                                         intent2.putExtras(bundle);
                                         BoardInsertActivity.this.setResult(RESULT_OK, intent2);
                                         BoardInsertActivity.this.finish();
@@ -203,9 +203,11 @@ public class BoardInsertActivity extends AppCompatActivity {
                 Log.e("ttttt", "xczxczxczx");
                 votearray = new ArrayList<VoteDTO>();
                 votearray = (List<VoteDTO>) data.getSerializableExtra("voteDTOS");
-                Log.e("vovvv", String.valueOf(votearray));
-                for (int i = 0; i < votearray.size(); i++) {
-                    voteInsertListAdapter.addItem(votearray.get(i).getName());
+                if (votearray.size() != 0) {
+                    Log.e("vovvv", String.valueOf(votearray));
+                    for (int i = 0; i < votearray.size(); i++) {
+                        voteInsertListAdapter.addItem(votearray.get(i).getName());
+                    }
                 }
             } else
                 votearray = null;
