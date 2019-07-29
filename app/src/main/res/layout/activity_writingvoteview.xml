@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -9,8 +9,6 @@
         android:id="@+id/vote_radiogroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
         android:orientation="vertical">
 
 
@@ -27,29 +25,38 @@
 
     </RadioGroup>
 
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
-
-
-    <Button
+    <LinearLayout
+        android:id="@+id/vote_result2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="#ddd"
-        android:text="투표하기"
-        android:layout_weight="1"
-        android:id="@+id/btnvoting"
-        android:background="@drawable/button"
-        />
+        android:orientation="vertical">
 
 
-    <TextView
-        android:id="@+id/votetitle"
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#ddd"
+            android:text="투표하기"
+            android:layout_weight="1"
+            android:id="@+id/btnvoting"
+            android:background="@drawable/button"
+            />
+
+
+        <TextView
+            android:id="@+id/votetitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="40dp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/vote_result3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="40dp"/>
+        android:orientation="vertical">
+    </LinearLayout>
+
 
 </LinearLayout>
-
-</RelativeLayout>

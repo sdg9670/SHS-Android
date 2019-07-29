@@ -48,9 +48,9 @@ public class BoardVoteViewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_writingvoteview);
         Intent intent = getIntent();
-        voteDTOS = (List<VoteDTO>) intent.getSerializableExtra("voteDTOS");
-        writingDTO = (WritingDTO) intent.getSerializableExtra("writing");
-        clientDTO = (ClientDTO) intent.getSerializableExtra("client");
+        voteDTOS = (List<VoteDTO>) intent.getSerializableExtra("voteDTOS_1");
+        writingDTO = (WritingDTO) intent.getSerializableExtra("writing_1");
+        clientDTO = (ClientDTO) intent.getSerializableExtra("client_1");
         vote_radiogroup = findViewById(R.id.vote_radiogroup);
         vote_view_text = findViewById(R.id.vote_view_text);
         btnvoting = findViewById(R.id.btnvoting);
@@ -83,8 +83,8 @@ public class BoardVoteViewActivity extends AppCompatActivity {
                                     public void onResponse(Call<Void> call, Response<Void> response) {
                                         Intent intent1 = new Intent(BoardVoteViewActivity.this, BoardVoteViewResultActivity.class);
                                         Bundle bundle = new Bundle();
-                                        bundle.putSerializable("clientDTO", clientDTO);
-                                        bundle.putSerializable("writingDTO", writingDTO);
+                                        bundle.putSerializable("client", clientDTO);
+                                        bundle.putSerializable("writing", writingDTO);
                                         intent1.putExtras(bundle);
                                         startActivity(intent1);
                                         finish();
@@ -97,6 +97,13 @@ public class BoardVoteViewActivity extends AppCompatActivity {
                                 });
                             }if(response.body().size() >0 || response.body()!=null){ {
                                 Toast.makeText(BoardVoteViewActivity.this, "이미햇음", Toast.LENGTH_SHORT).show();
+                                Intent intent1=new Intent(BoardVoteViewActivity.this,BoardVoteViewResultActivity.class);
+                               Bundle bundle=new Bundle();
+                                bundle.putSerializable("client", clientDTO);
+                                bundle.putSerializable("writing", writingDTO);
+                                intent1.putExtras(bundle);
+                                startActivity(intent1);
+                                finish();
                                 }
                             }
                         }

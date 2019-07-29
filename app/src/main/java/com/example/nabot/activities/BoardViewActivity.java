@@ -52,7 +52,6 @@ public class BoardViewActivity extends AppCompatActivity {
     List<String> filepath = new ArrayList<String>();
     List<VoteDTO> voteDTOS = null;
     CommentDTO commentDTO;
-    private boolean isvoting = false;
     static final int BoardModifyActivitycode = 3;
     CommentListAdapter commentListAdapter;
     SquareViewPager viewPager;
@@ -159,38 +158,13 @@ public class BoardViewActivity extends AppCompatActivity {
             }
         });
 
-            board_view_vote.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    RetrofitRequest retrofitRequest = RetrofitRequest.retrofit.create(RetrofitRequest.class);
-                    Call<List<CheckVoteDTO>> call = retrofitRequest.check_Vote(writingDTO.getId(), clientDTO.getId());
-                    call.enqueue(new RetrofitRetry<List<CheckVoteDTO>>(call) {
-                        @Override
-                        public void onResponse(Call<List<CheckVoteDTO>> call, Response<List<CheckVoteDTO>> response) {
-                            if (response.body().size() == 0 || response.body() == null) {
-                                Intent intent1 = new Intent(BoardViewActivity.this, BoardVoteViewActivity.class);
-                                Bundle bundle = new Bundle();
-                                Log.e("isvoting", String.valueOf(isvoting));
-                                bundle.putSerializable("voteDTOS", (Serializable) voteDTOS);
-                                bundle.putSerializable("writing", writingDTO);
-                                bundle.putSerializable("client", clientDTO);
-                                intent1.putExtras(bundle);
-                                startActivity(intent1);
-                            }
-                            if (response.body().size() > 0 || response.body() != null) {
-                                Intent intent1 = new Intent(BoardViewActivity.this, BoardVoteViewResultActivity.class);
-                                Bundle bundle = new Bundle();
-                                Log.e("isvoting", String.valueOf(isvoting));
-                                bundle.putSerializable("voteDTOS", (Serializable) voteDTOS);
-                                bundle.putSerializable("writing", writingDTO);
-                                bundle.putSerializable("client", clientDTO);
-                                intent1.putExtras(bundle);
-                                startActivity(intent1);
-                            }
-                        }
-                    });
-                }
-            });
+        board_view_vote.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                VoteViewDialog dial = new VoteViewDialog(BoardViewActivity.this, voteDTOS, writingDTO, clientDTO);
+                dial.show();
+            }
+        });
 
         board_view_delete_btn.setOnClickListener(new View.OnClickListener() {
             @Override

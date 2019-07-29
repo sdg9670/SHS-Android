@@ -172,7 +172,7 @@ public class BoardInsertActivity extends AppCompatActivity {
 
                                             }
                                         });
-                                    } else if (votearray == null) {
+                                    } else if (votearray == null || votearray.size()==0) {
                                         Intent intent2 = new Intent();
                                         Bundle bundle = new Bundle();
                                         bundle.putSerializable("boardDTO", boardDTO);
