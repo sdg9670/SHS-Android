@@ -4,11 +4,19 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 
 public class ChatDTO implements Serializable {
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     private int id;
     private int sendid;
     private int recvid;
     private String msg;
-    private Timestamp datetime;
+    private String datetime;
     private String someidname;
 
     public String getRoomnum() {
@@ -29,47 +37,27 @@ public class ChatDTO implements Serializable {
 
     }
 
-    public ChatDTO(int id, int sendid, int recvid, String msg, Timestamp datetime,String someidname){
-        this.id = id;
-        this.sendid = sendid;
-        this.recvid = recvid;
-        this.msg = msg;
-        this.datetime = datetime;
-        this.someidname = someidname;
 
-    }
-
-    public ChatDTO(String roomnum, int sendid, int recvid, String msg, Timestamp datetime){
+    public ChatDTO(String roomnum, int sendid,int recvid, String msg, String datetime){
         this.roomnum = roomnum;
         this.sendid = sendid;
-        this.recvid = recvid;
+        this.recvid =recvid;
         this.msg = msg;
         this.datetime = datetime;
-
     }
 
-    public ChatDTO(int id, String roomnum,int sendid, int recvid, String msg, Timestamp datetime){
-        this.id = id;
-        this.sendid = sendid;
-        this.recvid = recvid;
-        this.msg = msg;
-        this.datetime = datetime;
-
-    }
-
-    public ChatDTO(String roomnum, int sendid,int recvid, String msg){
+    public ChatDTO (String roomnum, int sendid,int recvid, String msg){
         this.roomnum = roomnum;
         this.sendid = sendid;
         this.recvid =recvid;
         this.msg = msg;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-            this.id = id;
+    public ChatDTO(int id, int sendid, String someidname, String msg){
+        this.id = id;
+        this.sendid = sendid;
+        this.someidname = someidname;
+        this.msg = msg;
     }
 
     public int getSendid() {
@@ -96,11 +84,11 @@ public class ChatDTO implements Serializable {
         this.msg = msg;
     }
 
-    public Timestamp getDatetime() {
+    public String getDatetime() {
         return datetime;
     }
 
-    public void setDatetime(Timestamp datetime) {
+    public void setDatetime(String datetime) {
         this.datetime = datetime;
     }
 

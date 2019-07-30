@@ -3,6 +3,7 @@ package com.example.nabot.util;
 
 import com.example.nabot.domain.BoardDTO;
 import com.example.nabot.domain.ChatDTO;
+import com.example.nabot.domain.ChatImageDTO;
 import com.example.nabot.domain.ClientDTO;
 import com.example.nabot.domain.CommentDTO;
 import com.example.nabot.domain.ContactDTO;
@@ -105,6 +106,18 @@ public interface RetrofitRequest {
 
     @DELETE("chat")
     Call<Void> delChat(@Query("sendid") int sendid, @Query("recvid") int recvid);
+
+    @POST("chat_image_multi")
+    Call<Void>postChat_Image_Multi(@Body List<ChatImageDTO> chatImageInsertDTOS);
+
+    @GET("chat_image")
+    Call<List<ChatImageDTO>>getChat_image(@Query("chat_id") int chat_id);
+
+    @HTTP(method = "DELETE", path = "chat_image", hasBody = true)
+    Call<Void>deleteChat_Image(@Body List<ChatImageDTO> ChatImageDTO);
+
+    @GET("last_chat")
+    Call<List<ChatDTO>> getlast_chat();
 
     public static final Retrofit retrofit = new Retrofit.Builder()
             .baseUrl("http://simddong.ga:5002/")
