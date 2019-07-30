@@ -69,8 +69,30 @@ public class BoardInsertActivity extends AppCompatActivity {
         button_vote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent voteintent = new Intent(BoardInsertActivity.this, BoardVoteActivity.class);
-                startActivityForResult(voteintent, 123);
+                final VoteInsertDialog voteInsertDialog=new VoteInsertDialog(BoardInsertActivity.this);
+                voteInsertDialog.setDialogListener(new VoteInsertDialog.VoteInsertDialogListener() {
+                    @Override
+                    public void onPositiveClicked(List<VoteDTO> voteDTOList) {
+                       if(voteDTOList!=null){
+                           votearray= voteDTOList;
+                           voteInsertListAdapter.clearitem();
+                           if (votearray.size() != 0) {
+                               for (int i = 0; i < votearray.size(); i++) {
+                                   voteInsertListAdapter.addItem(votearray.get(i).getName());
+                               }
+                           }
+                       }
+                       else
+                           votearray = null;
+                    }
+
+                    @Override
+                    public void onNegativeClicked() {
+
+                    }
+                });
+                voteInsertDialog.show();
+
             }
         });
 

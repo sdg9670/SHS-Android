@@ -50,6 +50,7 @@
         <activity android:name=".activities.RequestFriendListActivity"/>
         <activity android:name=".activities.BoardVoteViewActivity"/>
         <activity android:name=".activities.BoardVoteViewResultActivity"/>
+        <activity android:name=".activities.BoardVote3Activity"/>
 
         <provider
             android:name="android.support.v4.content.FileProvider"

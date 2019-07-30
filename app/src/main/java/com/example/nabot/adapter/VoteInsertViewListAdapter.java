@@ -70,6 +70,7 @@ public class VoteInsertViewListAdapter extends BaseAdapter {
         TextView vote_index=(TextView)view.findViewById(R.id.vote_insertText);
         TextView vote_insertText = (TextView) view.findViewById(R.id.vote_insertText);
         Log.e("gggggg",vote_index.getText().toString());
+        Log.e("zzzzzzzzzzzz",items.get(position));
         vote_insertText.setText(items.get(position));
 
         return view;

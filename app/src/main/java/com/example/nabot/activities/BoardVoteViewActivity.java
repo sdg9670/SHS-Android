@@ -48,7 +48,6 @@ public class BoardVoteViewActivity extends AppCompatActivity {
         writingDTO = (WritingDTO) intent.getSerializableExtra("writing_1");
         clientDTO = (ClientDTO) intent.getSerializableExtra("client_1");
         vote_radiogroup = findViewById(R.id.vote_radiogroup);
-        vote_view_text = findViewById(R.id.vote_view_text);
         btnvoting = findViewById(R.id.btnvoting);
         votetitle = findViewById(R.id.votetitle);
         votetitle.setText(writingDTO.getTitle());

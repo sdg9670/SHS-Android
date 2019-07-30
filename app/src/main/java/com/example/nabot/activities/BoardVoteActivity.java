@@ -24,7 +24,7 @@ public class BoardVoteActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_writingvote);
+        setContentView(R.layout.dialog_voteinsert);
         button_voteinsert = findViewById(R.id.button_voteinsert);
         voteListAdapter = new VoteAddListAdapter(this);
         voteindexlist = findViewById(R.id.voteindexlist);

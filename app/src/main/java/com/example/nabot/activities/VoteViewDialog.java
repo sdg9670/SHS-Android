@@ -50,7 +50,6 @@ public class VoteViewDialog extends Dialog {
     public VoteViewDialog(final Context context, final List<VoteDTO> voteDTOS, final WritingDTO writingDTO, final ClientDTO clientDTO) {
         super(context);
         setContentView(R.layout.dialog_vote);
-        vote_view_text = findViewById(R.id.vote_view_text);
         vote_result2 = findViewById(R.id.vote_result2);
         vote_result3 = findViewById(R.id.vote_result_all);
         btnvoting = findViewById(R.id.btnvoting);
@@ -159,7 +158,7 @@ public class VoteViewDialog extends Dialog {
                         textView.setTextSize(19);
                         textView.setBackgroundColor(Color.GRAY);
                         textView.setTextColor(Color.WHITE);
-                        textView.setPadding(1, 1, 1, 3);
+                        textView.setPadding(5, 5, 5, 5);
                         textView.setText("타이틀" + voteDTOSget.get(i - 1).getName() + "투표수" + voteDTOSget.get(i - 1)
                                 .getAmount() + "퍼센트지" + String.format("%.2f", percent));
                         vote_result3.addView(textView);
