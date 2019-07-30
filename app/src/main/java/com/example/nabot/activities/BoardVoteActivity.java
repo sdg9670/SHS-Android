@@ -42,38 +42,37 @@ public class BoardVoteActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 voteListAdapter.addItem(new VoteDTO(""));
-                voteDTOS=voteListAdapter.getitems();
+                voteDTOS = voteListAdapter.getitems();
             }
         });
 
         button_voteinsert.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                voteDTOS.clear();
-                voteDTOS=voteListAdapter.getitems();
-                Intent intent2 = new Intent();
-                Bundle bundle=new Bundle();
-                for(int i=0; i<voteDTOS.size();i++){
-                    Log.e("vvvv",voteDTOS.get(i).getName());
+                voteDTOS=new ArrayList<VoteDTO>();
+                Log.e("eqq", String.valueOf(voteListAdapter.getCount()));
+                for (int i = 0; i < voteListAdapter.getCount(); i++) {
+                    if (!voteListAdapter.getItem(i).getName().equals("")) {
+                        voteDTOS.add(voteListAdapter.getItem(i));
+                    }
                 }
-                 if(voteDTOS.size()>0){
-                     Log.e("보낸다보내","ss");
+                Log.e("qqqweqweqwe", String.valueOf(voteDTOS.size()));
+                Intent intent2 = new Intent();
+                Bundle bundle = new Bundle();
+                if (voteDTOS.size() > 0) {
+                    Log.e("보낸다보내", "ss");
                     bundle.putSerializable("voteDTOS", voteDTOS);
-                    intent2.putExtra("isvoting",true);
+                    intent2.putExtra("isvoting", true);
                     intent2.putExtras(bundle);
                     setResult(RESULT_OK, intent2);
                     finish();
-
+                } else {
+                    intent2.putExtra("isvoting", false);
+                    setResult(RESULT_OK, intent2);
+                    finish();
                 }
-                 else{
-
-                     intent2.putExtra("isvoting",false);
-                     setResult(RESULT_OK, intent2);
-                     finish();
-                 }
 
             }
         });
-   }
+    }
 }
-

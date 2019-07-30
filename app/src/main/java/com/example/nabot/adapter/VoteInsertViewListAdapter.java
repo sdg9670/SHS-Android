@@ -1,6 +1,7 @@
 package com.example.nabot.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -32,10 +33,14 @@ public class VoteInsertViewListAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+    public void clearitem(){
+      items.clear();
+        notifyDataSetChanged();
+    }
 
     @Override
     public int getCount() {
-    return  items.size();
+        return  items.size();
     }
 
     public ArrayList<String> getitems(){
@@ -64,7 +69,6 @@ public class VoteInsertViewListAdapter extends BaseAdapter {
         View view = inflater.inflate(R.layout.flate_writingvoteinsert, parent, false);
         TextView vote_index=(TextView)view.findViewById(R.id.vote_insertText);
         TextView vote_insertText = (TextView) view.findViewById(R.id.vote_insertText);
-        vote_index.setText(String.valueOf(position+1));
         Log.e("gggggg",vote_index.getText().toString());
         vote_insertText.setText(items.get(position));
 

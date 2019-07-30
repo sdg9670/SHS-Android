@@ -50,7 +50,7 @@ public class VoteAddListAdapter extends BaseAdapter {
     }
 
     @Override
-    public Object getItem(int position) {
+    public VoteDTO getItem(int position) {
         return items.get(position);
     }
 

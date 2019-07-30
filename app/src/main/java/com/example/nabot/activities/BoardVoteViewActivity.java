@@ -5,18 +5,14 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.nabot.R;
-import com.example.nabot.adapter.VoteAddListAdapter;
 import com.example.nabot.domain.CheckVoteDTO;
 import com.example.nabot.domain.ClientDTO;
 import com.example.nabot.domain.VoteDTO;
@@ -46,7 +42,7 @@ public class BoardVoteViewActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_writingvoteview);
+        setContentView(R.layout.dialog_vote);
         Intent intent = getIntent();
         voteDTOS = (List<VoteDTO>) intent.getSerializableExtra("voteDTOS_1");
         writingDTO = (WritingDTO) intent.getSerializableExtra("writing_1");

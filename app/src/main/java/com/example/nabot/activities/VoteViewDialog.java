@@ -1,3 +1,4 @@
+
 package com.example.nabot.activities;
 
 import android.app.Dialog;
@@ -48,10 +49,10 @@ public class VoteViewDialog extends Dialog {
 
     public VoteViewDialog(final Context context, final List<VoteDTO> voteDTOS, final WritingDTO writingDTO, final ClientDTO clientDTO) {
         super(context);
-        setContentView(R.layout.activity_writingvoteview);
+        setContentView(R.layout.dialog_vote);
         vote_view_text = findViewById(R.id.vote_view_text);
         vote_result2 = findViewById(R.id.vote_result2);
-        vote_result3 = findViewById(R.id.vote_result3);
+        vote_result3 = findViewById(R.id.vote_result_all);
         btnvoting = findViewById(R.id.btnvoting);
         votetitle = findViewById(R.id.votetitle);
         votetitle.setText(writingDTO.getTitle());
@@ -87,18 +88,18 @@ public class VoteViewDialog extends Dialog {
             @Override
             public void onClick(View v) {
                 if(ischekced==true && voteWheterDTO!=null){
-                Call<Void> call1 = retrofitRequest.postVoteWheter(voteWheterDTO);
-                call1.enqueue(new Callback<Void>() {
-                    @Override
-                    public void onResponse(Call<Void> call, Response<Void> response) {
-                        resultvote(context, writingDTO);
-                    }
+                    Call<Void> call1 = retrofitRequest.postVoteWheter(voteWheterDTO);
+                    call1.enqueue(new Callback<Void>() {
+                        @Override
+                        public void onResponse(Call<Void> call, Response<Void> response) {
+                            resultvote(context, writingDTO);
+                        }
 
-                    @Override
-                    public void onFailure(Call<Void> call, Throwable t) {
-                    }
-                });
-            }
+                        @Override
+                        public void onFailure(Call<Void> call, Throwable t) {
+                        }
+                    });
+                }
                 else{
                     Toast.makeText(context, "항목을 체크해주세요123123", Toast.LENGTH_SHORT).show();
 
@@ -106,26 +107,26 @@ public class VoteViewDialog extends Dialog {
             }
         });
 
-    radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-        @Override
-        public void onCheckedChanged(RadioGroup group, int checkedId) {
-            RadioButton checkedRadioButton = (RadioButton) group.findViewById(checkedId);
-            ischekced = checkedRadioButton.isChecked();
-            if (ischekced == true) {
-                for (int i = 0; i < voteDTOS.size(); i++) {
-                    Log.e("eeeee", checkedRadioButton.getText().toString());
-                    if (voteDTOS.get(i).getId() == checkedRadioButton.getId()) {
-                        Log.e("eeeee22222", voteDTOS.get(i).getName());
-                        voteWheterDTO = new VoteWheterDTO(voteDTOS.get(i).getId(), clientDTO.getId());
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                RadioButton checkedRadioButton = (RadioButton) group.findViewById(checkedId);
+                ischekced = checkedRadioButton.isChecked();
+                if (ischekced == true) {
+                    for (int i = 0; i < voteDTOS.size(); i++) {
+                        Log.e("eeeee", checkedRadioButton.getText().toString());
+                        if (voteDTOS.get(i).getId() == checkedRadioButton.getId()) {
+                            Log.e("eeeee22222", voteDTOS.get(i).getName());
+                            voteWheterDTO = new VoteWheterDTO(voteDTOS.get(i).getId(), clientDTO.getId());
+                        }
                     }
+                } else {
+                    voteWheterDTO = null;
+                    Toast.makeText(context, "항목을 체크해주세요123123", Toast.LENGTH_SHORT).show();
+                    ischekced = false;
                 }
-            } else {
-                voteWheterDTO = null;
-                Toast.makeText(context, "항목을 체크해주세요123123", Toast.LENGTH_SHORT).show();
-                ischekced = false;
             }
-        }
-    });
+        });
 
 
     }
@@ -168,5 +169,4 @@ public class VoteViewDialog extends Dialog {
         });
     }
 }
-
 

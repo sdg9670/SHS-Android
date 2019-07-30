@@ -200,11 +200,11 @@ public class BoardInsertActivity extends AppCompatActivity {
 
         if (requestCode == 123 && resultCode == RESULT_OK) {
             if (data.getBooleanExtra("isvoting", false) == true) {
-                Log.e("ttttt", "xczxczxczx");
                 votearray = new ArrayList<VoteDTO>();
                 votearray = (List<VoteDTO>) data.getSerializableExtra("voteDTOS");
+                Log.e("ttttt", String.valueOf(votearray.size()));
+                voteInsertListAdapter.clearitem();
                 if (votearray.size() != 0) {
-                    Log.e("vovvv", String.valueOf(votearray));
                     for (int i = 0; i < votearray.size(); i++) {
                         voteInsertListAdapter.addItem(votearray.get(i).getName());
                     }

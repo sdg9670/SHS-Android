@@ -52,10 +52,11 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/vote_result3"
+        android:id="@+id/vote_result_all"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
     </LinearLayout>
 
 
