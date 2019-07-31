@@ -18,6 +18,20 @@ public class ChatDTO implements Serializable {
     private String msg;
     private String datetime;
     private String someidname;
+    private String sendname;
+    private String recvname;
+
+    public String getRecvname(){
+        return recvname;
+    }
+    public void setRecvname(String recvname){
+        this.recvname = recvname;
+    }
+
+    public String getSendname(){return sendname;}
+    public void setSendname(String sendname){
+        this.sendname = sendname;
+    }
 
     public String getRoomnum() {
         return roomnum;
@@ -37,24 +51,25 @@ public class ChatDTO implements Serializable {
 
     }
 
-
-    public ChatDTO(String roomnum, int sendid,int recvid, String msg, String datetime){
+    public ChatDTO(String roomnum, int id, String sendname, int recvid, String recvname, String msg, String datetime) {
         this.roomnum = roomnum;
-        this.sendid = sendid;
-        this.recvid =recvid;
+        this.id = id;
+        this.sendname = sendname;
+        this.recvid = recvid;
+        this.recvname = recvname;
         this.msg = msg;
         this.datetime = datetime;
     }
 
-    public ChatDTO (String roomnum, int sendid,int recvid, String msg){
+    public ChatDTO(String roomnum, int sendid, int recvid, String msg) {
         this.roomnum = roomnum;
         this.sendid = sendid;
-        this.recvid =recvid;
+        this.recvid = recvid;
         this.msg = msg;
     }
 
-    public ChatDTO(int id, int sendid, String someidname, String msg){
-        this.id = id;
+
+    public ChatDTO(int sendid, String someidname, String msg) {
         this.sendid = sendid;
         this.someidname = someidname;
         this.msg = msg;
@@ -91,11 +106,5 @@ public class ChatDTO implements Serializable {
     public void setDatetime(String datetime) {
         this.datetime = datetime;
     }
-
-
-
-
-
-
 }
 

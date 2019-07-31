@@ -99,4 +99,7 @@ public class ContactDTO implements Serializable {
         this.clientid = clientid;
         this.someid = someid;
     }
+    public ContactDTO(){
+
+    }
 }
