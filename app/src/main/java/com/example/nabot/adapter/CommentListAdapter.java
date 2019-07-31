@@ -93,8 +93,8 @@ public class CommentListAdapter extends BaseAdapter {
         commentlist_content.setText(item.getContent());
 
         if(item.getWriter() != clientDTO.getId()) {
-            comment_modify_btn.setVisibility(View.INVISIBLE);
-            comment_delete_btn.setVisibility(View.INVISIBLE);
+            comment_modify_btn.setVisibility(View.GONE);
+            comment_delete_btn.setVisibility(View.GONE);
         }
 
         content_write_time.setText(item.getUpdate_time());
