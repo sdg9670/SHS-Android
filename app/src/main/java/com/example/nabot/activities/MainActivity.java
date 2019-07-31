@@ -1,13 +1,10 @@
 package com.example.nabot.activities;
 
-import android.app.Activity;
-import android.app.ActivityManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -16,9 +13,6 @@ import com.example.nabot.R;
 import com.example.nabot.classes.Camera;
 import com.example.nabot.domain.ClientDTO;
 import com.example.nabot.util.RetrofitRequest;
-import com.example.nabot.util.RetrofitRetry;
-
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -37,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
         Button speakerButton = (Button) findViewById(R.id.speakerButton);
         Button doorlockButton = (Button) findViewById(R.id.doorlockButton);
-        Button chatButton = (Button) findViewById(R.id.button2);
+        Button chatButton = (Button) findViewById(R.id.buttonVote);
         Button boardButton = (Button) findViewById(R.id.boardButton);
         Button logoutButton = (Button) findViewById(R.id.logout);
         boardButton.setOnClickListener(new View.OnClickListener() {

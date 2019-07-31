@@ -43,7 +43,7 @@ public class FriendListActivity extends Activity {
 
         friendList = (ListView) findViewById(R.id.friendList);
         button = findViewById(R.id.button);
-        button2 = findViewById(R.id.button2);
+        button2 = findViewById(R.id.buttonVote);
 
         //유저
         Intent intent=getIntent();

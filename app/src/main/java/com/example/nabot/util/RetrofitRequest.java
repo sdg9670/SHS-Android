@@ -2,9 +2,12 @@ package com.example.nabot.util;
 
 
 import com.example.nabot.domain.BoardDTO;
+import com.example.nabot.domain.CheckVoteDTO;
 import com.example.nabot.domain.ClientDTO;
 import com.example.nabot.domain.CommentDTO;
 import com.example.nabot.domain.ContactDTO;
+import com.example.nabot.domain.VoteDTO;
+import com.example.nabot.domain.VoteWheterDTO;
 import com.example.nabot.domain.WritingDTO;
 import com.example.nabot.domain.WritingImageDTO;
 import com.google.gson.JsonArray;
@@ -67,6 +70,16 @@ public interface RetrofitRequest {
     @POST("writing_image_multi")
     Call<Void>postWriting_Image_Multi(@Body List<WritingImageDTO> writingImageInsertDTOS);
 
+    @POST("writing_vote")
+    Call<Void>postWriting_Vote(@Body List<VoteDTO> voteDTOS);
+
+
+    @GET("writing_vote")
+    Call<List<VoteDTO>>getWriting_Vote(@Query("writing_id") int writing_id);
+
+    @POST("vote_whether")
+    Call<Void>postVoteWheter(@Body VoteWheterDTO voteWheterDTO);
+
     @GET("writing_image")
     Call<List<WritingImageDTO>> getWriting_Image(@Query("writing_id") int writing_id);
 
@@ -94,6 +107,11 @@ public interface RetrofitRequest {
 
     @POST("friend")
     Call<Void> postFriend(@Body ContactDTO contact);
+
+
+    @GET("check_vote")
+    Call<List<CheckVoteDTO>> check_Vote(@Query("writing_id") int writing_id, @Query("client_id") int client_id);
+
 
     @DELETE("friend")
     Call<Void> delFreind(@Query("clientid") int clientid, @Query("someid") int someid);

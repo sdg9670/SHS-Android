@@ -1,25 +1,32 @@
 package com.example.nabot.activities;
 
 import android.content.Intent;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.nabot.R;
 import com.example.nabot.adapter.CommentListAdapter;
 import com.example.nabot.adapter.ImageViewAdapter;
 import com.example.nabot.classes.SquareViewPager;
 import com.example.nabot.domain.BoardDTO;
+import com.example.nabot.domain.CheckVoteDTO;
 import com.example.nabot.domain.ClientDTO;
 import com.example.nabot.domain.CommentDTO;
+import com.example.nabot.domain.VoteDTO;
+import com.example.nabot.domain.VoteWheterDTO;
 import com.example.nabot.domain.WritingDTO;
 import com.example.nabot.domain.WritingImageDTO;
 import com.example.nabot.util.RetrofitRequest;
@@ -41,17 +48,18 @@ public class BoardViewActivity extends AppCompatActivity {
     TextView board_view_title, textView, board_view_user, board_view_text, board_writedate;
     EditText comment_text;
     ListView board_commentlist;
-    Button board_view_modify_btn, board_view_delete_btn, commentinsert;
+    Button board_view_modify_btn, board_view_delete_btn, commentinsert, board_view_vote;
     WritingDTO writingDTO;
     ClientDTO clientDTO;
     List<WritingImageDTO> writingImgArray = null;
     List<String> filepath = new ArrayList<String>();
-
+    List<VoteDTO> voteDTOS = null;
     CommentDTO commentDTO;
     static final int BoardModifyActivitycode = 3;
     CommentListAdapter commentListAdapter;
     SquareViewPager viewPager;
     ImageViewAdapter imageViewAdapter;
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -63,6 +71,7 @@ public class BoardViewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_boardview);
         viewPager = findViewById(R.id.viewPager2);
+        board_view_vote = findViewById(R.id.board_view_vote);
         board_view_title = findViewById(R.id.board_view_title);
         textView = findViewById(R.id.textView);
         imageViewAdapter = new ImageViewAdapter(this);
@@ -78,7 +87,7 @@ public class BoardViewActivity extends AppCompatActivity {
         writingDTO = (WritingDTO) intent.getSerializableExtra("writing");
         final BoardDTO boardDTO = (BoardDTO) intent.getSerializableExtra("board");
         clientDTO = (ClientDTO) intent.getSerializableExtra("client");
-
+        board_view_vote.setVisibility(View.INVISIBLE);
         if (clientDTO.getId() != writingDTO.getWriter()) {
             board_view_modify_btn.setVisibility(View.INVISIBLE);
             board_view_delete_btn.setVisibility(View.INVISIBLE);
@@ -87,8 +96,6 @@ public class BoardViewActivity extends AppCompatActivity {
         board_view_text.setText(writingDTO.getContent());
         board_writedate.setText(writingDTO.getUpdate_time());
         board_view_user.setText(writingDTO.getWriter_name());
-
-
         final RetrofitRequest retrofitRequest = RetrofitRequest.retrofit.create(RetrofitRequest.class);
         Call<List<CommentDTO>> call = retrofitRequest.getComment(writingDTO.getId());
         call.enqueue(new RetrofitRetry<List<CommentDTO>>(call) {
@@ -104,20 +111,41 @@ public class BoardViewActivity extends AppCompatActivity {
                 call1.enqueue(new RetrofitRetry<List<WritingImageDTO>>(call1) {
                     @Override
                     public void onResponse(Call<List<WritingImageDTO>> call, Response<List<WritingImageDTO>> response) {
-                        writingImgArray = response.body();
-                        if (writingImgArray.size() > 0) {
+                        writingImgArray = null;
+                        if (response.body() !=null) {
+                            writingImgArray=new ArrayList<WritingImageDTO>();
+                            writingImgArray = response.body();
                             for (int i = 0; i < writingImgArray.size(); i++) {
                                 filepath.add(writingImgArray.get(i).getPath());
                             }
-                            Log.e("filepath", String.valueOf(filepath));
                             imageViewAdapter.imageViewAdapterDown(filepath, writingDTO.getId());
                             viewPager.setAdapter(imageViewAdapter);
                             viewPager.setVisibility(View.VISIBLE);
+                            Call<List<VoteDTO>> call1 = retrofitRequest.getWriting_Vote(writingDTO.getId());
+                            Log.e("qwweqeqweqeqw", String.valueOf(writingDTO.getId()));
+                            call1.enqueue(new RetrofitRetry<List<VoteDTO>>(call1) {
+                                @Override
+                                public void onResponse(Call<List<VoteDTO>> call, Response<List<VoteDTO>> response) {
+                                    Log.e("qweqweqwe","11");
+                                    voteDTOS=response.body();
+                                    if (voteDTOS.size()>0) {
+                                        voteDTOS = response.body();
+                                        Log.e("voteDTOS", String.valueOf(voteDTOS.size()));
+                                        Log.e("qweqweqwe","13");
+                                        board_view_vote.setVisibility(View.VISIBLE);
+                                    } else if (voteDTOS.size()<=0) {
+                                        voteDTOS = null;
+                                        Log.e("qweqweqwe","16");
+                                        board_view_vote.setVisibility(View.INVISIBLE);
+                                    }
+                                }
+                            });
                         }
                     }
                 });
             }
         });
+
 
         board_view_modify_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -130,9 +158,23 @@ public class BoardViewActivity extends AppCompatActivity {
                 bundle.putSerializable("board", boardDTO);
                 in.putExtras(bundle);
                 startActivityForResult(in, BoardModifyActivitycode);
-
             }
         });
+
+        board_view_vote.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                VoteViewDialog dial = new VoteViewDialog(BoardViewActivity.this, voteDTOS, writingDTO, clientDTO);
+                dial.show();
+                Display display=getWindowManager().getDefaultDisplay();
+                Point size=new Point();
+                display.getSize(size);
+                Window window=dial.getWindow();
+                int x=(int)(size.x * 2.0);
+                int y=(int)(size.y * 2.0);
+            }
+        });
+
         board_view_delete_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
