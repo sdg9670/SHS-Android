@@ -80,6 +80,7 @@ public class BoardInsertActivity extends AppCompatActivity {
                                for (int i = 0; i < votearray.size(); i++) {
                                    voteInsertListAdapter.addItem(votearray.get(i).getName());
                                }
+                               votelist.setVisibility(View.VISIBLE);
                            }
                        }
                        else
@@ -250,6 +251,7 @@ public class BoardInsertActivity extends AppCompatActivity {
             }
             imageListAdapter.addItem(imguri);
             imagelist.setAdapter(imageListAdapter);
+            imagelist.setVisibility(View.VISIBLE);
         }
     }
 }

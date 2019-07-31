@@ -1,5 +1,6 @@
 package com.example.nabot.util;
 
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -21,7 +22,9 @@ public class FireBaseStorage {
     List<Uri> multifilepath = new ArrayList<Uri>();
     int writingid = 0;
 
+    public void ResizeUploadFile(){
 
+    }
 
    public  List<String> UploadFile(List<Uri>multifilepath ,int writingid){
         this.multifilepath.clear();

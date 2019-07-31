@@ -87,11 +87,12 @@ public class BoardViewActivity extends AppCompatActivity {
         writingDTO = (WritingDTO) intent.getSerializableExtra("writing");
         final BoardDTO boardDTO = (BoardDTO) intent.getSerializableExtra("board");
         clientDTO = (ClientDTO) intent.getSerializableExtra("client");
-        board_view_vote.setVisibility(View.INVISIBLE);
+        board_view_vote.setVisibility(View.GONE);
         if (clientDTO.getId() != writingDTO.getWriter()) {
-            board_view_modify_btn.setVisibility(View.INVISIBLE);
-            board_view_delete_btn.setVisibility(View.INVISIBLE);
+            board_view_modify_btn.setVisibility(View.GONE);
+            board_view_delete_btn.setVisibility(View.GONE);
         }
+
         board_view_title.setText(writingDTO.getTitle());
         board_view_text.setText(writingDTO.getContent());
         board_writedate.setText(writingDTO.getUpdate_time());
@@ -136,7 +137,7 @@ public class BoardViewActivity extends AppCompatActivity {
                                     } else if (voteDTOS.size()<=0) {
                                         voteDTOS = null;
                                         Log.e("qweqweqwe","16");
-                                        board_view_vote.setVisibility(View.INVISIBLE);
+                                        board_view_vote.setVisibility(View.GONE);
                                     }
                                 }
                             });
