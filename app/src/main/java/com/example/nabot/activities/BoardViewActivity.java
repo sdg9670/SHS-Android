@@ -1,12 +1,15 @@
 package com.example.nabot.activities;
 
 import android.content.Intent;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -163,6 +166,12 @@ public class BoardViewActivity extends AppCompatActivity {
             public void onClick(View v) {
                 VoteViewDialog dial = new VoteViewDialog(BoardViewActivity.this, voteDTOS, writingDTO, clientDTO);
                 dial.show();
+                Display display=getWindowManager().getDefaultDisplay();
+                Point size=new Point();
+                display.getSize(size);
+                Window window=dial.getWindow();
+                int x=(int)(size.x * 2.0);
+                int y=(int)(size.y * 2.0);
             }
         });
 

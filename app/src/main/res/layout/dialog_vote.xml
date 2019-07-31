@@ -4,48 +4,49 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-
+<LinearLayout
+    android:padding="20dp"
+    android:id="@+id/voting_linearlayout"
+    android:visibility="gone"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
     <RadioGroup
-        android:layout_weight="2"
         android:id="@+id/vote_radiogroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+  >
 
     </RadioGroup>
 
     <LinearLayout
-        android:layout_weight="1"
         android:id="@+id/vote_result2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-
+        android:layout_weight="2"
+        android:orientation="vertical"
+        >
 
         <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="#ddd"
-            android:text="투표하기"
-            android:layout_weight="1"
             android:id="@+id/btnvoting"
-            android:background="@drawable/button"
-            />
-
-
-        <TextView
-            android:id="@+id/votetitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="40dp"/>
+            android:layout_weight="1"
+            android:background="@drawable/button"
+            android:text="투표하기"
+            android:textColor="#ddd" />
 
     </LinearLayout>
+
+</LinearLayout>
 
     <LinearLayout
         android:id="@+id/vote_result_all"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone">
 
     </LinearLayout>
 

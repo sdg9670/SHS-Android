@@ -4,28 +4,30 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-
-<LinearLayout
-    android:orientation="horizontal"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
-
-    <EditText
-        android:id="@+id/vote_text"
-        android:layout_width="447dp"
+    <LinearLayout
+        android:paddingBottom="5dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="2"
-        android:hint="주제 입력"></EditText>
-        <requestFocus/>
+        android:orientation="horizontal"
+    >
 
-    <Button
-        android:id="@+id/button_vote_delete"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="5dp"
-        android:layout_weight="1"
-        android:background="@drawable/button"
-        android:text="삭제"
-        android:textColor="#ffffff" />
-</LinearLayout>
+        <EditText
+            android:layout_weight="2"
+            android:id="@+id/vote_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="주제 입력"></EditText>
+
+        <requestFocus />
+
+        <Button
+            android:layout_weight="1"
+            android:id="@+id/button_vote_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button"
+            android:text="삭제"
+            android:textColor="#ffffff" />
+    </LinearLayout>
 </LinearLayout>
