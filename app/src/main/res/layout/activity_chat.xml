@@ -16,30 +16,32 @@
         android:textColor="@color/colorAccent"
         android:textSize="30sp"
         android:textStyle="bold" />
-    <ScrollView
-        android:id="@+id/chatscroll"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1">
+        android:orientation="vertical"
+        android:layout_weight="12">
 
-        <LinearLayout
+        <ListView
+            android:id="@+id/chatlist"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/msg"/>
-
-        </LinearLayout>
-    </ScrollView>
-
+            android:layout_height="match_parent"
+            android:fastScrollEnabled="true" >
+        </ListView>
+    </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="70dp"
-        android:layout_weight="0"
-        android:orientation="horizontal">
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:layout_gravity="bottom">
 
+        <Button
+            android:id="@+id/imgBtn"
+            android:layout_width="55dp"
+            android:layout_height="wrap_content"
+            android:text="파일"
+            android:textSize="8dp" />
         <EditText
             android:id="@+id/sendcontenttext"
             android:layout_width="0dp"
@@ -50,10 +52,10 @@
             android:inputType="textPersonName" />
 
         <Button
-            android:id="@+id/sendbutton"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="전송" />
+        android:id="@+id/sendbutton"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:text="전송" />
     </LinearLayout>
 </LinearLayout>
