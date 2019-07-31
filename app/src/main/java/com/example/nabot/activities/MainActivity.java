@@ -27,7 +27,7 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity {
     ClientDTO client;
     private long time= 0;
-    @Override
+    @Override 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
