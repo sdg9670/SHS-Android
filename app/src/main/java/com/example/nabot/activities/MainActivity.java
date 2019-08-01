@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         speakerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Camera camera = new Camera("Speaker", "192.168.1.100", 6000);
+                Camera camera = new Camera("Speaker", "simddong.ga", 19601);
                 Intent intent = new Intent(getApplicationContext(), VideoActivity.class);
                 intent.putExtra(VideoActivity.CAMERA, camera);
                 startActivity(intent);
@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         doorlockButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Camera camera = new Camera("DoorLock", "192.168.1.101", 6001);
+                Camera camera = new Camera("DoorLock", "192.168.1.101", 5000);
                 Intent intent = new Intent(getApplicationContext(), VideoActivity.class);
                 intent.putExtra(VideoActivity.CAMERA, camera);
                 startActivity(intent);
