@@ -11,6 +11,9 @@ import com.example.nabot.domain.ContactDTO;
 import com.example.nabot.domain.DoorlockDTO;
 import com.example.nabot.domain.VoteDTO;
 import com.example.nabot.domain.VoteWheterDTO;
+import com.example.nabot.domain.CurtainDTO;
+import com.example.nabot.domain.SensorDTO;
+import com.example.nabot.domain.WindowDTO;
 import com.example.nabot.domain.WritingDTO;
 import com.example.nabot.domain.WritingImageDTO;
 import com.google.gson.JsonArray;
@@ -45,6 +48,21 @@ public interface RetrofitRequest {
 
     @GET("writing")
     Call<List<WritingDTO>> getWriting(@Query("board_id") int boardid);
+
+    @GET("window")
+    Call<List<WindowDTO>> getWindow();
+
+    @PUT("window")
+    Call<Void> putWindow(@Body WindowDTO window);
+
+    @PUT("curtain")
+    Call<Void> putCurtain(@Body CurtainDTO curtain);
+
+    @GET("sensor")
+    Call<List<SensorDTO>> getSensor();
+
+    @GET("curtain")
+    Call<List<CurtainDTO>> getCurtain();
 
     @POST("writing")
     Call<Void> postWriting(@Body WritingDTO writing);
