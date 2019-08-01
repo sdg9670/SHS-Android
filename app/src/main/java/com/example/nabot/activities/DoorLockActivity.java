@@ -51,7 +51,7 @@ public class DoorLockActivity extends AppCompatActivity {
         Intent intent = getIntent();
         doorlockViewAdapter = new DoorlockViewAdapter(this);
         client = (ClientDTO) intent.getSerializableExtra("client");
-        doorlockButton = findViewById(R.id.doorlockButton);
+        doorlockButton = findViewById(R.id.button_doorlockstreaming);
         doorlcoklistview = findViewById(R.id.doorlcoklistview);
         doorlcoklistview.setAdapter(doorlockViewAdapter);
 
@@ -80,6 +80,14 @@ public class DoorLockActivity extends AppCompatActivity {
             }
         });
 
-
+        doorlockButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Camera camera = new Camera("Doorlock", "192.168.1.101", 5000);
+                Intent intent = new Intent(getApplicationContext(), VideoActivity.class);
+                intent.putExtra(VideoActivity.CAMERA, camera);
+                startActivity(intent);
+            }
+        });
     }
 }
