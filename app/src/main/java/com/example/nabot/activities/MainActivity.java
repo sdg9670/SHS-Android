@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -13,17 +14,33 @@ import com.example.nabot.R;
 import com.example.nabot.classes.Camera;
 import com.example.nabot.domain.ClientDTO;
 import com.example.nabot.util.RetrofitRequest;
+import com.example.nabot.util.RetrofitRetry;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
+
     ClientDTO client;
     private long time= 0;
-    @Override 
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        RetrofitRequest retrofitRequest = RetrofitRequest.retrofit.create(RetrofitRequest.class);
+        Call<List<ClientDTO>> call = retrofitRequest.getClient(3);
+        call.enqueue(new RetrofitRetry<List<ClientDTO>>(call) {
+            @Override
+            public void onResponse(Call<List<ClientDTO>> call, Response<List<ClientDTO>> response) {
+                client = response.body().get(0);
+            }
+        });
+
+
+
         setContentView(R.layout.activity_main);
 
         Intent intent=getIntent();
@@ -34,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
         Button chatButton = (Button) findViewById(R.id.buttonVote);
         Button boardButton = (Button) findViewById(R.id.boardButton);
         Button logoutButton = (Button) findViewById(R.id.logout);
+        Button windowButton = (Button) findViewById(R.id.windowButton);
+        Button curtainButton = (Button) findViewById(R.id.curtainButton);
         boardButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -66,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
         doorlockButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Camera camera = new Camera("DoorLock", "192.168.1.101", 5000);
+                Camera camera = new Camera("DoorLock", "192.168.1.101", 6001);
                 Intent intent = new Intent(getApplicationContext(), VideoActivity.class);
                 intent.putExtra(VideoActivity.CAMERA, camera);
                 startActivity(intent);
@@ -93,6 +112,20 @@ public class MainActivity extends AppCompatActivity {
 
                     }
                 });
+            }
+        });
+        windowButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), WindowActivity.class);
+                startActivity(intent);
+            }
+        });
+        curtainButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), CurtainActivity.class);
+                startActivity(intent);
             }
         });
 
