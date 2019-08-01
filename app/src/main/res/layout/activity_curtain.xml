@@ -38,6 +38,18 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/textLayout"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="2dp">
+        <TextView
+            android:id="@+id/statusText1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/openLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

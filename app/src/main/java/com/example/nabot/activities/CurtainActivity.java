@@ -40,11 +40,11 @@ import retrofit2.Response;
 
 public class CurtainActivity extends AppCompatActivity {
 
-    TextView curtainStatusText;
+    TextView curtainStatusText, statusText1;
     EditText editText;
     Spinner curtainSpinner, curtainSelectSpinner, openValueSpinner1, openValueSpinner2;
 
-    LinearLayout curtainSelectLayout, openLayout, setting1;
+    LinearLayout curtainSelectLayout, openLayout, setting1, textLayout;
 
     RadioButton rdButton1,rdButton;
     RadioGroup rdGroup;
@@ -69,9 +69,10 @@ public class CurtainActivity extends AppCompatActivity {
         curtainSelectLayout = (LinearLayout) findViewById(R.id.curtainSelectLayout);
         openLayout = (LinearLayout) findViewById(R.id.openLayout);
         setting1 = (LinearLayout) findViewById(R.id.setting1);
+        textLayout = (LinearLayout) findViewById(R.id.textLayout);
 
         curtainStatusText = (TextView) findViewById(R.id.curtainStatusText);
-
+        statusText1 = (TextView) findViewById(R.id.statusText1) ;
         editText = (EditText) findViewById(R.id.editText);
 
         curtainSpinner = (Spinner) findViewById(R.id.curtainSpinner);
@@ -130,8 +131,9 @@ public class CurtainActivity extends AppCompatActivity {
         curtainSelectSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, final int position, long id) {
-                selectPosition2=position;
-
+                if (curtainAdapter != null) {
+                    statusText1.setText("현재 조도량 : " + curtainAdapter.getItem(selectPosition).getLux());
+                }
                 if(position==0){
                     openLayout.setVisibility(View.VISIBLE);
 
