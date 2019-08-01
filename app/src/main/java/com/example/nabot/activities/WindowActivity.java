@@ -11,11 +11,13 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.example.nabot.R;
@@ -38,13 +40,13 @@ import retrofit2.Response;
 
 public class WindowActivity extends AppCompatActivity {
 
-    TextView windowStatusText;
+    TextView windowStatusText,dustText;
     EditText editText;
     Spinner windowSpinner, windowSelectSpinner, openValueSpinner1, openValueSpinner2;
 
     LinearLayout windowSelectLayout, openLayout, setting1, setting2;
 
-    RadioButton rdButton1, rdButton2;
+    RadioButton rdButton, rdButton1, rdButton2;
     RadioGroup rdGroup;
     Button button;
 
@@ -60,6 +62,7 @@ public class WindowActivity extends AppCompatActivity {
     SensorSpinnerAdapter sensorAdapter;
 
     WindowDTO windowDTO;
+    boolean rainCheck=false;
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
@@ -72,6 +75,7 @@ public class WindowActivity extends AppCompatActivity {
         setting2 = (LinearLayout) findViewById(R.id.setting2);
 
         windowStatusText = (TextView) findViewById(R.id.windowStatusText);
+        dustText = (TextView) findViewById(R.id.dustText);
 
         editText = (EditText) findViewById(R.id.editText);
 
@@ -81,10 +85,13 @@ public class WindowActivity extends AppCompatActivity {
         openValueSpinner2 = (Spinner) findViewById(R.id.openValueSpinner2);
 
         rdGroup = (RadioGroup) findViewById(R.id.rdGroup);
+        rdButton = (RadioButton) findViewById(R.id.rdButton);
         rdButton1 = (RadioButton) findViewById(R.id.rdButton1);
         rdButton2 = (RadioButton) findViewById(R.id.rdButton2);
 
         button = (Button) findViewById(R.id.button1);
+
+
 
         final ArrayAdapter<String> outterAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, select);;
 
@@ -119,7 +126,6 @@ public class WindowActivity extends AppCompatActivity {
                         else
                             windowStatus = "닫혀있음";
                         windowStatusText.setText("창문 " + Integer.toString(windowAdapter.getItem(position).getId()) + "의 현재상태 : " + windowStatus);
-                        openLayout.setVisibility(View.VISIBLE);
                     }
                     @Override
                     public void onNothingSelected(AdapterView<?> parent) {
@@ -150,32 +156,37 @@ public class WindowActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 selectPosition2=position;
                 if (position == 0) {
-                    openLayout.setVisibility(View.VISIBLE);
-
+                    rainCheck = false;
                     rdButton1.setText("내부온도");
                     editText.setText(Double.toString(sensorAdapter.getItem(selectPosition).getTemp()));
+                    rdButton2.setVisibility(View.VISIBLE);
+                    dustText.setVisibility(View.INVISIBLE);
                     rdButton2.setText("내부온도가 외부온도보다");
+                    openValueSpinner1.setVisibility(View.VISIBLE);
 
                 } else if (position == 1) {
-                    openLayout.setVisibility(View.VISIBLE);
-
+                    rainCheck = false;
                     rdButton1.setText("내부습도");
                     editText.setText(Double.toString(sensorAdapter.getItem(selectPosition).getHumi()));
+                    rdButton2.setVisibility(View.VISIBLE);
+                    dustText.setVisibility(View.INVISIBLE);
                     rdButton2.setText("내부습도가 외부습도보다");
+                    openValueSpinner1.setVisibility(View.VISIBLE);
 
                 } else if (position == 2) {
-                    openLayout.setVisibility(View.VISIBLE);
-
-                    rdButton1.setText("강수량 ");
-                    editText.setText(Double.toString(windowAdapter.getItem(selectPosition).getRain()));
+                    rainCheck=true;
+                    rdButton1.setText("사용함");
+                    setting1.setVisibility(View.INVISIBLE);
+                    dustText.setVisibility(View.INVISIBLE);
                     rdButton2.setVisibility(View.INVISIBLE);
 
                 } else if (position == 3) {
-                    openLayout.setVisibility(View.VISIBLE);
-
+                    rainCheck = false;
                     rdButton1.setText("미세먼지 ");
                     editText.setText(Double.toString(windowAdapter.getItem(selectPosition).getDust()));
+                    dustText.setVisibility(View.VISIBLE);
                     rdButton2.setVisibility(View.INVISIBLE);
+                    openValueSpinner1.setVisibility(View.INVISIBLE);
                 }
             }
 
@@ -188,9 +199,18 @@ public class WindowActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch(checkedId){
-                    case R.id.rdButton1:
-                        setting1.setVisibility(View.VISIBLE);
+                    case R.id.rdButton:
+                        setting1.setVisibility(View.INVISIBLE);
                         setting2.setVisibility(View.INVISIBLE);
+                        break;
+                    case R.id.rdButton1:
+                        if(rainCheck == false) {
+                            setting1.setVisibility(View.VISIBLE);
+                            setting2.setVisibility(View.INVISIBLE);
+                        }
+                        else if(rainCheck == true) {
+                            setting1.setVisibility(View.INVISIBLE);
+                        }
                         break;
                     case R.id.rdButton2:
                         setting1.setVisibility(View.INVISIBLE);
@@ -203,7 +223,10 @@ public class WindowActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (selectPosition2 == 0) {
-                    if(rdButton1.isChecked()){
+                    if(rdButton.isChecked()) {
+                        tempOver=0;
+                    }
+                    else if(rdButton1.isChecked()){
                         temp_set = editText.getText().toString();
                         if(openValueSpinner1.getSelectedItem().equals("이상")){
                             tempOver=1;
@@ -213,15 +236,18 @@ public class WindowActivity extends AppCompatActivity {
                         }
                     }
                     else if(rdButton2.isChecked()){
-                        if(openValueSpinner1.getSelectedItem().equals("이상")){
+                        if(openValueSpinner2.getSelectedItem().equals("이상")){
                             tempOver=3;
                         }
-                        else if(openValueSpinner1.getSelectedItem().equals("미만")){
+                        else if(openValueSpinner2.getSelectedItem().equals("미만")){
                             tempOver=4;
                         }
                     }
                 } else if (selectPosition2 == 1) {
-                    if(rdButton1.isChecked()){
+                    if(rdButton.isChecked()) {
+                        humiOver=0;
+                    }
+                    else if(rdButton1.isChecked()){
                         humi_set = editText.getText().toString();
                         if(openValueSpinner1.getSelectedItem().equals("이상")){
                             humiOver=1;
@@ -231,31 +257,28 @@ public class WindowActivity extends AppCompatActivity {
                         }
                     }
                     else if(rdButton2.isChecked()){
-                        if(openValueSpinner1.getSelectedItem().equals("이상")){
+                        if(openValueSpinner2.getSelectedItem().equals("이상")){
                             humiOver=3;
                         }
-                        else if(openValueSpinner1.getSelectedItem().equals("미만")){
+                        else if(openValueSpinner2.getSelectedItem().equals("미만")){
                             humiOver=4;
                         }
                     }
-                } else if (selectPosition2 == 2) {if(rdButton1.isChecked()){
-                        rain_set = editText.getText().toString();
-                        if(openValueSpinner1.getSelectedItem().equals("이상")){
-                            rainOver=1;
-                        }
-                        else if(openValueSpinner1.getSelectedItem().equals("미만")){
-                            rainOver=2;
-                        }
+                } else if (selectPosition2 == 2) {
+                    if(rdButton.isChecked()){
+                        rainOver=0;
+                    }
+                    else if(rdButton1.isChecked()){
+                        rainOver=1;
                     }
 
-                } else if (selectPosition2 == 3) {if(rdButton1.isChecked()){
+                } else if (selectPosition2 == 3) {
+                    if(rdButton.isChecked()){
+                        dustOver=0;
+                    }
+                    else if(rdButton1.isChecked()){
                         dust_set = editText.getText().toString();
-                        if(openValueSpinner1.getSelectedItem().equals("이상")){
-                            dustOver=1;
-                        }
-                        else if(openValueSpinner1.getSelectedItem().equals("미만")){
-                            dustOver=2;
-                        }
+                        dustOver=1;
                     }
                 }
 

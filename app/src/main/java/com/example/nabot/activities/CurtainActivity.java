@@ -1,7 +1,9 @@
 package com.example.nabot.activities;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
@@ -11,11 +13,13 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.example.nabot.R;
@@ -23,6 +27,7 @@ import com.example.nabot.adapter.CurtainSpinnerAdapter;
 import com.example.nabot.adapter.WindowSpinnerAdapter;
 import com.example.nabot.domain.CurtainDTO;
 
+import com.example.nabot.domain.WindowDTO;
 import com.example.nabot.util.RetrofitRequest;
 import com.example.nabot.util.RetrofitRetry;
 
@@ -41,12 +46,12 @@ public class CurtainActivity extends AppCompatActivity {
 
     LinearLayout curtainSelectLayout, openLayout, setting1;
 
-    RadioButton rdButton1;
+    RadioButton rdButton1,rdButton;
     RadioGroup rdGroup;
     Button button;
 
     String[] select = {"조도량"};
-    String[] value = {"이상", "미만"};
+    String[] value = {"열림", "닫힘"};
     String curtainStatus, lux_set = "0.0";
     int selectPosition, selectPosition2, luxOver = 0;
 
@@ -70,20 +75,24 @@ public class CurtainActivity extends AppCompatActivity {
         editText = (EditText) findViewById(R.id.editText);
 
         curtainSpinner = (Spinner) findViewById(R.id.curtainSpinner);
-        curtainSelectSpinner = (Spinner) findViewById(R.id.curtainSelectSpinner);
+        curtainSelectSpinner = (Spinner) findViewById(R.id.curtainSelectSpinner2);
         openValueSpinner1 = (Spinner) findViewById(R.id.openValueSpinner1);
         openValueSpinner2 = (Spinner) findViewById(R.id.openValueSpinner2);
 
         rdGroup = (RadioGroup) findViewById(R.id.rdGroup);
+        rdButton = (RadioButton) findViewById(R.id.rdButton);
         rdButton1 = (RadioButton) findViewById(R.id.rdButton1);
 
         button = (Button) findViewById(R.id.button1);
 
-        final ArrayAdapter<String> outterAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, select);
 
+        final ArrayAdapter<String> outterAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, select);
 
         final ArrayAdapter<String> ValueAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,value);
         openValueSpinner1.setAdapter(ValueAdapter);
+
+        final Intent intent = getIntent();
+        curtainDTO = (CurtainDTO) intent.getSerializableExtra("curtain");
 
         RetrofitRequest retrofitRequest = RetrofitRequest.retrofit.create(RetrofitRequest.class);
         Call<List<CurtainDTO>> call = retrofitRequest.getCurtain();
@@ -142,7 +151,7 @@ public class CurtainActivity extends AppCompatActivity {
                     case R.id.rdButton1:
                         setting1.setVisibility(View.VISIBLE);
                         break;
-                    case R.id.rdButton2:
+                    case R.id.rdButton:
                         setting1.setVisibility(View.INVISIBLE);
                         break;
                 }
@@ -154,12 +163,15 @@ public class CurtainActivity extends AppCompatActivity {
                 if (selectPosition2 == 0) {
                     if(rdButton1.isChecked()){
                         lux_set = editText.getText().toString();
-                        if(openValueSpinner1.getSelectedItem().equals("이상")){
+                        if(openValueSpinner1.getSelectedItem().equals("열림")){
                             luxOver=1;
                         }
-                        else if(openValueSpinner1.getSelectedItem().equals("미만")){
+                        else if(openValueSpinner1.getSelectedItem().equals("닫힘")){
                             luxOver=2;
                         }
+                    }
+                    else if(rdButton.isChecked()){
+                        luxOver=0;
                     }
                 }
 
