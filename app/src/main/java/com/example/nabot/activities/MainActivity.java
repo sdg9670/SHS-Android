@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -26,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Intent intent=getIntent();
+        final Intent intent=getIntent();
         client= (ClientDTO)intent.getSerializableExtra("client");
 
         Button speakerButton = (Button) findViewById(R.id.speakerButton);
@@ -66,10 +67,14 @@ public class MainActivity extends AppCompatActivity {
         doorlockButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Camera camera = new Camera("DoorLock", "192.168.1.101", 5000);
-                Intent intent = new Intent(getApplicationContext(), VideoActivity.class);
-                intent.putExtra(VideoActivity.CAMERA, camera);
+                Intent intent=new Intent(MainActivity.this,DoorLockActivity.class);
+                Bundle bundle=new Bundle();
+                bundle.putSerializable("client",client);
+                intent.putExtras(bundle);
+                Log.e("zzzzzzzzzzzzz","qqq)qqq");
                 startActivity(intent);
+
+
             }
         });
         logoutButton.setOnClickListener(new View.OnClickListener() {

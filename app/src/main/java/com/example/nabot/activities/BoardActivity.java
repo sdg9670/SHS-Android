@@ -92,7 +92,7 @@ public class BoardActivity extends AppCompatActivity {
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                         refreshBoard(position);
                           final int masterid=111;
-                          Log.e("qqqqqq", String.valueOf(spinnerAdapter.getItem(position))  );
+                        Log.e("qqqqqq", String.valueOf(spinnerAdapter.getItem(position))  );
                         if(spinnerAdapter.getItem(position).getId()==masterid){
                             boardinsertbtn.setVisibility(View.INVISIBLE);
                         }

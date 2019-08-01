@@ -37,8 +37,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class VoteViewDialog extends Dialog {
-    private Context context;
+public class VoteViewDialog extends Dialog {    private Context context;
+
 
     RadioGroup vote_radiogroup;
     TextView vote_view_text;

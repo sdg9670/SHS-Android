@@ -46,7 +46,7 @@
         <activity android:name=".activities.ChatMainActivity"/>
         <activity android:name=".activities.FriendListActivity"/>
         <activity android:name=".activities.RequestFriendListActivity"/>
-
+        <activity android:name=".activities.DoorLockActivity"/>
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="@string/file_provider"
