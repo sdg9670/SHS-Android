@@ -45,6 +45,31 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/textLayout"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="2dp">
+        <TextView
+            android:id="@+id/statusText1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/statusText2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/statusText3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/statusText4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/openLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -146,3 +171,4 @@
             android:text="확인" />
     </RelativeLayout>
 </LinearLayout>
+
