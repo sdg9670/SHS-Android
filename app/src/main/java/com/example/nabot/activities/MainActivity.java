@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
-        Intent intent=getIntent();
+        final Intent intent=getIntent();
         client= (ClientDTO)intent.getSerializableExtra("client");
 
         Button speakerButton = (Button) findViewById(R.id.speakerButton);
@@ -85,10 +85,13 @@ public class MainActivity extends AppCompatActivity {
         doorlockButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Camera camera = new Camera("DoorLock", "192.168.1.101", 6001);
-                Intent intent = new Intent(getApplicationContext(), VideoActivity.class);
-                intent.putExtra(VideoActivity.CAMERA, camera);
+                Intent intent=new Intent(MainActivity.this,DoorLockActivity.class);
+                Bundle bundle=new Bundle();
+                bundle.putSerializable("client",client);
+                intent.putExtras(bundle);
                 startActivity(intent);
+
+
             }
         });
         logoutButton.setOnClickListener(new View.OnClickListener() {

@@ -8,6 +8,7 @@ import com.example.nabot.domain.CheckVoteDTO;
 import com.example.nabot.domain.ClientDTO;
 import com.example.nabot.domain.CommentDTO;
 import com.example.nabot.domain.ContactDTO;
+import com.example.nabot.domain.DoorlockDTO;
 import com.example.nabot.domain.VoteDTO;
 import com.example.nabot.domain.VoteWheterDTO;
 import com.example.nabot.domain.CurtainDTO;
@@ -155,6 +156,9 @@ public interface RetrofitRequest {
 
     @GET("last_chat")
     Call<List<ChatDTO>> getlast_chat();
+
+    @GET("doorlock_image")
+    Call<List<DoorlockDTO>> getdoorlock_image(@Query("dong") int dong, @Query("ho")int ho);
 
     public static final Retrofit retrofit = new Retrofit.Builder()
             .baseUrl("http://simddong.ga:5000/")
