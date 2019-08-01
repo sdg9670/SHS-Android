@@ -157,7 +157,7 @@ public interface RetrofitRequest {
     Call<List<ChatDTO>> getlast_chat();
 
     public static final Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl("http://simddong.ga:5000/")
+            .baseUrl("http://simddong.ga:5003/")
             .addConverterFactory(GsonConverterFactory.create())
             .build();
 }
