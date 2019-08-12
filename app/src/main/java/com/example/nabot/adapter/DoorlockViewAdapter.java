@@ -68,7 +68,7 @@ public class DoorlockViewAdapter extends BaseAdapter {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.flate_doorlockview, parent, false);
         TextView doorlocktext = (TextView) view.findViewById(R.id.doorlocktext);
-        doorlocktext.setText("\nupdate_time:  "+items.get(position).getUpload_time()
+        doorlocktext.setText("\n"+items.get(position).getUpload_time()
                 +"                      "+"                "+items.get(position).getState()+"\n");
         return view;
     }

@@ -29,18 +29,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        RetrofitRequest retrofitRequest = RetrofitRequest.retrofit.create(RetrofitRequest.class);
-        Call<List<ClientDTO>> call = retrofitRequest.getClient(3);
-        call.enqueue(new RetrofitRetry<List<ClientDTO>>(call) {
-            @Override
-            public void onResponse(Call<List<ClientDTO>> call, Response<List<ClientDTO>> response) {
-                client = response.body().get(0);
-            }
-        });
-
-
-
         setContentView(R.layout.activity_main);
 
         final Intent intent=getIntent();

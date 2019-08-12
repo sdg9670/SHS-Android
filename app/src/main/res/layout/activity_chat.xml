@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="채팅방"
-        android:textColor="@color/colorAccent"
+        android:textColor="@color/colorPrimary"
         android:textSize="30sp"
         android:textStyle="bold" />
     <LinearLayout
@@ -38,10 +38,13 @@
 
         <Button
             android:id="@+id/imgBtn"
-            android:layout_width="55dp"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
             android:text="파일"
-            android:textSize="8dp" />
+            android:layout_margin="5dp"
+            android:background="@drawable/button"
+            android:textColor="#FFFFFF" />
         <EditText
             android:id="@+id/sendcontenttext"
             android:layout_width="0dp"
@@ -56,6 +59,9 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:text="전송" />
+        android:text="전송"
+        android:layout_margin="5dp"
+        android:background="@drawable/button"
+        android:textColor="#FFFFFF"/>
     </LinearLayout>
 </LinearLayout>

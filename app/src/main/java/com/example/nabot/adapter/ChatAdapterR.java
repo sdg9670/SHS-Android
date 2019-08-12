@@ -49,9 +49,12 @@ public class ChatAdapterR extends BaseAdapter { ArrayList<ChatDTO> items = new A
         textmsg.setText(items.get(position).getSendname() + " : " + items.get(position).getMsg() + "\n" + items.get(position).getDatetime());
 
         if(contactDTO!=null) {
-            if (items.get(position).getRecvname() == contactDTO.getSomename()) {
+            Log.e("로로로", items.get(position).getSendname() + " " + items.get(position).getRecvname() + " " + contactDTO.getSomename());
+            if (items.get(position).getRecvname().equals(contactDTO.getSomename())) {
+                Log.e("롸", items.get(position).getMsg());
                 textmsg.setGravity(Gravity.RIGHT);
             } else {
+                Log.e("좌", items.get(position).getMsg());
                 textmsg.setGravity(Gravity.LEFT);
 
             }

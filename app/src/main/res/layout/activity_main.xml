@@ -12,7 +12,8 @@
         android:id="@+id/imageView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="50dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="30dp"
         app:srcCompat="@drawable/logo" />
 
     <ScrollView
@@ -65,16 +66,6 @@
                 android:textSize="15sp" />
 
             <Button
-                android:id="@+id/statueButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:background="@drawable/button"
-                android:text="집안 상태"
-                android:textColor="#FFFFFF"
-                android:textSize="15sp" />
-
-            <Button
                 android:id="@+id/speakerButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -90,8 +81,8 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:background="@drawable/button"
-                android:text="도어락"
                 android:textColor="#FFFFFF"
+                android:text="도어락"
                 android:textSize="15sp" />
 
             <Button
