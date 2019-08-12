@@ -6,12 +6,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -21,6 +19,7 @@ import com.example.nabot.domain.ChatDTO;
 import com.example.nabot.domain.ClientDTO;
 import com.example.nabot.domain.ContactDTO;
 import com.example.nabot.util.RetrofitRequest;
+import com.example.nabot.util.RetrofitRetry;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -33,7 +32,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ChatActivity extends AppCompatActivity {
@@ -44,13 +42,13 @@ public class ChatActivity extends AppCompatActivity {
     private ClientDTO client;
     private ContactDTO contact;
     private String roomNum;
-    TextView textView;
+    TextView textView, ctx;
 
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference myRef = database.getReference("chat");
     private ArrayAdapter<String> adapter;
     private ChatAdapterR chatAdapterR = new ChatAdapterR();
-    private ArrayList<ChatDTO> list;
+    private ArrayList<String> list;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +56,7 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat);
 
         textView = findViewById(R.id.textView2);
-        list = new ArrayList<ChatDTO>();
+        list = new ArrayList<String>();
         SendButton = (Button) findViewById(R.id.sendbutton);
         chatlist = findViewById(R.id.chatlist);
         chatlist.setTranscriptMode(ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
@@ -85,10 +83,30 @@ public class ChatActivity extends AppCompatActivity {
                 long now = System.currentTimeMillis();
                 Date date = new Date(now);
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
-                String getTime = sdf.format(date);
+                final String getTime = sdf.format(date);
+                Log.e("getSomeid", String.valueOf(contact.getId()));
+                Log.e("getSomeid", String.valueOf(client.getName()));
+                Log.e("getSomeid", String.valueOf(client.getName()));
+                Log.e("getSomeid", String.valueOf(contact.getSomeid()));
+                Log.e("getSomeid", String.valueOf(contact.getSomename()));
+                Log.e("getSomeid", String.valueOf(SendContentText.getText().toString()));
+                Log.e("getSomeid", String.valueOf(getTime));
+
                 chat = new ChatDTO(roomNum, client.getId(), client.getName(), contact.getSomeid(),contact.getSomename(), SendContentText.getText().toString(), getTime);
                 myRef.child(roomNum).push().setValue(chat);
                 SendContentText.setText("");
+
+//                RetrofitRequest retrofitRequest = RetrofitRequest.retrofit.create(RetrofitRequest.class);
+//                chat = new ChatDTO(client.getId(), contact.getSomeidname(),SendContentText.getText().toString());
+//                Call<List<ChatDTO>> call = retrofitRequest.postChat(chat);
+//                call.enqueue(new RetrofitRetry<List<ChatDTO>>(call) {
+//                    @Override
+//                    public void onResponse(Call<List<ChatDTO>> call, Response<List<ChatDTO>> response) {
+//                        if(client.getId() == contact.getClientid()) {
+//                            String chatchat = client.getName() + SendContentText.getText().toString() + getTime;
+//                        }
+//                    }
+//                });
             }
         });
         myRef.child(roomNum).addChildEventListener(new ChildEventListener() {
@@ -96,9 +114,11 @@ public class ChatActivity extends AppCompatActivity {
             public void onChildAdded(@NonNull final DataSnapshot dataSnapshot, @Nullable String s) {
                 Log.e("asdasd","3124");
                 ChatDTO chatDTO = dataSnapshot.getValue(ChatDTO.class);
-                chatAdapterR.getDTO(contact);
+                chatAdapterR.getDTO(contact, client);
+                Log.e("getSendname", String.valueOf(contact.getSomename()));
+                Log.e("getName",client.getName());
                 chatAdapterR.addItem(chatDTO);
-//                chatAdapterR.addItem(chatDTO.getSendid() + " : " + chatDTO.getMsg() + "\n " + chatDTO.getDatetime());
+
                 Log.e("asdasd","312444");
                 chatAdapterR.notifyDataSetChanged();
                 chatlist.setSelection(chatAdapterR.getCount() - 1);
