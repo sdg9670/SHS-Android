@@ -64,9 +64,10 @@ public class MainActivity extends AppCompatActivity {
         speakerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Camera camera = new Camera("Speaker", "192.168.1.100", 5000);
-                Intent intent = new Intent(getApplicationContext(), VideoActivity.class);
-                intent.putExtra(VideoActivity.CAMERA, camera);
+                Intent intent=new Intent(MainActivity.this,SpeakerActivity.class);
+                Bundle bundle=new Bundle();
+                bundle.putSerializable("client",client);
+                intent.putExtras(bundle);
                 startActivity(intent);
             }
         });

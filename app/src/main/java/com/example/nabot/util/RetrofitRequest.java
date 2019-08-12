@@ -157,11 +157,15 @@ public interface RetrofitRequest {
     @GET("last_chat")
     Call<List<ChatDTO>> getlast_chat();
 
+
+    @GET("speaker")
+    Call<List<ClientDTO>> getspeaker(@Query("dong") int dong, @Query("ho")int ho);
+
     @GET("doorlock_image")
     Call<List<DoorlockDTO>> getdoorlock_image(@Query("dong") int dong, @Query("ho")int ho);
 
     public static final Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl("http://simddong.ga:5000/")
+            .baseUrl("http://simddong.ga:5003/")
             .addConverterFactory(GsonConverterFactory.create())
             .build();
 }
