@@ -118,6 +118,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), WindowActivity.class);
+                Bundle bundle=new Bundle();
+                bundle.putSerializable("client",client);
+                intent.putExtras(bundle);
                 startActivity(intent);
             }
         });

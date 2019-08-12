@@ -25,8 +25,10 @@ import com.example.nabot.R;
 import com.example.nabot.adapter.BoardSpinnerAdapter;
 import com.example.nabot.adapter.CurtainSpinnerAdapter;
 import com.example.nabot.adapter.SensorSpinnerAdapter;
+import com.example.nabot.adapter.UserAdapter;
 import com.example.nabot.adapter.WindowSpinnerAdapter;
 import com.example.nabot.domain.BoardDTO;
+import com.example.nabot.domain.ClientDTO;
 import com.example.nabot.domain.CurtainDTO;
 import com.example.nabot.domain.SensorDTO;
 import com.example.nabot.domain.WindowDTO;
@@ -54,6 +56,7 @@ public class WindowActivity extends AppCompatActivity {
 
     String[] select = {"온도", "습도", "강수량", "미세먼지 수치"};
     String[] value = {"이상", "미만"};
+    String clientname=null;
     String windowStatus, temp_set = "0.0", humi_set = "0.0", rain_set = "0.0", dust_set = "0.0";
     int selectPosition, selectPosition2, tempOver = 0, humiOver = 0, rainOver = 0, dustOver = 0;
 
@@ -62,6 +65,7 @@ public class WindowActivity extends AppCompatActivity {
     ArrayAdapter<String> outterAdapter;
     WindowSpinnerAdapter windowAdapter;
     SensorSpinnerAdapter sensorAdapter;
+    UserAdapter clientAdapter;
 
     WindowDTO windowDTO;
     boolean rainCheck = false;
@@ -71,6 +75,8 @@ public class WindowActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_window);
+        Intent intent2=getIntent();
+        final ClientDTO clientDTO= (ClientDTO) intent2.getSerializableExtra("client");
         windowSelectLayout = (LinearLayout) findViewById(R.id.windowSelectLayout);
         openLayout = (LinearLayout) findViewById(R.id.openLayout);
         setting1 = (LinearLayout) findViewById(R.id.setting1);
@@ -121,7 +127,12 @@ public class WindowActivity extends AppCompatActivity {
                     windowArray = response.body();
                     windowAdapter = new WindowSpinnerAdapter(WindowActivity.this);
                     for (int i = 0; i < windowArray.size(); i++) {
+                        if(windowArray.get(i).getId()==clientDTO.getId()){
+                            windowAdapter.getClientDTO(clientDTO);
+                            clientname=clientDTO.getName();
+                        }
                         windowAdapter.addItem(windowArray.get(i));
+                        windowAdapter.notifyDataSetChanged();
                     }
                 }
                 windowSpinner.setAdapter(windowAdapter);
@@ -145,7 +156,6 @@ public class WindowActivity extends AppCompatActivity {
         windowSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, final int position, long id) {
-                Log.e("qqqqqq12", "qqqqqqqqqqqqqqq123");
                 if (windowAdapter != null) {
                     selectPosition = position;
                     windowSelectLayout.setVisibility(View.VISIBLE);
@@ -153,7 +163,9 @@ public class WindowActivity extends AppCompatActivity {
                         windowStatus = "열려있음";
                     else
                         windowStatus = "닫혀있음";
-                    windowStatusText.setText("창문 " + Integer.toString(windowAdapter.getItem(position).getId()) + "의 현재상태 : " + windowStatus);
+                    if(clientname!=null){
+                        windowStatusText.setText(clientname + " " + "창문 " + "의 현재상태 : " + windowStatus);
+                    }
                 }
             }
 

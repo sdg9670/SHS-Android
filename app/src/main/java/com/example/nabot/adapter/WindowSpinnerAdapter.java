@@ -1,18 +1,21 @@
 package com.example.nabot.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
+import com.example.nabot.domain.ClientDTO;
 import com.example.nabot.domain.WindowDTO;
 
 import java.util.ArrayList;
 
 public class WindowSpinnerAdapter extends BaseAdapter implements SpinnerAdapter {
     Context context;
+    ClientDTO clientDTO=null;
     private ArrayList<WindowDTO> items = new ArrayList<WindowDTO>();
 
     public WindowSpinnerAdapter(Context ctx) {
@@ -20,6 +23,11 @@ public class WindowSpinnerAdapter extends BaseAdapter implements SpinnerAdapter 
     }
     public void addItem(WindowDTO data){
         items.add(data);
+    }
+
+    public void getClientDTO(ClientDTO clientDTO){
+        this.clientDTO=new ClientDTO();
+        this.clientDTO=clientDTO;
     }
 
     @Override
@@ -38,14 +46,15 @@ public class WindowSpinnerAdapter extends BaseAdapter implements SpinnerAdapter 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         TextView text = new TextView(context);
-        text.setText(String.valueOf(items.get(position).getId()));
+        text.setText(String.valueOf(clientDTO.getName()));
         return text;
     }
 
     @Override
     public View getDropDownView(int position, View convertView, ViewGroup parent) {
         TextView text = new TextView(context);
-        text.setText(String.valueOf(items.get(position).getId()));
+        text.setText(String.valueOf(clientDTO.getName()));
+        Log.e("asdadsadasd",clientDTO.getName());
         return text;
     }
 }

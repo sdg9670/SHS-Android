@@ -125,6 +125,7 @@ public interface RetrofitRequest {
     @GET("friend")
     Call<List<ContactDTO>> getFriend(@Query("id") int id);
 
+
     @POST("friend")
     Call<Void> postFriend(@Body ContactDTO contact);
 
@@ -157,7 +158,7 @@ public interface RetrofitRequest {
     Call<List<ChatDTO>> getlast_chat();
 
     public static final Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl("http://simddong.ga:5003/")
+            .baseUrl("http://simddong.ga:5000/")
             .addConverterFactory(GsonConverterFactory.create())
             .build();
 }
