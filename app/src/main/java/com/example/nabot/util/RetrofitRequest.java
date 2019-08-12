@@ -165,7 +165,7 @@ public interface RetrofitRequest {
     Call<List<DoorlockDTO>> getdoorlock_image(@Query("dong") int dong, @Query("ho")int ho);
 
     public static final Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl("http://simddong.ga:5003/")
+            .baseUrl("http://simddong.ga:5000/")
             .addConverterFactory(GsonConverterFactory.create())
             .build();
 }
