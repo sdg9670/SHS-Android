@@ -44,10 +44,7 @@ import retrofit2.Response;
 
 
 public class MainActivity extends AppCompatActivity {
-    Button command_dialog;
     ClientDTO client;
-    EditText etext;
-    TextView text;
     private long time= 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,37 +84,11 @@ public class MainActivity extends AppCompatActivity {
         speakerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final Dialog dialog = new Dialog(MainActivity.this);
-                dialog.setContentView(R.layout.dialog_command);
-                dialog.show();
-                ViewGroup.LayoutParams params =dialog.getWindow().getAttributes();
-                params.width = LinearLayout.LayoutParams.MATCH_PARENT;
-                params.height = LinearLayout.LayoutParams.MATCH_PARENT;
-                dialog.getWindow().setAttributes((android.view.WindowManager.LayoutParams) params);
-
-                Button button = (Button) dialog.findViewById(R.id.comButton);
-                Button button2 = (Button) dialog.findViewById(R.id.comClose);
-                etext = (EditText) dialog.findViewById(R.id.com_edittext);
-                text = (TextView) dialog.findViewById(R.id.com_text);
-                button.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if(etext.getText().length() == 0)
-                            return ;
-                        ClientThread thread = new ClientThread(etext, text, client);
-                        thread.start();
-                    }
-                });
-                button2.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        dialog.dismiss();
-                    }
-                });
-                /*Camera camera = new Camera("Speaker", "192.168.1.100", 5000);
-                Intent intent = new Intent(getApplicationContext(), VideoActivity.class);
-                intent.putExtra(VideoActivity.CAMERA, camera);
-                startActivity(intent);*/
+                Intent intent=new Intent(MainActivity.this,SpeakerActivity.class);
+                Bundle bundle=new Bundle();
+                bundle.putSerializable("client",client);
+                intent.putExtras(bundle);
+                startActivity(intent);
             }
         });
         doorlockButton.setOnClickListener(new View.OnClickListener() {

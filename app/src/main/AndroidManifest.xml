@@ -47,6 +47,7 @@
         <activity android:name=".activities.FriendListActivity"/>
         <activity android:name=".activities.RequestFriendListActivity"/>
         <activity android:name=".activities.DoorLockActivity"/>
+        <activity android:name=".activities.SpeakerActivity"/>
         <activity android:name=".activities.WindowActivity"> </activity>
         <activity android:name=".activities.CurtainActivity"> </activity>
         <provider

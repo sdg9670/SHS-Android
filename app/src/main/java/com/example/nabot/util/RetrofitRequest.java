@@ -157,6 +157,10 @@ public interface RetrofitRequest {
     @GET("last_chat")
     Call<List<ChatDTO>> getlast_chat();
 
+
+    @GET("speaker")
+    Call<List<ClientDTO>> getspeaker(@Query("dong") int dong, @Query("ho")int ho);
+
     @GET("doorlock_image")
     Call<List<DoorlockDTO>> getdoorlock_image(@Query("dong") int dong, @Query("ho")int ho);
 
