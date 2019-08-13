@@ -38,14 +38,14 @@ public class WindowSpinnerAdapter extends BaseAdapter implements SpinnerAdapter 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         TextView text = new TextView(context);
-        text.setText(String.valueOf(items.get(position).getId()));
+        text.setText(items.get(position).getName());
         return text;
     }
 
     @Override
     public View getDropDownView(int position, View convertView, ViewGroup parent) {
         TextView text = new TextView(context);
-        text.setText(String.valueOf(items.get(position).getId()));
+        text.setText(items.get(position).getName());
         return text;
     }
 }

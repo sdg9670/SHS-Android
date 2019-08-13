@@ -6,6 +6,7 @@ public class CurtainDTO {
     private int lux;
     private double lux_set;
     private int lux_over;
+    private String name;
 
     public CurtainDTO(int id, double lux_set, int lux_over) {
         this.id = id;
@@ -41,5 +42,13 @@ public class CurtainDTO {
 
     public void setLux(int lux) {
         this.lux = lux;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

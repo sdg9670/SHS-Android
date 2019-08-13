@@ -53,7 +53,6 @@ public class MainActivity extends AppCompatActivity {
 
         final Intent intent=getIntent();
         client= (ClientDTO)intent.getSerializableExtra("client");
-        command_dialog = (Button) findViewById(R.id.comButton);
         Button speakerButton = (Button) findViewById(R.id.speakerButton);
         Button doorlockButton = (Button) findViewById(R.id.doorlockButton);
         Button chatButton = (Button) findViewById(R.id.buttonVote);
@@ -152,47 +151,4 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-}
-
-class ClientThread extends Thread {
-    EditText etext;
-    TextView text;
-    ClientDTO client;
-    ClientThread(EditText etext, TextView text, ClientDTO client) {
-        this.etext = etext;
-        this.text = text;
-        this.client = client;
-    }
-    public void run() {
-        String host = "simddong.ga";
-        int port = 9670;
-        Socket socket = null;
-        PrintWriter outputStream = null;
-        BufferedReader inputStream = null;
-        try {
-            socket = new Socket(host, port);
-            outputStream = new PrintWriter(socket.getOutputStream(), true);
-            outputStream.print(client.getId() + "\tandroid\tcommand\t" + client.getId() + "\t" + etext.getText().toString());
-            outputStream.flush();
-            etext.setText("");
-            Log.e("케케", "ㅎㅎ" + etext.getText().toString());
-            Log.d("ClientThread", "서버로 보냄.");
-            inputStream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            String input = inputStream.readLine();
-            String [] splitdata = input.split("\t");
-            input = splitdata[splitdata.length-1];
-            Log.d("ClientThread","받은 데이터 : "+input);
-            text.setText(input);
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                socket.close();
-                inputStream.close();
-                outputStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 }

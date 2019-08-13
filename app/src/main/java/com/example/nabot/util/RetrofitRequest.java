@@ -126,6 +126,7 @@ public interface RetrofitRequest {
     @GET("friend")
     Call<List<ContactDTO>> getFriend(@Query("id") int id);
 
+
     @POST("friend")
     Call<Void> postFriend(@Body ContactDTO contact);
 

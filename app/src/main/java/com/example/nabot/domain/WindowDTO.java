@@ -15,6 +15,7 @@ public class WindowDTO {
     private int rain_over;
     private double dust_set;
     private int dust_over;
+    private String name;
 
     public WindowDTO(int id, double temp_set, int temp_over, double humi_set, int humi_over, double rain_set, int rain_over, double dust_set, int dust_over) {
         this.id = id;
@@ -31,7 +32,6 @@ public class WindowDTO {
         this.rain_over = rain_over;
         this.dust_set = dust_set;
         this.dust_over = dust_over;
-
     }
     public WindowDTO(int status, double temp, double humi, double rain, double dust) {
         this.status = status;
@@ -89,5 +89,11 @@ public class WindowDTO {
         this.dust = dust;
     }
 
+    public String getName() {
+        return name;
+    }
 
+    public void setName(String name) {
+        this.name = name;
+    }
 }
